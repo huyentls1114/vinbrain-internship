@@ -7,10 +7,14 @@ from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
 class SegmentationDataset(Dataset):
-    def __init__(self, folder_path, list_image_name, mode, transform = None, 
-        img_size = 224, 
-        images_folder_name = "images", labels_folder_name = "color_labels", 
-        suffix_label_name = "_train_color"):
+    def __init__(self, dataset_args, transform = None, mode = "train"):
+        folder_path = dataset_args["folder_path"]
+        list_image_name = dataset_args["list_image_name"]
+        images_folder_name = dataset_args["images_folder_name"]
+        labels_folder_name = dataset_args["labels_folder_name"]
+        suffix_label_name = dataset_args["suffix_label_name"]
+        img_size = dataset_args["img_size"]
+
         """
         folder structure:
         |--images
@@ -29,9 +33,9 @@ class SegmentationDataset(Dataset):
         self.label_path = os.path.join(label_folder, mode)
 
         self.list_image_name = list_image_name
-        self.transforms = transform
-        if self.transforms is None:
-            self.transforms = transforms.Compose([
+        self.transform = transform
+        if self.transform is None:
+            self.transform = transforms.Compose([
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225])
@@ -54,8 +58,16 @@ class SegmentationDataset(Dataset):
         #some label have 4 channels
         label = label[:,:,:3]
 
-        return self.transforms(image), self.transforms(label)
-
+        return self.transform(image), self.transform(label)
+def cifar10(dataset_args, transform = None, mode = "train"):
+    if transform is None:
+            transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225])
+            ])
+    path = dataset_args["path"]
+    return torchvision.datasets.CIFAR10(root = path, train = (mode == "train"), transform= transform, download = True)
 
 def test_segmentationdataset():
     folder_path = "/home/huyen/data/bdd100k_seg/bdd100k/seg"
