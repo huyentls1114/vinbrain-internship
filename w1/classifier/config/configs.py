@@ -7,6 +7,7 @@ from dataset.dataset import cifar10
 from net.CNN import CNN
 from net.optimizer import *
 
+config_files = "config/configs.py"
 #data config
 batch_size = 16
 split_train_val = 0.7

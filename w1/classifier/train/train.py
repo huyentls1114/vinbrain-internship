@@ -15,6 +15,7 @@ class Trainer:
         self.list_loss = []
         self.steps_save_loss = 2000
         self.output_folder = configs.output_folder
+        self.config_files = configs.config_files
 
         cuda = configs.device
         self.device = torch.device(cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
@@ -24,7 +25,7 @@ class Trainer:
     def train(self):
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
-        copy("config/configs.py", self.output_folder)
+        copy(self.config_files, self.output_folder)
         for epoch in range(self.current_epoch, self.num_epochs):
             self.current_epoch = epoch
             self.train_one_epoch()
