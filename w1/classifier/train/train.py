@@ -17,7 +17,7 @@ class Trainer:
         self.output_folder = configs.output_folder
 
         cuda = configs.device
-        self.device = torch.device(cuda if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
         self.net.to(self.device)
 
     
