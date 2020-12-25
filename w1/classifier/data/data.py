@@ -1,6 +1,7 @@
 import sys
 sys.path.append("..")
-from utils.utils import read_json, show_img
+from utils.utils import show_img
+from config import configs
 import torchvision
 import torch
 import numpy as np
@@ -9,19 +10,19 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
 
 class CIFARDataLoader:
-    def __init__(self, configs):
+    def __init__(self, configs, DatasetClass):
         x = 1
         #declare Transformer
-        transform = extract_transform(configs['transform'])
+        transform = configs.transform
 
         #declare Dataset
-        path = configs["dataset"]["folder_path"]
-        self.train_dataset = torchvision.datasets.CIFAR10(root = path, train = True, transform= transform)
-        self.test_dataset = torchvision.datasets.CIFAR10(root = path, train = False, transform= transform)
+        path = configs.dataset.folder_path
+        self.train_dataset = DatasetClass(configs["dataset"]["argument"],transform = transform, mode = "train")
+        self.test_dataset = DatasetClass(configs["dataset"]["argument"],transform = transform, mode = "test")
 
         #declare Dataloader
-        self.batch_size = configs["batch_size"]
-        split_train_val = configs["split_train_val"]
+        self.batch_size = configs.batch_size
+        split_train_val = configs.split_train_val
         self.num_sample = len(train_dataset)
 
         #split train val
@@ -92,6 +93,6 @@ def extract_transform(transforms_dict):
 
 
 if __name__ == "__main__":
-    configs = read_json("../config/config.json")
+    # configs = read_json("../config/config.json")
     cifaLoader = CIFARDataLoader(configs)
     cifaLoader.show_batch("val")
