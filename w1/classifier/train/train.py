@@ -79,3 +79,9 @@ class Trainer:
             filename = "checkpoint_%d"%(self.current_epoch)
         file_path = os.path.join(self.output_folder, filename)
         torch.save(self.net.state_dict(), file_path)
+    
+    def load_checkpoint(self, filename = None):
+        if filename is None:
+            filename = "checkpoint_%d"%(self.num_epochs-1)
+        file_path = os.path.join(self.output_folder, filename)
+        self.net.load_state_dict(file_path)
