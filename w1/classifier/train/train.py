@@ -36,7 +36,7 @@ class Trainer:
     def train_one_epoch(self):
         train_loss = 0
         for i, sample in enumerate(self.data.train_loader):
-            images, labels = sample[0].to(self.device), sample[1].to(device)
+            images, labels = sample[0].to(self.device), sample[1].to(self.device)
             outputs = self.net(images)
             loss = self.crition(outputs, labels)
             
