@@ -4,8 +4,8 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
-from net.CNN import CNN
-from net.optimizer import *
+from model.CNN import CNN
+from model.optimizer import *
 
 config_files = "config/configs.py"
 #data config
