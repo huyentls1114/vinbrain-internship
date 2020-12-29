@@ -25,7 +25,7 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
     file_.writelines("\tLoss valid average %f, acc valid %f\n"%(loss_val, acc_val))
     file_.writelines("learning_rate %f\n"%(lr))
 
-def steps_per_epoch_train(dataset_dict, split_train_val, batch_size):
+def len_train_datatset(dataset_dict, split_train_val):
     DatasetClass = dataset_dict["class"]
     train_dataset = DatasetClass(dataset_dict["argument"],transform = transform, mode = "train")
-    return len(train_dataset)*split_train_val/batch_size
+    return len(train_dataset)*split_train_val
