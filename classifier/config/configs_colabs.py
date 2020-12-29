@@ -33,7 +33,7 @@ transform = transforms.Compose([
 net = CNN
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
-train_length = len_train_datatset(dataset, split_train_val)
+train_length = len_train_datatset(dataset, transform, split_train_val)
 lr_schedule = {
     "class": StepLR,
     "metric":None,
