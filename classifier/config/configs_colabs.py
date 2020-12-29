@@ -19,7 +19,7 @@ dataset = {
     "name":"cifar10",
     "class":cifar10,
     "argument":{
-        "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10"
+        "path":"cifar10"
     }
 }
 transform = transforms.Compose([
