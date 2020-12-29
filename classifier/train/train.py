@@ -44,13 +44,7 @@ class Trainer:
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
-            if not self.lr_scheduler is None:
-                if self.metric is not None:
-                    val_loss, val_acc = self.evaluate(mode = "val")
-                    self.lr_scheduler.step(eval(self.metric))
-                else:
-                    self.lr_scheduler.step()
-                print("learning_rate ", self.optimizer.param_groups[0]['lr'])
+            print("learning_rate ", self.optimizer.param_groups[0]['lr'])
 
     def test(self):
         loss, acc = self.evaluate(test)
@@ -68,6 +62,7 @@ class Trainer:
             self.optimizer.step()
             
             train_loss += loss.item()
+            self.schedule_lr()
             if i% (self.steps_save_loss-1) == 0:
                 print("Epoch %d step %d"%(self.current_epoch, i))
                 train_loss_avg = train_loss/self.steps_save_loss
@@ -77,8 +72,15 @@ class Trainer:
                 train_loss = 0.0
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
                 save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
-
     
+    def schedule_lr(self):
+        if not self.lr_scheduler is None:
+            if self.metric is not None:
+                val_loss, val_acc = self.evaluate(mode = "val")
+                self.lr_scheduler.step(eval(self.metric))
+            else:
+                self.lr_scheduler.step()
+
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
             metric = self.num_correct

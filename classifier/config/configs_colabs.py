@@ -7,6 +7,7 @@ from dataset.dataset import cifar10
 from model.CNN import CNN
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
+from utils.utils import steps_per_epoch_train
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
@@ -36,7 +37,7 @@ lr_schedule = {
     "class": StepLR,
     "metric":None,
     "schedule_args":{
-        "step_size":1,
+        "step_size":batch_size,
         "gamma":0.1,
     }
 }
