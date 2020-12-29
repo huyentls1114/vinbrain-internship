@@ -39,7 +39,7 @@ lr_schedule = {
     "metric":None,
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":steps_per_epoch,
+        "step_size":1,
         "gamma":0.1,
     }
 }
