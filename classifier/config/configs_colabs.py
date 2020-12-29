@@ -46,4 +46,6 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_1"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_lr_scheduler"
+
+loss_file = "loss_file.txt"

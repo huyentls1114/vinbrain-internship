@@ -1,6 +1,7 @@
 import torch
 import os
 from shutil import copy
+from utils.utils import save_loss_to_file
 
 class Trainer:
     def __init__(self, configs, data):
@@ -13,13 +14,18 @@ class Trainer:
             self.lr_scheduler = None
         else:
             self.lr_scheduler = configs.lr_schedule["class"](self.optimizer, **configs.lr_schedule["schedule_args"])
+        
         self.data = data
 
+        #training process
         self.current_epoch = 0
         self.list_loss = []
         self.steps_save_loss = 2000
         self.output_folder = configs.output_folder
         self.config_files = configs.config_files
+
+        #define loss file
+        self.loss_file = configs.loss_file
 
         cuda = configs.device
         self.device = torch.device(cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
@@ -29,7 +35,11 @@ class Trainer:
             os.makedirs(self.output_folder)
         copy(self.config_files, self.output_folder)
     
-    def train(self):
+    
+
+    def train(self, loss_file = None):
+        if loss_file is not None:
+            self.loss_file = loss_file        
         for epoch in range(self.current_epoch, self.num_epochs):
             self.current_epoch = epoch
             self.train_one_epoch()
@@ -61,6 +71,9 @@ class Trainer:
                 val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
                 print("\tLoss valid average %f, acc valid %f"%(val_loss_avg, val_acc_avg))
                 train_loss = 0.0
+                loss_file_path = os.path.join(self.output_folder, self.loss_file)
+                save_loss_to_file(loss_file_path, epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
+
     
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
@@ -102,4 +115,3 @@ class Trainer:
         self.lr = lr
         for i in range(len(self.optimizer.param_groups)):
             self.optimizer.param_groups[i]['lr'] = lr
-
