@@ -14,7 +14,7 @@ class Trainer:
             self.lr_scheduler = None
         else:
             self.lr_scheduler = configs.lr_schedule["class"](self.optimizer, **configs.lr_schedule["schedule_args"])
-        
+        self.metric = configs.lr_schedule["metric"]
         self.data = data
 
         #training process
@@ -45,7 +45,11 @@ class Trainer:
             self.train_one_epoch()
             self.save_checkpoint()
             if not self.lr_scheduler is None:
-                self.lr_scheduler.step()
+                if self.metric is not None:
+                    val_loss, val_acc = self.evaluate(mode = "val")
+                    self.lr_scheduler.step(eval(self.metric))
+                else:
+                    self.lr_scheduler.step()
                 print("learning_rate ", self.optimizer.param_groups[0]['lr'])
 
     def test(self):

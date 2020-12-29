@@ -34,6 +34,7 @@ loss_function = nn.CrossEntropyLoss
 lr = 0.01
 lr_schedule = {
     "class": StepLR,
+    "metric":None,
     "schedule_args":{
         "step_size":1,
         "gamma":0.1,
