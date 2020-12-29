@@ -33,12 +33,12 @@ transform = transforms.Compose([
 net = CNN
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
-train_length = len_train_datatset(dataset, transform, split_train_val)
+steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
 lr_schedule = {
     "class": StepLR,
     "metric":None,
     "schedule_args":{
-        "step_size":train_length,
+        "step_size":steps_per_epoch,
         "gamma":0.1,
     }
 }
