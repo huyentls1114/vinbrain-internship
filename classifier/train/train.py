@@ -6,6 +6,7 @@ from utils.utils import save_loss_to_file
 class Trainer:
     def __init__(self, configs, data):
         self.lr = configs.lr
+        self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
         self.crition = configs.loss_function()
         self.net = configs.net()
