@@ -6,7 +6,7 @@ from dataset.transform import Rescale
 from dataset.dataset import cifar10
 from model.CNN import CNN
 from torch.optim import SGD
-from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, 
+from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/w1/classifier/config/configs_colab.py"
 #data config
