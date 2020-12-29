@@ -5,11 +5,12 @@ import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
 from model.CNN import CNN
-from model.optimizer import *
+from torch.optim import SGD
+from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, 
 
-config_files = "config/configs.py"
+config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/w1/classifier/config/configs_colab.py"
 #data config
-batch_size = 16
+batch_size = 8
 split_train_val = 0.7
 device = "cpu"
 gpu_id = 0
@@ -18,7 +19,7 @@ dataset = {
     "name":"cifar10",
     "class":cifar10,
     "argument":{
-        "path":"E:\data\cifar10"
+        "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10"
     }
 }
 transform = transforms.Compose([
@@ -30,12 +31,19 @@ transform = transforms.Compose([
 #train config
 net = CNN
 loss_function = nn.CrossEntropyLoss
-lr = 0.001
+lr = 0.01
+lr_schedule = {
+    "class": StepLR,
+    "schedule_args":{
+        "step_size":1,
+        "gamma":0.1,
+    }
+}
 optimizer ={
-    "class": SGDoptimizer,
+    "class": SGD,
     "optimizer_args":{
         "momentum":0.9
     }
 }
-num_epochs = 2
-output_folder = "E:\model\classify_cifar"
+num_epochs = 10
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_1"

@@ -8,7 +8,11 @@ class Trainer:
         self.num_epochs = configs.num_epochs
         self.crition = configs.loss_function()
         self.net = configs.net()
-        self.optimizer = configs.optimizer["class"](self.net, self.lr, configs.optimizer["optimizer_args"])
+        self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
+        if configs.lr_schedule is None:
+            self.lr_scheduler = None
+        else:
+            self.lr_scheduler = configs.lr_schedule["class"](self.optimizer, **configs.lr_schedule["schedule_args"])
         self.data = data
 
         self.current_epoch = 0
@@ -21,18 +25,23 @@ class Trainer:
         self.device = torch.device(cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
         self.net.to(self.device)
 
-    
-    def train(self):
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
         copy(self.config_files, self.output_folder)
+    
+    def train(self):
         for epoch in range(self.current_epoch, self.num_epochs):
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
+            if not self.lr_scheduler is None:
+                self.lr_scheduler.step()
+                print("learning_rate ", self.optimizer.param_groups[0]['lr'])
+
     def test(self):
         loss, acc = self.evaluate(test)
         print("Test loss: %f test acc %f"%(loss, acc))
+    
     def train_one_epoch(self):
         train_loss = 0
         for i, sample in enumerate(self.data.train_loader):
@@ -53,7 +62,9 @@ class Trainer:
                 print("\tLoss valid average %f, acc valid %f"%(val_loss_avg, val_acc_avg))
                 train_loss = 0.0
     
-    def evaluate(self, mode = "val"):
+    def evaluate(self, mode = "val", metric = None):
+        if metric is None:
+            metric = self.num_correct
         loader = {
             "val": self.data.val_loader,
             "train": self.data.train_loader,
@@ -68,8 +79,9 @@ class Trainer:
                 outputs = self.net(images)
                 loss += self.crition(outputs, labels)
                 num_total += outputs.size(0)
-                num_correct += self.num_correct(outputs, labels)
+                num_correct += metric(outputs, labels)
             return loss/(i+1), num_correct/num_total
+
     def num_correct(self, outputs, labels):
         _, predicted = torch.max(outputs, 1)
         return (predicted == labels).sum().item()
@@ -84,4 +96,10 @@ class Trainer:
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
         file_path = os.path.join(self.output_folder, filename)
-        self.net.load_state_dict(file_path)
+        self.net.load_state_dict(torch.load(file_path))
+
+    def update_lr(self, lr):
+        self.lr = lr
+        for i in range(len(self.optimizer.param_groups)):
+            self.optimizer.param_groups[i]['lr'] = lr
+

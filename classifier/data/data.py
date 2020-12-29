@@ -26,17 +26,18 @@ class CIFARData:
         self.num_sample = len(self.train_dataset)
 
         #split train val
-        train_sampler, valid_sampler = self.split_sampler(split_train_val)
+        self.train_sampler, self.valid_sampler = self.split_sampler(split_train_val)
+        self.test_sampler = SubsetRandomSampler(range(len(self.test_dataset)))
 
         #declari data loader
         self.train_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
-                                        sampler = train_sampler)
+                                        sampler = self.train_sampler)
         self.val_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
-                                        sampler = valid_sampler)
+                                        sampler = self.valid_sampler)
         self.test_loader = DataLoader(self.test_dataset, 
                                         batch_size = self.batch_size,
                                         shuffle = False,
@@ -46,15 +47,35 @@ class CIFARData:
         self.classes = configs.classes
 
     def show_batch(self, mode = "train"):
-        data_loader_dict = {
-            "train": self.train_loader,
-            "val": self.val_loader,
+        dataset_dict = {
+            "train": self.train_dataset,
+            "val": self.train_dataset,
             "test":self.test_loader
         }
-        data_iter = iter(data_loader_dict[mode])
-        images, labels = data_iter.next()
-        print("class", " ".join(self.classes[labels[i]] for i in range(self.batch_size)))
-        show_img(torchvision.utils.make_grid(images))
+        sampler_dict = {
+            "train": self.train_sampler,
+            "val": self.valid_sampler,
+            "test": self.test_sampler
+        }
+        # data_iter = iter(data_loader_dict[mode])
+        # images, labels = data_iter.next()
+        list_imgs = []
+        list_labels = []
+
+        #random list idx
+        list_idx = list(sampler_dict[mode])
+        np.random.shuffle(list_idx)
+        list_idx = list_idx[0:self.batch_size]
+        
+        #get image and label from dataset
+        dataset = dataset_dict[mode]
+        for i in range(self.batch_size):
+            image, label = dataset[list_idx[i]]
+            list_imgs.append(image)
+            list_labels.append(label)
+
+        print("class", " ".join(self.classes[list_labels[i]] for i in range(self.batch_size)))
+        show_img(torchvision.utils.make_grid(list_imgs))
         
 
     def split_sampler(self, split):
