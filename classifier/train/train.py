@@ -77,6 +77,7 @@ class Trainer:
                 print("\tLoss average %f"%(train_loss_avg))
                 val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
                 print("\tLoss valid average %f, acc valid %f"%(val_loss_avg, val_acc_avg))
+                print("learning_rate ", self.optimizer.param_groups[0]['lr'])
                 train_loss = 0.0
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
                 save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
@@ -88,8 +89,7 @@ class Trainer:
                 self.lr_scheduler.step(eval(self.lr_shedule_metric))
             else:
                 self.lr_scheduler.step()
-            print("learning_rate ", self.optimizer.param_groups[0]['lr'])
-
+            
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
             metric = self.num_correct
