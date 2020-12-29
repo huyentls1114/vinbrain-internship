@@ -10,7 +10,7 @@ from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
-batch_size = 8
+batch_size = 16
 split_train_val = 0.7
 device = "cpu"
 gpu_id = 0
