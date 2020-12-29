@@ -10,11 +10,16 @@ class Trainer:
         self.crition = configs.loss_function()
         self.net = configs.net()
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
+        
+        #schedule learning rate
         if configs.lr_schedule is None:
             self.lr_scheduler = None
         else:
             self.lr_scheduler = configs.lr_schedule["class"](self.optimizer, **configs.lr_schedule["schedule_args"])
-        self.metric = configs.lr_schedule["metric"]
+        self.lr_shedule_metric = configs.lr_schedule["metric"]
+        self.lr_schedule_step_type = configs.lr_schedule["step_type"]
+
+        #data
         self.data = data
 
         #training process
@@ -45,6 +50,8 @@ class Trainer:
             self.train_one_epoch()
             self.save_checkpoint()
             print("learning_rate ", self.optimizer.param_groups[0]['lr'])
+            if self.lr_schedule_step_type == "epoch":
+                self.schedule_lr()
 
     def test(self):
         loss, acc = self.evaluate(test)
@@ -62,7 +69,8 @@ class Trainer:
             self.optimizer.step()
             
             train_loss += loss.item()
-            self.schedule_lr()
+            if self.lr_schedule_step_type == "batch":
+                self.schedule_lr()
             if i% (self.steps_save_loss-1) == 0:
                 print("Epoch %d step %d"%(self.current_epoch, i))
                 train_loss_avg = train_loss/self.steps_save_loss
@@ -75,9 +83,9 @@ class Trainer:
     
     def schedule_lr(self):
         if not self.lr_scheduler is None:
-            if self.metric is not None:
+            if self.lr_shedule_metric is not None:
                 val_loss, val_acc = self.evaluate(mode = "val")
-                self.lr_scheduler.step(eval(self.metric))
+                self.lr_scheduler.step(eval(self.lr_shedule_metric))
             else:
                 self.lr_scheduler.step()
 

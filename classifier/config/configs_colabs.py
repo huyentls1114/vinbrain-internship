@@ -37,6 +37,7 @@ steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/ba
 lr_schedule = {
     "class": StepLR,
     "metric":None,
+    "step_type":"epoch",
     "schedule_args":{
         "step_size":steps_per_epoch,
         "gamma":0.1,
