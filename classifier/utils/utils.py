@@ -23,5 +23,5 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
     file_.writelines("Epoch %d step %d"%(epoch, step))
     file_.writelines("\tLoss average %f"%(loss_train))
     file_.writelines("\tLoss valid average %f, acc valid %f"%(loss_val, acc_val))
-    file_.writelines("learning_rate ", lr)
+    file_.writelines("learning_rate %f"%(lr))
 
