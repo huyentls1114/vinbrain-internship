@@ -72,7 +72,7 @@ class Trainer:
                 print("\tLoss valid average %f, acc valid %f"%(val_loss_avg, val_acc_avg))
                 train_loss = 0.0
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
-                save_loss_to_file(loss_file_path, epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
+                save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
 
     
     def evaluate(self, mode = "val", metric = None):
