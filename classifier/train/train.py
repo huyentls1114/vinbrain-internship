@@ -70,7 +70,7 @@ class Trainer:
             
             train_loss += loss.item()
             if self.lr_schedule_step_type == "batch":
-                self.schedule_lr()
+                self.schedule_lr(i)
             if i% (self.steps_save_loss-1) == 0:
                 print("Epoch %d step %d"%(self.current_epoch, i))
                 train_loss_avg = train_loss/self.steps_save_loss
@@ -82,11 +82,14 @@ class Trainer:
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
                 save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
     
-    def schedule_lr(self):
+    def schedule_lr(self, iteration = 0):
         if not self.lr_scheduler is None:
             if self.lr_shedule_metric is not None:
-                val_loss, val_acc = self.evaluate(mode = "val")
-                self.lr_scheduler.step(eval(self.lr_shedule_metric))
+                if self.lr_shedule_metric == "epoch":
+                     self.lr_scheduler.step(self.current_epoch+iteration/self.batch_size)
+                else:
+                    val_loss, val_acc = self.evaluate(mode = "val")
+                    self.lr_scheduler.step(eval(self.lr_shedule_metric))
             else:
                 self.lr_scheduler.step()
             
