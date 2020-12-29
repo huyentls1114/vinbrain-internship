@@ -49,7 +49,7 @@ class Trainer:
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
-            print("learning_rate ", self.optimizer.param_groups[0]['lr'])
+            
             if self.lr_schedule_step_type == "epoch":
                 self.schedule_lr()
 
@@ -88,6 +88,7 @@ class Trainer:
                 self.lr_scheduler.step(eval(self.lr_shedule_metric))
             else:
                 self.lr_scheduler.step()
+            print("learning_rate ", self.optimizer.param_groups[0]['lr'])
 
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
