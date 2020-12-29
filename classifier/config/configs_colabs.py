@@ -8,7 +8,7 @@ from model.CNN import CNN
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 
-config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/w1/classifier/config/configs_colab.py"
+config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 8
 split_train_val = 0.7
