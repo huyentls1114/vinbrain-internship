@@ -2,7 +2,7 @@ import torch
 import os
 from shutil import copy
 from utils.utils import save_loss_to_file
-
+from torch.utils.tensorboard import SummaryWriter
 class Trainer:
     def __init__(self, configs, data):
         self.lr = configs.lr
@@ -36,15 +36,19 @@ class Trainer:
         #define loss file
         self.loss_file = configs.loss_file
 
+        #config cuda
         cuda = configs.device
         self.device = torch.device(cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
         self.net.to(self.device)
 
+        #config output
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
         copy(self.config_files, self.output_folder)
-    
-    
+
+        #tensorboard
+        self.summaryWriter = SummaryWriter(self.output_folder)
+        self.global_step = 0
 
     def train(self, loss_file = None):
         if loss_file is not None:
@@ -77,6 +81,11 @@ class Trainer:
             if self.lr_scheduler is not None:
                 if self.lr_schedule_step_type == "batch":
                     self.schedule_lr(i)
+            self.summaryWriter.add_scalar("learning_rate", self.optimizer.param_groups[0]['lr'], self.global_step)
+            self.summaryWriter.add_scalar("history",
+                                            {
+                                                "loss_train": loss.item()
+                                            }, self.global_step)
             if i% (self.steps_save_loss-1) == 0:
                 print("Epoch %d step %d"%(self.current_epoch, i))
                 train_loss_avg = train_loss/self.steps_save_loss
@@ -87,7 +96,12 @@ class Trainer:
                 train_loss = 0.0
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
                 save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
-    
+                self.summaryWriter.add_scalar("history",
+                                            {
+                                                "loss_val":val_loss_avg,
+                                                "acc_val":val_acc_avg,
+                                            }, self.global_step)
+            self.global_step +=1
     def schedule_lr(self, iteration = 0):
         if not self.lr_scheduler is None:
             if self.lr_shedule_metric is not None:
