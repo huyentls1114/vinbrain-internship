@@ -9,7 +9,7 @@ class Trainer:
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
         self.crition = configs.loss_function()
-        self.net = configs.net()
+        self.net = configs.net["class"](**configs.net["net_args"])
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
         
         #schedule learning rate
@@ -29,7 +29,7 @@ class Trainer:
         #training process
         self.current_epoch = 0
         self.list_loss = []
-        self.steps_save_loss = 2000
+        self.steps_save_loss = configs.steps_save_loss
         self.output_folder = configs.output_folder
         self.config_files = configs.config_files
 

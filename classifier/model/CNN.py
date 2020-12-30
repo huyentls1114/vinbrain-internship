@@ -22,4 +22,15 @@ class CNN(nn.Module):
         x = self.fc3(x)
         return x
     
+class TransferNet(nn.Module):
+    def __init__(self, model_base, pretrain = False, num_classes = 10, requires_grad = True):
+        super(TransferNet, self).__init__()
+        self.model_base = model_base(pretrain)
+        for param in self.model_base.parameters():
+            param.requires_grad = requires_grad
+        self.numftrs = self.model_base.fc.in_features
+        self.model_base.fc = nn.Linear(self.numftrs, num_classes)
     
+    def forward(self, x):
+        return self.model_base(x)
+

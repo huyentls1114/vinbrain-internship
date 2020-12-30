@@ -4,18 +4,20 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
-from model.CNN import CNN
+from model.CNN import CNN, TransferNet
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
+from torchvision.models import resnet18
+from utils.metric import Accuracy
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
-batch_size = 16
+batch_size = 64
 split_train_val = 0.7
 device = "gpu"
-gpu_id = 1
+gpu_id = 0
 classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
 dataset = {
     "name":"cifar10",
@@ -31,7 +33,13 @@ transform = transforms.Compose([
                         ])
 
 #train config
-net = CNN
+net = {
+    "class":TransferNet,
+    "net_args":{
+        "model_base":resnet18,
+        "pretrain":True
+    }
+}
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
 steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
@@ -52,6 +60,14 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_optimizer"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_model"
 
 loss_file = "loss_file.txt"
+metric = {
+    "class":Accuracy,
+    "metric_args":{
+        "threshold": 0.5,
+        "from_logits":True
+    }
+}
+steps_save_loss = 100
