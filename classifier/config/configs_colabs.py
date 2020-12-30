@@ -14,7 +14,7 @@ from utils.metric import Accuracy
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
-batch_size = 16
+batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
