@@ -31,7 +31,13 @@ transform = transforms.Compose([
                         ])
 
 #train config
-net = TransferNet
+net = {
+    "class":TransferNet,
+    "net_args":{
+        "model_base":resnet18,
+        "pretrain":True
+    }
+}
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
 steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
