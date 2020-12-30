@@ -94,3 +94,28 @@ class RAdam(Optimizer):
                     p.data.copy_(p_data_fp32)
 
         return loss
+
+'''
+Config optimizer in file config:
+from torch.optim import RMSprop
+optimizer={
+    "class":RMSprop,
+    "optimizer_args":{
+    }
+}
+
+from torch.optim import Adam
+optimizer={
+    "class":Adam,
+    "optimizer_args":{
+    }
+
+from model.optimizer import RAdam
+optimizer={
+    "class":RAdam,
+    "optimizer_args":{
+    }
+}
+
+
+'''
