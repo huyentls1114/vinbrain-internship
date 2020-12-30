@@ -96,7 +96,7 @@ class Trainer:
                 train_loss = 0.0
                 loss_file_path = os.path.join(self.output_folder, self.loss_file)
                 save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, self.optimizer.param_groups[0]['lr'])
-                self.summaryWriter.add_scalars('loss',{'loss_val': val_loss_avg.item()}, self.global_step)
+                self.summaryWriter.add_scalars('loss',{'loss_val': val_loss_avg}, self.global_step)
                 self.summaryWriter.add_scalars('acc',{'acc_val': val_acc_avg}, self.global_step)
             self.global_step +=1
     def schedule_lr(self, iteration = 0):
