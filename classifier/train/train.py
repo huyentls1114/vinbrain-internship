@@ -9,7 +9,7 @@ class Trainer:
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
         self.crition = configs.loss_function()
-        self.net = configs.net()
+        self.net = configs.net["class"](**configs.net["net_args"])
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
         
         #schedule learning rate

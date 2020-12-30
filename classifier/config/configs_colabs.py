@@ -4,7 +4,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
-from model.CNN import CNN
+from model.CNN import CNN, TransferNet
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 from utils.utils import len_train_datatset
@@ -31,7 +31,7 @@ transform = transforms.Compose([
                         ])
 
 #train config
-net = CNN
+net = TransferNet
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
 steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
