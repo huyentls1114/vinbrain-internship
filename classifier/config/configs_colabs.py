@@ -17,7 +17,7 @@ config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/c
 batch_size = 16
 split_train_val = 0.7
 device = "gpu"
-gpu_id = 1
+gpu_id = 0
 classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
 dataset = {
     "name":"cifar10",
