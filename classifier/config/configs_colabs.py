@@ -60,7 +60,7 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_optimizer"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_model"
 
 loss_file = "loss_file.txt"
 metric = {
