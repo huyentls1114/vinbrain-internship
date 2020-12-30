@@ -8,6 +8,7 @@ from model.CNN import CNN
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 from utils.utils import len_train_datatset
+from model.optimizer import RAdam
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
@@ -32,17 +33,18 @@ transform = transforms.Compose([
 #train config
 net = CNN
 loss_function = nn.CrossEntropyLoss
-lr = 0.01
+lr = 0.001
 steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
-lr_schedule = {
-    "class": StepLR,
-    "metric":None,
-    "step_type":"epoch",
-    "schedule_args":{
-        "step_size":1,
-        "gamma":0.1,
-    }
-}
+# lr_schedule = {
+#     "class": StepLR,
+#     "metric":None,
+#     "step_type":"epoch",
+#     "schedule_args":{
+#         "step_size":1,
+#         "gamma":0.1,
+#     }
+# }
+lr_schedule = None
 optimizer ={
     "class": SGD,
     "optimizer_args":{
@@ -50,6 +52,6 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_lr_scheduler"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_optimizer"
 
 loss_file = "loss_file.txt"
