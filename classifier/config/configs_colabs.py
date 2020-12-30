@@ -9,6 +9,7 @@ from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
+from torchvision.models import resnet18
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
