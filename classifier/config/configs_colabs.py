@@ -70,3 +70,4 @@ metric = {
         "from_logits":True
     }
 }
+steps_save_loss = 100

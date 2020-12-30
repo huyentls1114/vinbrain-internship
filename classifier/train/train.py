@@ -29,7 +29,7 @@ class Trainer:
         #training process
         self.current_epoch = 0
         self.list_loss = []
-        self.steps_save_loss = 2000
+        self.steps_save_loss = configs.steps_save_loss
         self.output_folder = configs.output_folder
         self.config_files = configs.config_files
 
