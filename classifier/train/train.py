@@ -23,6 +23,9 @@ class Trainer:
         #data
         self.data = data
 
+        #evaluate
+        self.metric = configs.metric["class"](**configs.metric["metric_args"])
+
         #training process
         self.current_epoch = 0
         self.list_loss = []
@@ -98,23 +101,26 @@ class Trainer:
             
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
-            metric = self.num_correct
+            metric = self.metric
         loader = {
             "val": self.data.val_loader,
             "train": self.data.train_loader,
             "test": self.data.test_loader
         }
-        num_total = 0
-        num_correct = 0
+        output_list = []
+        label_list = []
         loss = 0
         with torch.no_grad():
             for i, samples in enumerate(loader[mode]):
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
                 loss += self.crition(outputs, labels)
-                num_total += outputs.size(0)
-                num_correct += metric(outputs, labels)
-            return loss/(i+1), num_correct/num_total
+                output_list.append(outputs)
+                label_list.append(labels)
+            output_tensor = torch.cat(output_list)
+            label_tensor =  torch.cat(label_list)
+            metric_result = metric(output_tensor, label_tensor)
+            return loss/(i+1), metric_result
 
     def num_correct(self, outputs, labels):
         _, predicted = torch.max(outputs, 1)
