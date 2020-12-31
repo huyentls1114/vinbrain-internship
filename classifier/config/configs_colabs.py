@@ -62,16 +62,6 @@ steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_v
 #         "gamma":0.1,
 #     }
 # }
-lr_schedule = {
-    "class": OneCycleLR,
-    "metric":None,
-    "step_type":"batch",
-    "schedule_args":{
-        "max_lr":.01,
-        "epochs": num_epochs,
-        "steps_per_epoch":steps_per_epoch
-    }
-}
 optimizer ={
     "class": SGD,
     "optimizer_args":{
@@ -90,3 +80,14 @@ metric = {
     }
 }
 steps_save_loss = 100
+
+lr_schedule = {
+    "class": OneCycleLR,
+    "metric":None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr":.01,
+        "epochs": num_epochs,
+        "steps_per_epoch":steps_per_epoch
+    }
+}
