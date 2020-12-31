@@ -35,6 +35,7 @@ class MenWomanDataset(Dataset):
 
         img_path = os.path.join(self.data_dir, img_name)
         image = io.imread(img_path)
+        image = image[:,:,:3]
         return self.transform(image), label
 
     def load_train_img(self, file_path):
