@@ -6,6 +6,7 @@ import os
 from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
+
 class SegmentationDataset(Dataset):
     def __init__(self, dataset_args, transform = None, mode = "train"):
         folder_path = dataset_args["folder_path"]
@@ -60,6 +61,16 @@ class SegmentationDataset(Dataset):
 
         return self.transform(image), self.transform(label)
 def cifar10(dataset_args, transform = None, mode = "train"):
+    '''
+    config example:
+    dataset = {
+    "name":"cifar10",
+    "class":cifar10,
+    "argument":{
+        "path":"cifar10"
+    }
+    }
+    '''
     if transform is None:
             transform = transforms.Compose([
             transforms.ToTensor(),
@@ -68,6 +79,7 @@ def cifar10(dataset_args, transform = None, mode = "train"):
             ])
     path = dataset_args["path"]
     return torchvision.datasets.CIFAR10(root = path, train = (mode == "train"), transform= transform, download = True)
+
 
 def test_segmentationdataset():
     folder_path = "/home/huyen/data/bdd100k_seg/bdd100k/seg"

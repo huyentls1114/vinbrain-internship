@@ -12,13 +12,11 @@ import torchvision.transforms as transforms
 class CIFARData:
     def __init__(self, configs):
         x = 1
-        #declare Transformer
-        transform = configs.transform
 
         #declare Dataset
         DatasetClass = configs.dataset["class"]
-        self.train_dataset = DatasetClass(configs.dataset["argument"],transform = transform, mode = "train")
-        self.test_dataset = DatasetClass(configs.dataset["argument"],transform = transform, mode = "test")
+        self.train_dataset = DatasetClass(configs.dataset["argument"],transform = configs.transform_train, mode = "train")
+        self.test_dataset = DatasetClass(configs.dataset["argument"],transform = configs.transform_test, mode = "test")
 
         #declare Dataloader
         self.batch_size = configs.batch_size
@@ -50,7 +48,7 @@ class CIFARData:
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.train_dataset,
-            "test":self.test_loader
+            "test":self.test_dataset
         }
         sampler_dict = {
             "train": self.train_sampler,

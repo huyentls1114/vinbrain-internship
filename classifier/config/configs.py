@@ -4,45 +4,56 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
+from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD
-from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
-from utils.metric import Accuracy
 from torchvision.models import resnet18
+from utils.metric import Accuracy
 
 config_files = "config/configs.py"
 #data config
-batch_size = 4
+batch_size = 1
 split_train_val = 0.7
 device = "cpu"
 gpu_id = 0
-classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+classes = ["men", "woman"]
+
+transform_train = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
+])
+transform_test = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
+])
 dataset = {
-    "name":"cifar10",
-    "class":cifar10,
+    "class":MenWomanDataset,
     "argument":{
-        "path":"E:\data\cifar10"
+        "path":"E:\data\MenWoman"
     }
 }
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                        std=[0.229, 0.224, 0.225]),
-                        ])
 
 #train config
 net = {
     "class":TransferNet,
     "net_args":{
         "model_base":resnet18,
-        "pretrain":True
+        "pretrain":True,
+        "num_classes":2
     }
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
-steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
 #     "metric":None,
@@ -60,9 +71,9 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "E:\model\classify_cifar"
-loss_file = "loss_file.txt"
+output_folder = "E:\model\classify_man_woman"
 
+loss_file = "loss_file.txt"
 metric = {
     "class":Accuracy,
     "metric_args":{

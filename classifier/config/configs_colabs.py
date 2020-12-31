@@ -4,9 +4,10 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
+from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD
-from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
 from torchvision.models import resnet18
@@ -18,31 +19,41 @@ batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
-classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+classes = ["men", "woman"]
+
+transform_train = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
+])
+transform_test = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
+])
 dataset = {
-    "name":"cifar10",
-    "class":cifar10,
+    "class":MenWomanDataset,
     "argument":{
-        "path":"cifar10"
+        "path":"/content/data"
     }
 }
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                        std=[0.229, 0.224, 0.225]),
-                        ])
 
 #train config
 net = {
     "class":TransferNet,
     "net_args":{
         "model_base":resnet18,
-        "pretrain":True
+        "pretrain":True,
+        "num_classes":2
     }
 }
 loss_function = nn.CrossEntropyLoss
-lr = 0.001
-steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
+lr = 0.01
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
 #     "metric":None,
@@ -52,15 +63,14 @@ steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/ba
 #         "gamma":0.1,
 #     }
 # }
-lr_schedule = None
 optimizer ={
     "class": SGD,
     "optimizer_args":{
         "momentum":0.9
     }
 }
-num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_model"
+num_epochs = 20
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman"
 
 loss_file = "loss_file.txt"
 metric = {
@@ -71,3 +81,14 @@ metric = {
     }
 }
 steps_save_loss = 100
+
+lr_schedule = {
+    "class": OneCycleLR,
+    "metric":None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr":.01,
+        "epochs": num_epochs,
+        "steps_per_epoch":steps_per_epoch
+    }
+}

@@ -11,7 +11,8 @@ class Trainer:
         self.crition = configs.loss_function()
         self.net = configs.net["class"](**configs.net["net_args"])
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
-        
+        self.transform_test = configs.transform_test
+
         #schedule learning rate
         if configs.lr_schedule is None:
             self.lr_scheduler = None
@@ -51,6 +52,7 @@ class Trainer:
         self.global_step = 0
 
     def train(self, loss_file = None):
+        self.net.train()
         if loss_file is not None:
             self.loss_file = loss_file        
         for epoch in range(self.current_epoch, self.num_epochs):
@@ -121,6 +123,7 @@ class Trainer:
         output_list = []
         label_list = []
         loss = 0
+        self.net.eval()
         with torch.no_grad():
             for i, samples in enumerate(loader[mode]):
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
@@ -128,10 +131,27 @@ class Trainer:
                 loss += self.crition(outputs, labels)
                 output_list.append(outputs)
                 label_list.append(labels)
+            # import pdb; pdb.set_trace()
             output_tensor = torch.cat(output_list)
             label_tensor =  torch.cat(label_list)
             metric_result = metric(output_tensor, label_tensor)
             return loss/(i+1), metric_result
+
+    def get_prediction(self, list_img):
+        output_list = []
+        for img in list_img:
+            output_tensor = predict(img)
+            output_list.add(output_tensor)
+        return torch.cat(output_list)
+
+    def predict(self, img):
+        self.net.eval()
+        with torch.no_grad():
+            img_tensor = self.transform_test(img)
+            img_tensor = img_tensor.to(self.device)
+            output = self.net(img_tensor)
+            return output
+
 
     def num_correct(self, outputs, labels):
         _, predicted = torch.max(outputs, 1)
@@ -147,7 +167,7 @@ class Trainer:
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
         file_path = os.path.join(self.output_folder, filename)
-        self.net.load_state_dict(torch.load(file_path))
+        self.net.load_state_dict(torch.load(file_path, map_location=self.device))
 
     def update_lr(self, lr):
         self.lr = lr
