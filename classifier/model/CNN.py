@@ -23,7 +23,7 @@ class CNN(nn.Module):
         return x
     
 class TransferNet(nn.Module):
-    def __init__(self, model_base, pretrain = False, num_classes = 10, requires_grad = True):
+    def __init__(self, model_base, num_classes, pretrain = False, requires_grad = True):
         super(TransferNet, self).__init__()
         self.model_base = model_base(pretrain)
         for param in self.model_base.parameters():

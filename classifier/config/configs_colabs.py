@@ -38,7 +38,8 @@ transform_test = transforms.Compose([
 dataset = {
     "class":MenWomanDataset,
     "argument":{
-        "path":"/content/data"
+        "path":"/content/data",
+        "num_class":2
     }
 }
 
