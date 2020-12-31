@@ -69,7 +69,7 @@ optimizer ={
         "momentum":0.9
     }
 }
-num_epochs = 10
+num_epochs = 20
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman"
 
 loss_file = "loss_file.txt"
