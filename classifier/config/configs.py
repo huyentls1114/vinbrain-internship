@@ -46,7 +46,7 @@ classes = ["men", "woman"]
 dataset = {
     "class":MenWomanDataset,
     "argument":{
-        "path":"E:\data\data"
+        "path":"E:\data\MenWoman"
     }
 }
 

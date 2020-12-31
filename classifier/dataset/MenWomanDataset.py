@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import Dataset
 from skimage import io
 import os
+import numpy as np
+
 '''
 config example
 dataset = {
@@ -41,8 +43,8 @@ class MenWomanDataset(Dataset):
         list_img = []
         list_label = []
         for line in list_:
-            img_name, label = line.replace("\n","").split(",")
-            list_img.append(img_name)
+            class_, img_name, label = line.replace("\n","").split(",")
+            list_img.append(os.path.join(class_, img_name))
             list_label.append(int(label))
         return list_img, list_label
 
@@ -59,10 +61,14 @@ def split_train_test_folder(input_folder, split_range):
     list_class = os.listdir(input_folder)
     list_img_name = []
     list_label = []
+    class_number = 0
     for i, _class in enumerate(list_class):
+        if os.path.isfile(os.path.join(input_folder, _class)):
+            continue
         for img_name in os.listdir(os.path.join(input_folder, _class)):
-            list_img_name.append(os.path.join(_class, img_name))
-            list_label.append(i)
+            list_img_name.append(_class + "," + img_name)
+            list_label.append(class_number)
+        class_number+=1
     length_ = len(list_img_name)
     list_index = np.arange(length_)
     np.random.shuffle(list_index)
@@ -76,11 +82,13 @@ def split_train_test_folder(input_folder, split_range):
     list_label_test = list_label[list_index[int(length_*split_range):]]
 
     save_train_img(list_train, list_label_train, os.path.join(input_folder, 'train.txt'))
-    save_test_img(list_test, list_label_test, os.path.join(input_folder, 'test.txt'))
+    save_train_img(list_test, list_label_test, os.path.join(input_folder, 'test.txt'))
 
 def save_train_img(list_img, list_label, file_path):
     assert(len(list_img) == len(list_label))
+    if os.path.isfile(file_path):
+        os.remove(file_path)
     file_ = open(file_path, "w")
     for (img, label) in zip(list_img, list_label):
-        file_.writelines(img+","+str(label+"\n"))
+        file_.writelines(img+","+str(label)+"\n")
     file_.close()
