@@ -4,6 +4,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
+from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
@@ -18,19 +19,36 @@ batch_size = 4
 split_train_val = 0.7
 device = "cpu"
 gpu_id = 0
-classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+# classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+# dataset = {
+#     "name":"cifar10",
+#     "class":cifar10,
+#     "argument":{
+#         "path":"E:\data\cifar10"
+#     }
+# }
+transform_train = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
+])
+transform_test = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
+])
+
+classes = ["men", "woman"]
 dataset = {
-    "name":"cifar10",
-    "class":cifar10,
+    "class":MenWomanDataset,
     "argument":{
-        "path":"E:\data\cifar10"
+        "path":"E:\data\data"
     }
 }
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                        std=[0.229, 0.224, 0.225]),
-                        ])
 
 #train config
 net = {
@@ -42,7 +60,7 @@ net = {
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
-steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
 #     "metric":None,

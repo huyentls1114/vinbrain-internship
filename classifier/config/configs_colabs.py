@@ -4,6 +4,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
+from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
@@ -19,18 +20,29 @@ split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
 classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
-dataset = {
-    "name":"cifar10",
-    "class":cifar10,
-    "argument":{
-        "path":"cifar10"
-    }
-}
-transform = transforms.Compose([
+
+train_transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                         std=[0.229, 0.224, 0.225]),
                         ])
+test_transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                        std=[0.229, 0.224, 0.225]),
+                        ])
+dataset = {
+    "class":MenWomanDataset,
+    "argument":{
+        "path":"MenWomanDataset"
+    }
+}
 
 #train config
 net = {
@@ -42,7 +54,7 @@ net = {
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
-steps_per_epoch = int(len_train_datatset(dataset, transform, split_train_val)/batch_size)
+steps_per_epoch = int(len_train_datatset(dataset, train_transform, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
 #     "metric":None,
