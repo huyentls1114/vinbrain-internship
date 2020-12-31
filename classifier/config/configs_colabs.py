@@ -19,7 +19,7 @@ batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
-classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+classes = ["men", "woman"]
 
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
