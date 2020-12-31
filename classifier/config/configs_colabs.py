@@ -39,7 +39,7 @@ dataset = {
     "class":MenWomanDataset,
     "argument":{
         "path":"/content/data",
-        "num_class":2
+        "num_classes":2
     }
 }
 
