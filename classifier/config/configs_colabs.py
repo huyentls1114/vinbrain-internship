@@ -38,8 +38,7 @@ transform_test = transforms.Compose([
 dataset = {
     "class":MenWomanDataset,
     "argument":{
-        "path":"/content/data",
-        "num_classes":2
+        "path":"/content/data"
     }
 }
 
@@ -48,7 +47,8 @@ net = {
     "class":TransferNet,
     "net_args":{
         "model_base":resnet18,
-        "pretrain":True
+        "pretrain":True,
+        "num_classes":2
     }
 }
 loss_function = nn.CrossEntropyLoss
