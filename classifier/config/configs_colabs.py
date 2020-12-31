@@ -40,7 +40,7 @@ test_transform = transforms.Compose([
 dataset = {
     "class":MenWomanDataset,
     "argument":{
-        "path":"MenWomanDataset"
+        "path":"/content/data"
     }
 }
 
@@ -72,7 +72,7 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/cifar10_model"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman"
 
 loss_file = "loss_file.txt"
 metric = {
