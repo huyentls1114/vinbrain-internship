@@ -21,7 +21,7 @@ device = "gpu"
 gpu_id = 0
 classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
 
-train_transform = transforms.Compose([
+transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -29,7 +29,7 @@ train_transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                         std=[0.229, 0.224, 0.225]),
                         ])
-test_transform = transforms.Compose([
+transform_test = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -54,7 +54,7 @@ net = {
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.001
-steps_per_epoch = int(len_train_datatset(dataset, train_transform, split_train_val)/batch_size)
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
 #     "metric":None,
