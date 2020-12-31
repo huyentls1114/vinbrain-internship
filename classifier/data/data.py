@@ -48,7 +48,7 @@ class CIFARData:
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.train_dataset,
-            "test":self.test_loader
+            "test":self.test_dataset
         }
         sampler_dict = {
             "train": self.train_sampler,
