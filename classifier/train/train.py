@@ -147,7 +147,7 @@ class Trainer:
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
         file_path = os.path.join(self.output_folder, filename)
-        self.net.load_state_dict(torch.load(file_path))
+        self.net.load_state_dict(torch.load(file_path, map_location=self.device))
 
     def update_lr(self, lr):
         self.lr = lr

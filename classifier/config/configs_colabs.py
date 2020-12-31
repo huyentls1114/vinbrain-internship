@@ -7,7 +7,7 @@ from dataset.dataset import cifar10
 from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD
-from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
 from torchvision.models import resnet18
@@ -62,7 +62,16 @@ steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_v
 #         "gamma":0.1,
 #     }
 # }
-lr_schedule = None
+lr_schedule = {
+    "class": OneCycleLR,
+    "metric":None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr":.01,
+        "epochs": num_epochs,
+        "steps_per_epoch":steps_per_epoch
+    }
+}
 optimizer ={
     "class": SGD,
     "optimizer_args":{

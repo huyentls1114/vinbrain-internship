@@ -78,7 +78,7 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "E:\model\classify_cifar"
+output_folder = "E:\model\classify_man_woman"
 loss_file = "loss_file.txt"
 
 metric = {
