@@ -6,11 +6,11 @@ from dataset.transform import Rescale
 from dataset.dataset import cifar10
 from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
-from torch.optim import SGD
+from torch.optim import SGD, Adam
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
-from torchvision.models import resnet18
+from torchvision.models import resnet18, vgg16
 from utils.metric import Accuracy
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
@@ -46,7 +46,8 @@ dataset = {
 net = {
     "class":TransferNet,
     "net_args":{
-        "model_base":resnet18,
+        "model_base":vgg16,
+        "fc_channels":[25088, 4096, 4096],
         "pretrain":True,
         "num_classes":2
     }
@@ -63,14 +64,12 @@ steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_v
 #         "gamma":0.1,
 #     }
 # }
-optimizer ={
-    "class": SGD,
+optimizer={
+    "class":Adam,
     "optimizer_args":{
-        "momentum":0.9
-    }
-}
+    }}
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_vgg16_adam_1e-4"
 
 loss_file = "loss_file.txt"
 metric = {
@@ -87,8 +86,8 @@ lr_schedule = {
     "metric":None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":.01,
+        "max_lr":.0001,
         "epochs": num_epochs,
-        "steps_per_epoch":steps_per_epoch
+        "steps_per_epoch":steps_per_epoch+1
     }
 }

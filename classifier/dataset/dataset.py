@@ -7,6 +7,23 @@ from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
 
+class ListDataset(Dataset):
+    def __init__(self, list_imgs, transform = None):
+        self.list_imgs = list_imgs
+        self.transform = transform
+    
+    def __len__(self):
+        return len(self.list_imgs)
+    
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        
+        image = self.list_imgs[idx]
+        image = image[:, :, :3]
+
+        return self.transform(image)
+
 class SegmentationDataset(Dataset):
     def __init__(self, dataset_args, transform = None, mode = "train"):
         folder_path = dataset_args["folder_path"]

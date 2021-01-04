@@ -3,6 +3,8 @@ import os
 from shutil import copy
 from utils.utils import save_loss_to_file
 from torch.utils.tensorboard import SummaryWriter
+from dataset.dataset import ListDataset
+
 class Trainer:
     def __init__(self, configs, data):
         self.lr = configs.lr
@@ -52,10 +54,10 @@ class Trainer:
         self.global_step = 0
 
     def train(self, loss_file = None):
-        self.net.train()
         if loss_file is not None:
             self.loss_file = loss_file        
         for epoch in range(self.current_epoch, self.num_epochs):
+            self.net.train()
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
@@ -138,10 +140,15 @@ class Trainer:
             return loss/(i+1), metric_result
 
     def get_prediction(self, list_img):
+        dataset = ListDataset(list_img, self.transform_test)
+        dataloader = torch.utils.data.DataLoader(dataset, shuffle= False, batch_size = self.batch_size)
+        self.net.eval()
         output_list = []
-        for img in list_img:
-            output_tensor = predict(img)
-            output_list.add(output_tensor)
+        with torch.no_grad():
+            for i, images in enumerate(dataloader):
+                images = images.to(self.device)
+                outputs = self.net(images)
+                output_list.append(outputs)
         return torch.cat(output_list)
 
     def predict(self, img):
