@@ -28,8 +28,12 @@ class TransferNet(nn.Module):
         self.model_base = model_base(pretrain)
         for param in self.model_base.parameters():
             param.requires_grad = requires_grad
-        self.numftrs = self.model_base.fc.in_features
-        self.model_base.fc = nn.Linear(self.numftrs, num_classes)
+
+        l = [module for module in model.modules() if type(module) != nn.Sequential]
+        self.model_base = nn.Sequential(
+                        *l,
+        )
+        self.model_base[-1].out_features = num_classes
     
     def forward(self, x):
         return self.model_base(x)
