@@ -117,5 +117,11 @@ optimizer={
     }
 }
 
+optimizer ={
+    "class": SGD,
+    "optimizer_args":{
+        "momentum":0.9
+    }
+}
 
 '''

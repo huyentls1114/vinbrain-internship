@@ -52,10 +52,10 @@ class Trainer:
         self.global_step = 0
 
     def train(self, loss_file = None):
-        self.net.train()
         if loss_file is not None:
             self.loss_file = loss_file        
         for epoch in range(self.current_epoch, self.num_epochs):
+            self.net.train()
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
