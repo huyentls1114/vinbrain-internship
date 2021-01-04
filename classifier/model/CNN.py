@@ -29,7 +29,7 @@ class TransferNet(nn.Module):
         for param in self.model_base.parameters():
             param.requires_grad = requires_grad
 
-        l = [module for module in model.modules() if type(module) != nn.Sequential]
+        l = [module for module in self.model_base.modules() if type(module) != nn.Sequential]
         self.model_base = nn.Sequential(
                         *l,
         )
