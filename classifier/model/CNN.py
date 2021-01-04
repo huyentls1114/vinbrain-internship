@@ -30,11 +30,19 @@ class TransferNet(nn.Module):
             param.requires_grad = requires_grad
 
         l = [module for module in self.model_base.modules() if type(module) != nn.Sequential]
-        self.model_base = nn.Sequential(
-                        *l,
-        )
+        self.model_base = nn.Sequential(*self.flatten(self.model_base))
         self.model_base[-1].out_features = num_classes
     
     def forward(self, x):
         return self.model_base(x)
+
+    def flatten(self, el):
+        flattened = [self.flatten(children) for children in el.children()]
+        res = []
+        if len(flattened) !=0:
+            for c in flattened:
+                res += c
+        else:
+            res += [el]
+        return res
 
