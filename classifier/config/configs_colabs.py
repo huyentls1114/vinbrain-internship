@@ -47,6 +47,7 @@ net = {
     "class":TransferNet,
     "net_args":{
         "model_base":vgg16,
+        "fc_channels":[25088, 4096, 4096],
         "pretrain":True,
         "num_classes":2
     }
