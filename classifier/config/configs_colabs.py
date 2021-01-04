@@ -69,7 +69,7 @@ optimizer={
     "optimizer_args":{
     }}
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_vgg16_adam_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_vgg16_adam_1e-4"
 
 loss_file = "loss_file.txt"
 metric = {
@@ -86,7 +86,7 @@ lr_schedule = {
     "metric":None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":.001,
+        "max_lr":.0001,
         "epochs": num_epochs,
         "steps_per_epoch":steps_per_epoch+1
     }
