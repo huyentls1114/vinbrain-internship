@@ -3,6 +3,7 @@ import os
 from shutil import copy
 from utils.utils import save_loss_to_file
 from torch.utils.tensorboard import SummaryWriter
+from torch.utils.data import TensorDataset, DataLoader
 class Trainer:
     def __init__(self, configs, data):
         self.lr = configs.lr
@@ -138,7 +139,7 @@ class Trainer:
             return loss/(i+1), metric_result
 
     def get_prediction(self, list_img):
-        output_list = []
+        list_tensor = self.transform_test(list_img)
         for img in list_img:
             output_tensor = predict(img)
             output_list.add(output_tensor)

@@ -95,4 +95,3 @@ class CIFARData:
 
         self.num_sample = len(train_sampler)
         return train_sampler, valid_sampler
-
