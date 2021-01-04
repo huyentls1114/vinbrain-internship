@@ -66,7 +66,7 @@ steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_v
 optimizer={
     "class":Adam,
     "optimizer_args":{
-    }
+    }}
 num_epochs = 20
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_vgg16_adam"
 
