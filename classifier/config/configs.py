@@ -48,6 +48,7 @@ net = {
     "net_args":{
         "model_base":resnet18,
         "pretrain":True,
+        "fc_channels":[512],
         "num_classes":2
     }
 }

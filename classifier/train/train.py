@@ -3,7 +3,8 @@ import os
 from shutil import copy
 from utils.utils import save_loss_to_file
 from torch.utils.tensorboard import SummaryWriter
-from torch.utils.data import TensorDataset, DataLoader
+from dataset.dataset import ListDataset
+
 class Trainer:
     def __init__(self, configs, data):
         self.lr = configs.lr
@@ -139,10 +140,15 @@ class Trainer:
             return loss/(i+1), metric_result
 
     def get_prediction(self, list_img):
-        list_tensor = self.transform_test(list_img)
-        for img in list_img:
-            output_tensor = predict(img)
-            output_list.add(output_tensor)
+        dataset = ListDataset(list_img, self.transform_test)
+        dataloader = torch.utils.data.DataLoader(dataset, shuffle= False, batch_size = self.batch_size)
+        self.net.eval()
+        output_list = []
+        with torch.no_grad():
+            for i, images in enumerate(dataloader):
+                images = images.to(self.device)
+                outputs = self.net(images)
+                output_list.append(outputs)
         return torch.cat(output_list)
 
     def predict(self, img):
