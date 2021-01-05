@@ -88,7 +88,7 @@ class Trainer:
         '''
         target: test the model
         '''
-        loss, acc = self.evaluate(test)
+        loss, acc = self.evaluate("test")
         print("Test loss: %f test acc %f"%(loss, acc))
     
     def train_one_epoch(self):
