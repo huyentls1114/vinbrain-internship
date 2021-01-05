@@ -11,8 +11,16 @@ import torchvision.transforms as transforms
 
 class CIFARData:
     def __init__(self, configs):
+        '''
+        target: initialize Cifa dataset, data loader
+        input: configs imported from configfile in config folder,
+            contains parameters: 
+            - dataset: contain class dataset and arguments
+            - transform_train, transform_test
+            - split_train_val: float - use to split train_val
+            - classes: list label of class name            
+        '''
         x = 1
-
         #declare Dataset
         DatasetClass = configs.dataset["class"]
         self.train_dataset = DatasetClass(configs.dataset["argument"],transform = configs.transform_train, mode = "train")
@@ -27,7 +35,7 @@ class CIFARData:
         self.train_sampler, self.valid_sampler = self.split_sampler(split_train_val)
         self.test_sampler = SubsetRandomSampler(range(len(self.test_dataset)))
 
-        #declari data loader
+        #declare data loader
         self.train_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
@@ -45,6 +53,13 @@ class CIFARData:
         self.classes = configs.classes
 
     def show_batch(self, mode = "train"):
+        '''
+        target: show image and labels
+        input: 
+            - mode: String - value ["train", "val", "test"]
+        output:
+            - batch images with labels
+        '''
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.train_dataset,
@@ -77,6 +92,14 @@ class CIFARData:
         
 
     def split_sampler(self, split):
+        '''
+        target: create SubsetRandomSamplers of train and val
+        input:
+            - split: float 0-1
+        output:
+            - train_sampler: SubsetRandomSamplers of train
+            - valid_sampler: SubsetRandomSamplers of valid
+        '''
         if split == 0:
             return None, None
         idx_full = np.arange(self.num_sample)

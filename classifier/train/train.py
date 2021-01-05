@@ -7,6 +7,20 @@ from dataset.dataset import ListDataset
 
 class Trainer:
     def __init__(self, configs, data):
+        '''
+        target: initialize trainer for training
+        inputs:
+            - configs contains parameter for training: 
+                - lr, batch_size, num_epoch, steps_save_loss, output_folder, device
+                - loss_function
+                - net: dict - contrain information of model
+                - optimizer: dict - contain information of optimizer
+                - transform: use for predict list image
+                - lr_schedule: dict - contain information for schedule learning rate
+                - metric: dict - information of metric for valid and test
+                - loss_file: String - name of file in output_folder contain loss training process
+            - data: instance Data classes in data folder
+        '''
         self.lr = configs.lr
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
@@ -54,10 +68,14 @@ class Trainer:
         self.global_step = 0
 
     def train(self, loss_file = None):
+        '''
+        target: training the model
+        input:
+            - loss_file: file contain loss of training process
+        '''
         if loss_file is not None:
             self.loss_file = loss_file        
         for epoch in range(self.current_epoch, self.num_epochs):
-            self.net.train()
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
@@ -67,10 +85,21 @@ class Trainer:
                     self.schedule_lr()
 
     def test(self):
+        '''
+        target: test the model
+        '''
         loss, acc = self.evaluate(test)
         print("Test loss: %f test acc %f"%(loss, acc))
     
     def train_one_epoch(self):
+        '''
+        target: train per epoch
+            - load image form train loader
+            - train
+            - save train result to summary writer
+            - update learning rate if necessary
+        '''
+        self.net.train()
         train_loss = 0
         for i, sample in enumerate(self.data.train_loader):
             images, labels = sample[0].to(self.device), sample[1].to(self.device)
@@ -104,6 +133,11 @@ class Trainer:
                 self.summaryWriter.add_scalars('acc',{'acc_val': val_acc_avg}, self.global_step)
             self.global_step +=1
     def schedule_lr(self, iteration = 0):
+        '''
+        target: update learning rate schedule
+        input:
+            -iteration: Interger - iteration of each epoch, using for mode batch
+        '''
         if not self.lr_scheduler is None:
             if self.lr_shedule_metric is not None:
                 if self.lr_shedule_metric == "epoch":
@@ -115,6 +149,15 @@ class Trainer:
                 self.lr_scheduler.step()
             
     def evaluate(self, mode = "val", metric = None):
+        '''
+        target: caculate model with given metric
+        input:
+            - mode: String - ["train", "val", "test"]
+            - metric: class of metric
+        output:
+            - loss: average loss of whole dataset
+            - metric_value
+        '''
         if metric is None:
             metric = self.metric
         loader = {
@@ -140,6 +183,12 @@ class Trainer:
             return loss/(i+1), metric_result
 
     def get_prediction(self, list_img):
+        '''
+        targets: get output of model from given list of images
+        inputs:
+            - list_img: list of image
+        output: list of outputs model
+        '''
         dataset = ListDataset(list_img, self.transform_test)
         dataloader = torch.utils.data.DataLoader(dataset, shuffle= False, batch_size = self.batch_size)
         self.net.eval()
@@ -152,6 +201,12 @@ class Trainer:
         return torch.cat(output_list)
 
     def predict(self, img):
+        '''
+        targets: get output of model from given 1 image
+        inputs:
+            - img: Image from image io
+        output: list of outputs model
+        '''
         self.net.eval()
         with torch.no_grad():
             img_tensor = self.transform_test(img)
@@ -161,22 +216,30 @@ class Trainer:
 
 
     def num_correct(self, outputs, labels):
+        '''
+        target: calculate number of element true
+        '''
         _, predicted = torch.max(outputs, 1)
         return (predicted == labels).sum().item()
                 
     def save_checkpoint(self, filename = None):
+        '''
+        target: save checkpoint to file
+        input:
+            - filename: String - file name to save checkpoint
+        '''
         if filename is None:
             filename = "checkpoint_%d"%(self.current_epoch)
         file_path = os.path.join(self.output_folder, filename)
         torch.save(self.net.state_dict(), file_path)
     
     def load_checkpoint(self, filename = None):
+        '''
+        target: load checkpoint from file
+        input:
+            - filename: String - file name to load checkpoint
+        '''
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
         file_path = os.path.join(self.output_folder, filename)
         self.net.load_state_dict(torch.load(file_path, map_location=self.device))
-
-    def update_lr(self, lr):
-        self.lr = lr
-        for i in range(len(self.optimizer.param_groups)):
-            self.optimizer.param_groups[i]['lr'] = lr

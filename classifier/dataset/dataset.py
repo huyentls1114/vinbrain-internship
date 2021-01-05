@@ -9,13 +9,29 @@ import numpy as np
 
 class ListDataset(Dataset):
     def __init__(self, list_imgs, transform = None):
+        '''
+        target: initialize dataset have list images input
+        inputs:
+            - list_imgs: list of image
+            - transform: transformer apply to each images
+        '''
         self.list_imgs = list_imgs
         self.transform = transform
     
     def __len__(self):
+        '''
+        target: return the size of dataset
+        '''
         return len(self.list_imgs)
     
     def __getitem__(self, idx):
+        '''
+        target: return the image from given idx
+        input:
+            - idx: interger - index of element
+        output:
+            - image after transform
+        '''
         if torch.is_tensor(idx):
             idx = idx.tolist()
         
@@ -96,46 +112,3 @@ def cifar10(dataset_args, transform = None, mode = "train"):
             ])
     path = dataset_args["path"]
     return torchvision.datasets.CIFAR10(root = path, train = (mode == "train"), transform= transform, download = True)
-
-
-def test_segmentationdataset():
-    folder_path = "/home/huyen/data/bdd100k_seg/bdd100k/seg"
-    list_img = os.listdir("/home/huyen/data/bdd100k_seg/bdd100k/seg/images/train")
-    segDat = SegmentationDataset(folder_path, list_img, mode = "train")
-
-    for i in range(len(segDat)):
-        img, label = segDat[i]
-        img = np.transpose(img, (1, 2, 0))
-        label = np.transpose(label, (1, 2, 0))
-        plt.imshow(img)
-        plt.show()
-        plt.imshow(label)
-        plt.show()
-        if i == 3:
-            break
-
-def test_classifyDataset():
-    folder_path = "/home/huyen/data/cifar10"
-    transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ]
-    )
-    dataset = torchvision.datasets.CIFAR10(root = folder_path, 
-                                            train=True, 
-                                            transform= transform
-                                            )
-    classes = ('plane','car','bird','cat','deer','dog','frog','horse','ship','truck')
-    for i in range(len(dataset)):
-        img, label = dataset[i]
-        img = (img/2+0.5)
-        img = np.transpose(img, (2, 1, 0))
-        plt.imshow(img)
-        plt.show()
-        print(classes[label])
-        if i == 3:
-            break
-if __name__ == "__main__":
-    # test_segmentationdataset()
-    test_classifyDataset()

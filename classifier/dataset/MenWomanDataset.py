@@ -16,6 +16,22 @@ dataset = {
 '''
 class MenWomanDataset(Dataset):
     def __init__(self, dataset_args, transform = None, mode = "train"):
+        '''
+        target: initialize MenWoman Dataset
+        dataset structure:
+        ----------------------
+        MenWoman
+        |--men
+        |--woman
+        |--train.txt
+        |--test.txt
+        ----------------------
+        inputs:
+            - dataset_args: dictionary contain some information of dataset
+                - paths: String - path of data directory
+            - transform: torchvision.transform.Compose() - transformer apply for each images
+            - mode: String - value in ["train", "test"]
+        '''
         self.mode = mode
         self.transform = transform
         self.data_dir = dataset_args["path"]
@@ -23,9 +39,20 @@ class MenWomanDataset(Dataset):
         self.list_image_name, self.list_label = self.load_train_img(self.data_path)
 
     def __len__(self):
+        '''
+        target: length of dataset
+        '''
         return len(self.list_image_name)
 
     def __getitem__(self, idx):
+        '''
+        target: get element of dataset given idx
+        input:
+            - idx: index of element
+        output
+            - image
+            - label
+        '''
         assert len(self.list_image_name) == len(self.list_label)
         if torch.is_tensor(idx):
             idx = idx.tolist()
@@ -39,6 +66,15 @@ class MenWomanDataset(Dataset):
         return self.transform(image), label
 
     def load_train_img(self, file_path):
+        '''
+        target: load images and labels from txt file
+        input:
+            - file_path: String - txt file contain links of images
+        output:
+            - list_images_name
+            - list_labels
+        '''
+
         file_ = open(file_path, "r")
         list_ = file_.readlines()
         list_img = []
@@ -86,6 +122,15 @@ def split_train_test_folder(input_folder, split_range):
     save_train_img(list_test, list_label_test, os.path.join(input_folder, 'test.txt'))
 
 def save_train_img(list_img, list_label, file_path):
+    '''
+    save list image name to file
+    inputs:
+        - list_img: List of string - list image name
+        - list_label: list of string - list label name
+        - file_path: String - file output
+    output:
+        - file path contain image and label folowing pattern: img_name,label
+    '''
     assert(len(list_img) == len(list_label))
     if os.path.isfile(file_path):
         os.remove(file_path)

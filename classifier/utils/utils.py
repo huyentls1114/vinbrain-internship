@@ -5,12 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-def read_json(fname):
-    fname = Path(fname)
-    with fname.open('rt') as handle:
-        return json.load(handle, object_hook= OrderedDict)
-
-
 def show_img(image):
     "show an image tensor"
     image = (image/2)+0.5
@@ -20,6 +14,15 @@ def show_img(image):
     plt.show()
 
 def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
+    '''
+    target: save loss to the file
+    input:
+        - file_: file contain loss
+        - epoch: Interger
+        - Step: Interger
+        - loss_train, loss_val, acc_val: float
+        - lr: float
+    '''
     file_ = open(file_, "a+")
     file_.writelines("Epoch %d step %d\n"%(epoch, step))
     file_.writelines("\tLoss average %f\n"%(loss_train))
@@ -27,6 +30,13 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
     file_.writelines("learning_rate %f\n"%(lr))
 
 def len_train_datatset(dataset_dict, transform, split_train_val):
+    '''
+    target: get train_dataset from unsplit dataset
+    input:
+        - dataset_dict: Dictionary contain dataset information
+        - transform 
+        - split_train_val: ratio split
+    '''
     DatasetClass = dataset_dict["class"]
     train_dataset = DatasetClass(dataset_dict["argument"],transform = transform, mode = "train")
     return len(train_dataset)*split_train_val
