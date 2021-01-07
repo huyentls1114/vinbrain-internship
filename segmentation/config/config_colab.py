@@ -8,7 +8,7 @@ from model.metric import Dice_Score
 from model.Unet import Unet
 
 #data config
-image_size = 256
+image_size = 512
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(image_size),
