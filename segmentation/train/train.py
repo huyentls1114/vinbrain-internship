@@ -52,7 +52,10 @@ class Trainer:
 
         #initial Visualize
         self.image_size = configs.image_size
-        
+        self.visualize = Visualize(self.current_epoch, 
+                                    self.num_epochs,
+                                    self.data, 
+                                    img_size = self.image_size)
     
     def initial_lr_scheduler(self, lr_scheduler):
         if lr_scheduler is not None:

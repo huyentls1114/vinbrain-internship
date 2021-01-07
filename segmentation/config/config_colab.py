@@ -70,7 +70,7 @@ loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -85,7 +85,7 @@ lr_scheduler = {
         "factor":0.5,
         "patience":4,
         "threshold":1e-2,
-        "min_lr":1-5
+        "min_lr":1e-5
     }
 }
 steps_save_loss = 100

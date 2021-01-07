@@ -8,8 +8,8 @@ import cv2
 
 def show_img(image):
     "show an image tensor"
-    image = (image/2)+0.5
-    image = image.numpy()
+    # image = (image/2)+0.5
+    image = image.cpu().numpy()
     image = np.transpose(image, (1, 2, 0))
     plt.imshow(image)
     plt.show()
