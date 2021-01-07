@@ -111,7 +111,7 @@ class Trainer:
                 #summary image
                 val_imgs, val_labels = self.data.load_batch(mode = "val")
                 val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
-                with torch.no_grad:
+                with torch.no_grad():
                     val_outputs = self.net(val_imgs)
 
                 predicts = torch.sigmoid(outputs)
