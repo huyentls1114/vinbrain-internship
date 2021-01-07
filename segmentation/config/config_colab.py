@@ -45,7 +45,7 @@ net = {
     }
 }
 
-device = "cpu"
+device = "gpu"
 gpu_id = 0
 
 batch_size = 16
