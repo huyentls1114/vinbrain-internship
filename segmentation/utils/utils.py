@@ -14,17 +14,37 @@ def show_img(image):
     plt.imshow(image)
     plt.show()
 
-def conver_numpy_image(image):
-    image = (image/2)+0.5
+def conver_numpy_image(image, normalize = False):
+    '''
+    convert tensor image to numpy array
+    inputs:
+        - image: torch tensor shape (C, H, W)
+    '''
+    if normalize:
+        image = (image/2)+0.5
     image = image.numpy()
     image = np.transpose(image, (1, 2, 0))
+    image = image*255.0
     return image
-def contour(images, masks):
-    main = images.copy()
-    _,contours,_ = cv2.findContours(masks,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+
+def compose_images(image, mask, predict):
+    '''
+    concatenate images, masks, predict to 1 images
+    inputs:
+        - image, masks, predict: torch tensor shape (C, H, W)
+    '''
+    image = conver_numpy_image(image)
+    mask = conver_numpy_image(mask)
+    predict = conver_numpy_image(predict)
+    return np.hstack([image, mask, predict])
+
+def contour(image, mask):
+    main = image.copy()
+    mask = mask.astype(np.uint8)
+    contours, _ = cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
     for i,c in enumerate(contours):
-        colour = RGBforLabel.get(2)
-        cv2.drawContours(main,[c],-1,colour,1)
+        colour = (1)
+        cv2.drawContours(main,[c],-1,colour,2)
     return main
 
 def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
@@ -55,5 +75,17 @@ def len_train_datatset(dataset_dict, transform, split_train_val):
     train_dataset = DatasetClass(dataset_dict["argument"],transform = transform, mode = "train")
     return len(train_dataset)*split_train_val
 
-
-
+def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
+    '''
+    target: save loss to the file
+    input:
+        - file_: file contain loss
+        - epoch: Interger
+        - Step: Interger
+        - loss_train, loss_val, acc_val: float
+        - lr: float
+    '''
+    file_ = open(file_, "a+")
+    file_.writelines("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, metric valid: %5f, learning rate: %5f"%(epoch, step, loss_train, loss_val, metric_val, lr))
+    file_.writelines("\n")
+    file_.close()

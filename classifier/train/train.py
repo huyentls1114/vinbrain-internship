@@ -99,9 +99,10 @@ class Trainer:
             - save train result to summary writer
             - update learning rate if necessary
         '''
-        self.net.train()
+        
         train_loss = 0
         for i, sample in enumerate(self.data.train_loader):
+            self.net.train()
             images, labels = sample[0].to(self.device), sample[1].to(self.device)
             outputs = self.net(images)
             loss = self.crition(outputs, labels)
