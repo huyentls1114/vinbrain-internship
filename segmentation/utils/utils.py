@@ -23,7 +23,7 @@ def conver_numpy_image(image, normalize = False):
     image = image.cpu()
     if normalize:
         image = (image/2)+0.5
-    image = image.numpy()
+    image = np.array(image)
     image = np.transpose(image, (1, 2, 0))
     image = image*255.0
     return image
