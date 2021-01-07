@@ -88,7 +88,6 @@ class Trainer:
 
     def train_one_epoch(self):
         train_loss = 0
-        iteration = 0
         for i, sample in enumerate(self.visualize.progress_train):
             self.net.train()
             images, labels = sample[0].to(self.device), sample[1].to(self.device)
@@ -108,18 +107,18 @@ class Trainer:
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
             
-            if iteration%(self.steps_save_image - 1) == 0:
+            if (i+1)%(self.steps_save_image - 1) == 0:
                 #summary image
                 val_imgs, val_labels = self.data.load_batch(mode = "val")
                 val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
                 val_outputs = self.net(val_imgs)
 
-                predicts = torch.sigmoid(outputs)>0.5
+                predicts = torch.sigmoid(outputs)
                 self.sumary_writer.add_images("train/images", images, self.global_step)
                 self.sumary_writer.add_images("train/mask", labels, self.global_step)
                 self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
 
-                val_predicts = torch.sigmoid(val_outputs)>0.5
+                val_predicts = torch.sigmoid(val_outputs)
                 self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
                 self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
                 self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
@@ -129,7 +128,7 @@ class Trainer:
                 # import pdb; pdb.set_trace()
                 self.visualize.update_image(np.vstack([train_compose_images, val_compose_images]))
             
-            if iteration%(self.steps_save_loss - 1) == 0:
+            if (i+1) % (self.steps_save_loss - 1) == 0:
                 train_loss_avg = train_loss/self.steps_save_loss
                 val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
                 lr = self.optimizer.param_groups[0]['lr']
