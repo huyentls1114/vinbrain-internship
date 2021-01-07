@@ -88,5 +88,5 @@ lr_scheduler = {
         "min_lr":1e-5
     }
 }
-steps_save_loss = 2
-steps_save_image = 2
+steps_save_loss = 100
+steps_save_image = 100
