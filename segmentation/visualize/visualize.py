@@ -47,5 +47,5 @@ class Visualize:
         y_margin = 0.05
         x_bounds = [np.min(x) - x_margin, np.max(x) + x_margin]
         y_bounds = [np.min(y) - y_margin, np.max(y) + y_margin]
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         self.mb.update_graph(graphs, x_bounds, y_bounds)
