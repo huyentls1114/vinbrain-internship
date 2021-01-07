@@ -66,7 +66,7 @@ loss_function = {
 }
 
 output_folder = "E:\model\segmentation\BrainTumor"
-loss_file = "loss.txt"
+loss_file = "loss_file.txt"
 config_file_path = "E:\\vinbrain-internship\segmentation\config\config.py"
 
 #optimizer

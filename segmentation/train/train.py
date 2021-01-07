@@ -82,6 +82,7 @@ class Trainer:
             if (self.lr_scheduler is not None):
                 if self.lr_schedule_step_type == "epoch":
                     self.schedule_lr()
+
     def train_one_epoch(self):
         train_loss = 0
         iteration = 0
@@ -163,6 +164,7 @@ class Trainer:
             label_tensor = torch.cat(label_list)
             metrict_result = metric(output_tensor, label_tensor)
             return loss/(i+1), metrict_result
+            
     def predict(self, img):
         self.net.eval()
         with torch.no_grad():
