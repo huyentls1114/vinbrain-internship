@@ -124,8 +124,8 @@ class Trainer:
                 self.visualize.plot_loss_update(train_loss_avg, val_loss_avg)
             self.global_step+=1
     def visualize_images(self):
-        imgs, labels = self.data.load_batch(mode = "train")
-        imgs, labels = imgs.to(self.device), labels.to(self.device)
+        images, labels = self.data.load_batch(mode = "train")
+        images, labels = images.to(self.device), labels.to(self.device)
         val_imgs, val_labels = self.data.load_batch(mode = "val")
         val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
         with torch.no_grad():
