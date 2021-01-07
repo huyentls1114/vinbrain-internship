@@ -109,25 +109,8 @@ class Trainer:
             
             if (i+1)%(self.steps_save_image - 1) == 0:
                 #summary image
-                val_imgs, val_labels = self.data.load_batch(mode = "val")
-                val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
-                val_outputs = self.net(val_imgs)
-
-                predicts = torch.sigmoid(outputs)
-                self.sumary_writer.add_images("train/images", images, self.global_step)
-                self.sumary_writer.add_images("train/mask", labels, self.global_step)
-                self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
-
-                val_predicts = torch.sigmoid(val_outputs)
-                self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
-                self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
-                self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
-
-                train_compose_images = compose_images(images[0], labels[0], predicts[0])
-                val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
-                # import pdb; pdb.set_trace()
-                self.visualize.update_image(np.vstack([train_compose_images, val_compose_images]))
-            
+                self.visualize_images()
+    
             if (i+1) % (self.steps_save_loss - 1) == 0:
                 train_loss_avg = train_loss/self.steps_save_loss
                 val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
@@ -140,7 +123,29 @@ class Trainer:
                 self.sumary_writer.add_scalars('dice',{'val':val_acc_avg}, self.global_step)
                 self.visualize.plot_loss_update(train_loss_avg, val_loss_avg)
             self.global_step+=1
+    def visualize_images(self):
+        imgs, labels = self.data.load_batch(mode = "train")
+        imgs, labels = imgs.to(self.device), labels.to(self.device)
+        val_imgs, val_labels = self.data.load_batch(mode = "val")
+        val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
+        with torch.no_grad():
+            outputs = self.net(imgs)
+            val_outputs = self.net(val_imgs)
 
+        predicts = torch.sigmoid(outputs)
+        self.sumary_writer.add_images("train/images", images, self.global_step)
+        self.sumary_writer.add_images("train/mask", labels, self.global_step)
+        self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
+
+        val_predicts = torch.sigmoid(val_outputs)
+        self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
+        self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
+        self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
+
+        train_compose_images = compose_images(images[0], labels[0], predicts[0])
+        val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
+        # import pdb; pdb.set_trace()
+        self.visualize.update_image(np.vstack([train_compose_images, val_compose_images]))
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
             metric = self.metric
