@@ -72,7 +72,7 @@ class BrainTumorDataset(Dataset):
             ct = contour(img, mask)
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine))
+        plt.imshow(np.vstack(list_combine)[:,:,0])
         plt.axis('off')
         plt.show()
 
