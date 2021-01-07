@@ -111,17 +111,18 @@ class Trainer:
                 #summary image
                 val_imgs, val_labels = self.data.load_batch(mode = "val")
                 val_imgs, val_labels = val_imgs.to(self.device), val_labels.to(self.device)
-                val_outputs = self.net(val_imgs)
+                with torch.no_grad:
+                    val_outputs = self.net(val_imgs)
 
                 predicts = torch.sigmoid(outputs)
                 self.sumary_writer.add_images("train/images", images, self.global_step)
                 self.sumary_writer.add_images("train/mask", labels, self.global_step)
-                self.sumary_writer.add_images("train/outputs", predicts.item(), self.global_step)
+                self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
 
                 val_predicts = torch.sigmoid(val_outputs)
                 self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
                 self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
-                self.sumary_writer.add_images("val/outputs", val_predicts.item(), self.global_step)
+                self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
 
                 train_compose_images = compose_images(images[0], labels[0], predicts[0])
                 val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
