@@ -155,7 +155,7 @@ class Trainer:
             for i, samples in enumerate(progress[mode]):
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
-                loss += self.crition(outputs, labels)
+                loss += self.crition(outputs, labels).item()
                 if self.num_classes == 1:
                     outputs = torch.sigmoid(outputs)
                 output_list.append(outputs)
