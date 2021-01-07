@@ -20,6 +20,7 @@ def conver_numpy_image(image, normalize = False):
     inputs:
         - image: torch tensor shape (C, H, W)
     '''
+    image = image.cpu()
     if normalize:
         image = (image/2)+0.5
     image = image.numpy()
