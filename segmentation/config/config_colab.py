@@ -5,7 +5,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
-from model.Unet import Unet
+from model.unet import Unet
+from model.backbone import BackboneOriginal
 
 #data config
 image_size = 256
@@ -34,13 +35,15 @@ dataset = {
 }
 
 #train config
+num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "input_channel":1,
-        "output_channel":1,
-        "batch_norm": True,
-        "padding" : 1,
+        "backbone_class": BackboneOriginal,
+        "basenet_args":{
+            "batch_norm": True,
+            "padding" : 1,
+        },
         "bilinear": True
     }
 }
