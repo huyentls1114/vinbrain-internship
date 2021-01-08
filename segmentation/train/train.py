@@ -106,23 +106,22 @@ class Trainer:
             
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
-            
-            if (i+1)%(self.steps_save_image - 1) == 0:
-                #summary image
-                self.visualize_images()
-    
-            if (i+1) % (self.steps_save_loss - 1) == 0:
-                train_loss_avg = train_loss/self.steps_save_loss
-                val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
-                lr = self.optimizer.param_groups[0]['lr']
-                print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, dice valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
-                train_loss = 0
-                loss_file_path = os.path.join(self.output_folder, self.loss_file)
-                save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr)
-                self.sumary_writer.add_scalars('loss', {'val': val_loss_avg}, self.global_step)
-                self.sumary_writer.add_scalars('dice',{'val':val_acc_avg}, self.global_step)
-                self.visualize.plot_loss_update(train_loss_avg, val_loss_avg)
             self.global_step+=1
+
+        self.visualize_images()
+        self.visualize_loss(train_loss, i+1)
+    
+    def visualize_loss(self, train_loss, num_batches):
+        train_loss_avg = train_loss/num_batches
+        val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
+        lr = self.optimizer.param_groups[0]['lr']
+        print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, dice valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
+        loss_file_path = os.path.join(self.output_folder, self.loss_file)
+        save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr)
+        self.sumary_writer.add_scalars('loss', {'val': val_loss_avg}, self.global_step)
+        self.sumary_writer.add_scalars('dice',{'val':val_acc_avg}, self.global_step)
+        self.visualize.plot_loss_update(train_loss_avg, val_loss_avg)
+
     def visualize_images(self):
         images, labels = self.data.load_batch(mode = "train")
         images, labels = images.to(self.device), labels.to(self.device)

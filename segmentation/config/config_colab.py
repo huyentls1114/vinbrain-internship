@@ -8,7 +8,7 @@ from model.metric import Dice_Score
 from model.Unet import Unet
 
 #data config
-image_size = 512
+image_size = 256
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(image_size),
@@ -48,7 +48,7 @@ net = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 2
+batch_size = 16
 num_epochs = 20
 
 metric = {
