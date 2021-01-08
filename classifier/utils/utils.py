@@ -4,6 +4,7 @@ from collections import OrderedDict
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import cv2
 
 def show_img(image):
     "show an image tensor"
@@ -12,6 +13,19 @@ def show_img(image):
     image = np.transpose(image, (1, 2, 0))
     plt.imshow(image)
     plt.show()
+
+def conver_numpy_image(image):
+    image = (image/2)+0.5
+    image = image.numpy()
+    image = np.transpose(image, (1, 2, 0))
+    return image
+def contour(images, masks):
+    main = images.copy()
+    _,contours,_ = cv2.findContours(masks,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    for i,c in enumerate(contours):
+        colour = RGBforLabel.get(2)
+        cv2.drawContours(main,[c],-1,colour,1)
+    return main
 
 def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
     '''
