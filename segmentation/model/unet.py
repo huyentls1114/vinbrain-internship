@@ -19,7 +19,7 @@ class Unet(nn.Module):
 
     def initial_decoder(self):
         list_channels = self.backbone.list_channels
-        self.blocks = []
+        self.blocks = nn.ModuleList()
         for i in range(len(list_channels)-2):
             input_channel = list_channels[i]
             output_channel = list_channels[i+1]
