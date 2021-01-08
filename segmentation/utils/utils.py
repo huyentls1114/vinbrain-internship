@@ -48,7 +48,7 @@ def contour(image, mask):
         cv2.drawContours(main,[c],-1,colour,2)
     return main
 
-def save_loss_to_file(file_, epoch, step, loss_train, loss_val, acc_val, lr):
+def save_loss_to_file(file_, epoch, loss_train, loss_val, acc_val, lr, step = 0):
     '''
     target: save loss to the file
     input:

@@ -110,8 +110,8 @@ class Trainer:
 
         self.visualize_images()
         self.visualize_loss(train_loss, i+1)
-    
-    def visualize_loss(self, train_loss, num_batches):
+    def visualize_loss(self, train_loss, num_batches, step = 0):
+        i = step
         train_loss_avg = train_loss/num_batches
         val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
         lr = self.optimizer.param_groups[0]['lr']
