@@ -12,6 +12,8 @@ class Unet(nn.Module):
 
         self.bilinear = bilinear
         self.backbone = backbone_class(basenet_args)
+
+        self.encoder = self.backbone.encoder
         self.features_name = self.backbone.features_name
         self.initial_decoder()
 
@@ -38,7 +40,7 @@ class Unet(nn.Module):
 
     def forward_backbone(self, x):
         features_value = {}
-        for name, child in self.backbone.encoder.named_children():
+        for name, child in self.encoder.named_children():
             x = child(x)
             if name in self.features_name:
                 features_value[name] = x
