@@ -43,8 +43,8 @@ net = {
         "basenet_args":{
             "batch_norm": True,
             "padding" : 1,
-        },
-        "bilinear": True
+            "bilinear": True
+        }
     }
 }
 
