@@ -8,11 +8,12 @@ class Unet(nn.Module):
     def __init__(self, 
                 backbone_class = BackboneOriginal,
                 basenet_args = {},
-                bilinear = True):
+                bilinear = True,
+                pretrained = True):
         super(Unet, self).__init__()
 
         self.bilinear = bilinear
-        self.backbone = backbone_class(basenet_args)
+        self.backbone = backbone_class(basenet_args, pretrained = pretrained)
         self.base_model = self.backbone.base_model
         self.features_name = self.backbone.features_name
         self.initial_decoder()

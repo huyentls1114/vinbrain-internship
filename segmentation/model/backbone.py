@@ -15,9 +15,9 @@ class BackboneOriginal:
         self.up_class = UpBlock
 
 class BackBoneResnet18:
-    def __init__(self, net_args):
+    def __init__(self, net_args, pretrained = True):
         self.net_args = net_args
-        self.base_model = resnet18()
+        self.base_model = resnet18(pretrained=pretrained)
         self.features_name = ["layer3", "layer2", "layer1", "relu"]
         self.last_layer = "layer4"
         self.input_channel = 3
