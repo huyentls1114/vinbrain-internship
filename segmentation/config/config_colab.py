@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
 from model.unet import Unet
-from model.backbone import BackboneOriginal
+from model.backbone import BackboneOriginal, BackBoneResnet18
 
 #data config
 image_size = 256
@@ -39,12 +39,11 @@ num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneOriginal,
+        "backbone_class": BackBoneResnet18,
         "basenet_args":{
-            "batch_norm": True,
-            "padding" : 1,
-            "bilinear": True
-        }
+            "padding" : 1,            
+        },
+        "bilinear": True
     }
 }
 
@@ -52,7 +51,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 20
+num_epochs = 50
 
 metric = {
     "class":Dice_Score,
@@ -68,7 +67,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
