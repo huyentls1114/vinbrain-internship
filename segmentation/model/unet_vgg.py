@@ -2,28 +2,42 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
-class Unet(nn.Module):
-    def __init__( self, input_channel, 
-                        output_channel, 
+class UnetVGG(nn.Module):
+    def __init__( self, input_channel = 1, 
+                        output_channel = 1, 
                         pretrained_weights = None,
                         batch_norm = True,
                         padding = 0,
                         bilinear = True):
-        super(Unet, self).__init__()
+        super(UnetVGG, self).__init__()
         self.pretrained_weights = pretrained_weights
 
+        self.features_name = ['inc','down1', 'down2', 'down3']
+        self.encoder = Encoder(input_channel, batch_norm, padding, bilinear)
+        self.decoder = Decoder(output_channel, batch_norm, padding, bilinear)
+    def forward(self, x):
+        x, features = self.forward_backbone(x)
+        x = self.decoder(x, features)
+        return x
+    def forward_backbone(self, x):
+        features = {}
+        for name, child in self.encoder.named_children():
+            x = child(x)
+            if name in self.features_name:
+                features[name] = x
+        return x, features
+        
+class Encoder(nn.Module):
+    def __init__( self, input_channel = 1, 
+                        batch_norm = True,
+                        padding = 0,
+                        bilinear = True):
+        super(Encoder, self).__init__()
         self.inc = MultiConv([input_channel, 64, 64], batch_norm, padding)
         self.down1 = Down([64, 128, 128], batch_norm, padding)
         self.down2 = Down([128, 256, 256], batch_norm, padding)
         self.down3 = Down([256, 512, 512], batch_norm, padding)
         self.down4 = Down([512, 1024, 1024], batch_norm, padding)
-
-        self.up1 = Up([1024, 512, 512], batch_norm, padding, bilinear)
-        self.up2 = Up([512, 256, 256], batch_norm, padding, bilinear)
-        self.up3 = Up([256, 128, 128], batch_norm, padding, bilinear)
-        self.up4 = Up([128, 64, 64], batch_norm, padding, bilinear)
-        self.outc = OutConv(64, output_channel)
-    
     def forward(self, x):
         x1 = self.inc(x)
         # print('x1', x1.shape)
@@ -34,16 +48,26 @@ class Unet(nn.Module):
         x4 = self.down3(x3)
         # print('x4',x4.shape)
         x5 = self.down4(x4)
-        # print('x5',x5.shape)
-        x = self.up1(x5, x4)
-        # print('x4',x.shape)
-        x = self.up2(x, x3)
-        # print('x3',x.shape)
-        x = self.up3(x, x2)
-        # print('x2',x.shape)
-        x = self.up4(x, x1)
-        # print('x1',x.shape)
+        return x5
+
+class Decoder(nn.Module):
+    def __init__( self, output_channel = 1, 
+                        batch_norm = True,
+                        padding = 0,
+                        bilinear = True):
+        super(Decoder, self).__init__()
+        self.up1 = Up([1024, 512, 512], batch_norm, padding, bilinear)
+        self.up2 = Up([512, 256, 256], batch_norm, padding, bilinear)
+        self.up3 = Up([256, 128, 128], batch_norm, padding, bilinear)
+        self.up4 = Up([128, 64, 64], batch_norm, padding, bilinear)
+        self.outc = OutConv(64, output_channel)
+    def forward(self, x, features):
+        x = self.up1(x, features["down3"])
+        x = self.up2(x, features["down2"])
+        x = self.up3(x, features["down1"])
+        x = self.up4(x, features["inc"])
         x = self.outc(x)
+        # print(x.shape)
         return x
 
 class MultiConv(nn.Module):
@@ -63,6 +87,7 @@ class MultiConv(nn.Module):
     
     def forward(self, x):
         return self.multi_conv(x)
+
 
 class Down(nn.Module):
     def __init__(self, list_channels, batch_norm = True, padding = 0):
@@ -110,9 +135,6 @@ class Up(nn.Module):
             -diffX, 0,
             -diffY, 0
         ])
-
-
-
         x = torch.cat([x2, x1], dim = 1)
         return self.conv(x)
 class OutConv(nn.Module):

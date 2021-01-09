@@ -10,7 +10,7 @@ from visualize.visualize import Visualize
 class Trainer:
     def __init__(self, configs, data):
         self.data = data
-        self.num_classes = configs.net["net_args"]["output_channel"]
+        self.num_classes = configs.num_classes
 
         #net
         self.net = configs.net["class"](**configs.net["net_args"])
@@ -110,6 +110,7 @@ class Trainer:
 
         self.visualize_images()
         self.visualize_loss(train_loss, i+1)
+
     def visualize_loss(self, train_loss, num_batches, step = 0):
         i = step
         train_loss_avg = train_loss/num_batches
@@ -145,6 +146,7 @@ class Trainer:
         val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
         # import pdb; pdb.set_trace()
         self.visualize.update_image(np.vstack([train_compose_images, val_compose_images]))
+    
     def evaluate(self, mode = "val", metric = None):
         if metric is None:
             metric = self.metric
