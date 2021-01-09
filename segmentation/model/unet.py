@@ -13,6 +13,7 @@ class Unet(nn.Module):
 
         self.bilinear = bilinear
         self.backbone = backbone_class(basenet_args)
+        self.base_model = self.backbone.base_model
         self.features_name = self.backbone.features_name
         self.initial_decoder()
 
@@ -42,7 +43,7 @@ class Unet(nn.Module):
 
     def forward_backbone(self, x):
         features_value = {}
-        for name, child in self.backbone.base_model.named_children():
+        for name, child in self.base_model.named_children():
             x = child(x)
             # print(name, x.shape)
             if name in self.features_name:
