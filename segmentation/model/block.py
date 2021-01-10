@@ -18,7 +18,7 @@ def crop_combine(x1, x2):
     ])
     return x2
 class VGG16Block(nn.Module):
-    def __init__(self, list_channels, batch_norm = True, padding = 0):
+    def __init__(self, list_channels, batch_norm = True, padding = 1):
         super().__init__()
         assert len(list_channels) > 1
 
@@ -43,13 +43,12 @@ class Out(nn.Module):
         return self.out_conv(x)
 
 class UpBlock(nn.Module):
-    def __init__(self, list_channels, 
-                       block_class = VGG16Block, 
-                       net_args ={},
+    def __init__(self, input_channel,
+                       output_channel,
+                       batch_norm = True, 
+                       padding = 1,
                        bilinear = True):
         super(UpBlock, self).__init__()
-        assert len(list_channels) > 1
-        input_channel = list_channels[0]
 
         if bilinear:
             self.up = nn.Sequential(
@@ -63,7 +62,7 @@ class UpBlock(nn.Module):
                                         input_channel//2,
                                         kernel_size = 2,
                                         stride = 2)
-        self.conv_block = block_class(list_channels, **net_args)
+        self.conv_block = VGG16Block([input_channel, output_channel, output_channel], batch_norm, padding)
     def forward(self, x1, x2):
         x1 = self.up(x1)
 
@@ -101,7 +100,7 @@ class UpLayer(nn.Module):
         return self.up_layer(x)
 
 class Resnet18Block(nn.Module):
-    def __init__(self, input_channel, output_channel, up_sample = False, padding = 0, bilinear = True):
+    def __init__(self, input_channel, output_channel, up_sample = False, padding = 1, bilinear = True):
         super(Resnet18Block, self).__init__()
         self.bilinear = bilinear
         self.up_sample = up_sample
@@ -129,10 +128,10 @@ class Resnet18Block(nn.Module):
         return self.relu(x)
 
 class Resnet18BlocksUp(nn.Module):
-    def __init__(self, input_channel, output_channel, padding = 0, bilinear = True):
+    def __init__(self, input_channel, output_channel, padding = 1, bilinear = True):
         super(Resnet18BlocksUp, self).__init__()
-        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = padding, bilinear = bilinear)
-        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = padding, bilinear = bilinear)
+        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = 1, bilinear = True)
+        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = 1, bilinear = True)
     def forward(self, x1, x2):
         x1 = self.block1(x1)
         x2 = crop_combine(x1, x2)

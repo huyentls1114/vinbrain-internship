@@ -40,10 +40,12 @@ net = {
     "class":Unet,
     "net_args":{
         "backbone_class": BackBoneResnet18,
-        "basenet_args":{
+        "encoder_args":{
             "padding" : 1,            
         },
-        "bilinear": True
+        "decoder_args":{
+            "bilinear": True
+        }
     }
 }
 

@@ -7,13 +7,13 @@ from .block import UpBlock, VGG16Block, Out
 class Unet(nn.Module):
     def __init__(self, 
                 backbone_class = BackboneOriginal,
-                basenet_args = {},
-                bilinear = True,
-                pretrained = True):
+                encoder_args = {},
+                decoder_args = {},
+                pretrained = False):
         super(Unet, self).__init__()
 
-        self.bilinear = bilinear
-        self.backbone = backbone_class(basenet_args, pretrained = pretrained)
+        self.decoder_args = decoder_args
+        self.backbone = backbone_class(encoder_args)
         self.base_model = self.backbone.base_model
         self.features_name = self.backbone.features_name
         self.initial_decoder()
@@ -25,9 +25,8 @@ class Unet(nn.Module):
             input_channel = list_channels[i]
             output_channel = list_channels[i+1]
             up_block = self.backbone.up_class(input_channel,
-                                            output_channel,
-                                            bilinear = self.bilinear,
-                                            **self.backbone.net_args)
+                                              output_channel,
+                                              **self.decoder_args)
             self.blocks.append(up_block)
         self.out_conv = self.backbone.out_conv_class(list_channels[-2], list_channels[-1])
 

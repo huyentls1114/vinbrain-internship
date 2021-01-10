@@ -5,12 +5,11 @@ import torch
 class UnetVGG(nn.Module):
     def __init__( self, input_channel = 1, 
                         output_channel = 1, 
-                        pretrained_weights = None,
+                        pretrained = None,
                         batch_norm = True,
-                        padding = 0,
+                        padding = 1,
                         bilinear = True):
         super(UnetVGG, self).__init__()
-        self.pretrained_weights = pretrained_weights
 
         self.features_name = ['inc','down1', 'down2', 'down3']
         self.encoder = Encoder(input_channel, batch_norm, padding, bilinear)
@@ -30,7 +29,7 @@ class UnetVGG(nn.Module):
 class Encoder(nn.Module):
     def __init__( self, input_channel = 1, 
                         batch_norm = True,
-                        padding = 0,
+                        padding = 1,
                         bilinear = True):
         super(Encoder, self).__init__()
         self.inc = MultiConv([input_channel, 64, 64], batch_norm, padding)
