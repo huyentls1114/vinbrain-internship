@@ -69,12 +69,12 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-5"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-5
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -89,7 +89,7 @@ lr_scheduler = {
         "factor":0.5,
         "patience":4,
         "threshold":1e-2,
-        "min_lr":1e-5
+        "min_lr":1e-6
     }
 }
 steps_save_loss = 100

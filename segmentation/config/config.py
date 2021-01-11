@@ -87,7 +87,7 @@ lr_scheduler = {
         "factor":0.5,
         "patience":4,
         "threshold":1e-2,
-        "min_lr":1-5
+        "min_lr":1e-5
     }
 }
 steps_save_loss = 2
