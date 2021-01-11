@@ -69,7 +69,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-2_200epoch"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-3_200epoch_lrchedule8"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
