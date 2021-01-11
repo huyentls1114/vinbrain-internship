@@ -69,7 +69,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-3_200epoch"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-2_200epoch"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -87,7 +87,7 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.5,
-        "patience":4,
+        "patience":8,
         "threshold":1e-2,
         "min_lr":1e-6
     }
