@@ -53,7 +53,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 100
+num_epochs = 200
 
 metric = {
     "class":Dice_Score,
@@ -69,12 +69,12 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-3_100epoch"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-2_200epoch"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-3
+lr = 1e-2
 optimizer = {
     "class":Adam,
     "optimizer_args":{
