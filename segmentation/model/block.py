@@ -82,11 +82,11 @@ class UpBlock(nn.Module):
         return self.conv_block(x)
 
 class UpLayer(nn.Module):
-    def __init__(self, input_channel, output_channel, bilinear = True, kernel_size =3, padding = 1):
+    def __init__(self, input_channel, output_channel, bilinear = True, kernel_size =3, stride = 2, padding = 1):
         super(UpLayer, self).__init__()
         if bilinear:
             self.up_layer = nn.Sequential(
-                nn.Upsample(scale_factor=2,
+                nn.Upsample(scale_factor=stride,
                             mode = "bilinear",
                             align_corners=True),
                 nn.Conv2d(input_channel, output_channel, kernel_size = kernel_size, padding = padding)
@@ -95,7 +95,7 @@ class UpLayer(nn.Module):
             self.up_layer = nn.ConvTranspose2d(input_channel, 
                                                 input_channel,
                                                 kernel_size = 2,
-                                                stride = 2)
+                                                stride = stride)
     def forward(self, x):
         return self.up_layer(x)
 
@@ -137,3 +137,65 @@ class Resnet18BlocksUp(nn.Module):
         x2 = crop_combine(x1, x2)
         x = torch.cat([x1, x2], 1)
         return self.block2(x)
+
+
+class Resnet101Bottleneck(nn.Module):
+    def __init__(self, input_channel, middle_channel, output_channel, 
+                       up_sample = False, 
+                       padding = 1, 
+                       bilinear = True):
+        super(Resnet101Bottleneck, self).__init__()
+        
+        self.conv1 = nn.Conv2d(input_channel, middle_channel, kernel_size = 1, stride= 1)
+        if up_sample:
+            self.up = nn.Sequential(
+                UpLayer(input_channel, output_channel, kernel_size =3, stride = 2, padding = padding),
+                nn.BatchNorm2d(output_channel))
+        else:
+            self.up = nn.Conv2d(input_channel, output_channel, kernel_size = 1, stride = 1)
+        self.bn1 = nn.BatchNorm2d(middle_channel)
+
+        if up_sample:
+            self.conv2 = UpLayer(middle_channel, middle_channel, kernel_size =3, stride = 2, padding = padding)
+        else:
+            self.conv2 = nn.Conv2d(middle_channel, middle_channel, kernel_size = 3, stride= 1, padding = padding)
+        
+        self.bn2 = nn.BatchNorm2d(middle_channel)
+        self.conv3 = nn.Conv2d(middle_channel, output_channel, kernel_size=1, stride=1)
+        self.bn3 = nn.BatchNorm2d(output_channel)
+        self.relu = nn.ReLU(inplace=True)
+    
+    def forward(self, x):
+        residual = self.up(x)
+        # print(residual.shape)
+        x = self.relu(self.bn1(self.conv1(x)))
+        x = self.relu(self.bn2(self.conv2(x)))
+        x = self.bn3(self.conv3(x))
+        x = x+residual
+        return self.relu(x)
+
+class Resnet101BlockUp(nn.Module):
+    def __init__(self, input_channel, output_channel, 
+                       last_block = False,
+                       num_bottleneck = 2, 
+                       padding = 1, 
+                       bilinear = True):
+        super(Resnet101BlockUp, self).__init__()
+        list_bottlenecks = []
+        if last_block == True:
+            self.up_bottleneck = UpLayer(input_channel, output_channel)
+            list_bottlenecks.append(nn.Conv2d(output_channel*2, output_channel, kernel_size=1, stride=1))
+        else:
+            self.up_bottleneck = Resnet101Bottleneck(input_channel, input_channel//4, output_channel, up_sample=True)
+            bottleneck = Resnet101Bottleneck(input_channel, output_channel//4, output_channel, padding = padding)
+            list_bottlenecks.append(bottleneck)
+            for i in range(num_bottleneck-1):
+                bottleneck = Resnet101Bottleneck(output_channel, output_channel//4, output_channel, padding = padding)
+                list_bottlenecks.append(bottleneck)
+        self.blocks = nn.Sequential(*list_bottlenecks)
+    def forward(self, x1, x2):
+        x1 = self.up_bottleneck(x1)
+        x2 = crop_combine(x1, x2)
+        x = torch.cat([x1, x2], 1)
+        return self.blocks(x)
+            

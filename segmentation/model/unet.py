@@ -12,23 +12,11 @@ class Unet(nn.Module):
                 pretrained = False):
         super(Unet, self).__init__()
 
-        self.decoder_args = decoder_args
-        self.backbone = backbone_class(encoder_args)
+        self.backbone = backbone_class(encoder_args, decoder_args)
         self.base_model = self.backbone.base_model
         self.features_name = self.backbone.features_name
-        self.initial_decoder()
-
-    def initial_decoder(self):
-        list_channels = self.backbone.list_channels
-        self.blocks = nn.ModuleList()
-        for i in range(len(list_channels)-2):
-            input_channel = list_channels[i]
-            output_channel = list_channels[i+1]
-            up_block = self.backbone.up_class(input_channel,
-                                              output_channel,
-                                              **self.decoder_args)
-            self.blocks.append(up_block)
-        self.out_conv = self.backbone.out_conv_class(list_channels[-2], list_channels[-1])
+        self.blocks = self.backbone.blocks
+        self.out_conv = self.backbone.out_conv
 
     def forward(self, x):
         if x.shape[1] != self.backbone.input_channel:
