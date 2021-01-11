@@ -69,12 +69,12 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-5"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-4
+lr = 1e-5
 optimizer = {
     "class":Adam,
     "optimizer_args":{
