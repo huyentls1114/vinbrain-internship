@@ -99,7 +99,7 @@ from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_schedule = {
     "class": CosineAnnealingWarmRestarts,
     "metric":"epoch",
-    "step_type":"batch",
+    "step_type":"iteration",
     "schedule_args":{
         "T_0":5,
         "T_mult":2,

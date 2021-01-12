@@ -45,6 +45,7 @@ class Trainer:
         #summary writer
         self.sumary_writer = SummaryWriter(self.output_folder)
         self.global_step = 0
+        self.steps_per_epoch = len(self.data.train_loader)
 
         #inititalize variables
         self.liss_loss = []
@@ -103,6 +104,8 @@ class Trainer:
             if self.lr_scheduler is not None:
                 if self.lr_schedule_step_type == "batch":
                     self.schedule_lr()
+                elif self.lr.lr_schedule_step_type == "iteration":
+                    self.schedule_lr(i)
             
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
@@ -141,6 +144,7 @@ class Trainer:
         self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
         self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
         self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
+        
 
         train_compose_images = compose_images(images[0], labels[0], predicts[0])
         val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
@@ -198,7 +202,7 @@ class Trainer:
         if self.lr_scheduler_metric is not None:
             if self.lr_schedule_step_type == "iteration":
                 #for Cosine Anealing Warm Restart
-                self.lr_scheduler.step(self.current_epoch+iteration/self.batch_size)
+                self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
             else:
                 #for ReduceLROnPlateau
                 val_loss, val_acc = self.evaluate(mode = "val")
