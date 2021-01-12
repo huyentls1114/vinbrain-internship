@@ -5,8 +5,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
-from model.unet import Unet
-from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
+from model.unet import Unet, DynamicUnet
+from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101, BackBoneResnet101Dynamic
 
 from utils.utils import len_train_datatset
 
@@ -39,14 +39,14 @@ dataset = {
 #train config
 num_classes = 1
 net = {
-    "class":Unet,
+    "class":UnetDynamic,
     "net_args":{
-        "backbone_class": BackBoneResnet101,
+        "backbone_class": BackBoneResnet101Dynamic,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
-            "bilinear": True
+            "img_size": image_size
         }
     }
 }
@@ -71,7 +71,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_CosineAnnealingWarmRestarts_T0_1_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_Dynamic_CosineAnnealingWarmRestarts_T0_1_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
