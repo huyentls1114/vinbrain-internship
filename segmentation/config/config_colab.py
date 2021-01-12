@@ -11,7 +11,7 @@ from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 from utils.utils import len_train_datatset
 
 #data config
-image_size = 256
+image_size = 192
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(image_size),
