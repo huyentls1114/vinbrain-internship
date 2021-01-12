@@ -71,7 +71,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_CosineAnnealingWarmRestarts_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_CosineAnnealingWarmRestarts_T0_1_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -100,7 +100,7 @@ lr_scheduler = {
     "metric":"epoch",
     "step_type":"iteration",
     "schedule_args":{
-        "T_0":5,
+        "T_0":1,
         "T_mult":2,
         "eta_min":1e-5,
     }
