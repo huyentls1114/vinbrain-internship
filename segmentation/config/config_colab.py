@@ -5,7 +5,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
-from model.unet import Unet, DynamicUnet
+from model.unet import Unet, UnetDynamic
 from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101, BackBoneResnet101Dynamic
 
 from utils.utils import len_train_datatset
