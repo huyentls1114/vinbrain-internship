@@ -82,7 +82,6 @@ optimizer = {
     "optimizer_args":{
     }
 }
-lr_scheduler = None
 # lr_scheduler = {
 #     "class": ReduceLROnPlateau,
 #     "metric":"val_loss",
@@ -96,7 +95,7 @@ lr_scheduler = None
 #     }
 # }
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-lr_schedule = {
+lr_scheduler = {
     "class": CosineAnnealingWarmRestarts,
     "metric":"epoch",
     "step_type":"iteration",
