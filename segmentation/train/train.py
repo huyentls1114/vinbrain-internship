@@ -104,7 +104,7 @@ class Trainer:
             if self.lr_scheduler is not None:
                 if self.lr_schedule_step_type == "batch":
                     self.schedule_lr()
-                elif self.lr.lr_schedule_step_type == "iteration":
+                elif self.lr_schedule_step_type == "iteration":
                     self.schedule_lr(i)
             
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
