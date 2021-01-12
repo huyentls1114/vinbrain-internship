@@ -46,8 +46,8 @@ class UnetDynamic(Unet):
                 encoder_args = {},
                 decoder_args = {}):
         super(UnetDynamic, self).__init__(backbone_class, encoder_args, decoder_args)
-
+        self.unet = self.backbone.unet
     def forward(self, x):
         if x.shape[1] != self.backbone.input_channel:
             x = torch.cat([x, x, x], 1)
-        return self.backbone.unet(x)
+        return self.unet(x)
