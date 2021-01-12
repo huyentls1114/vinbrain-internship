@@ -8,6 +8,8 @@ from model.metric import Dice_Score
 from model.unet import Unet
 from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 
+from utils.utils import len_train_datatset
+
 #data config
 image_size = 256
 transform_train = transforms.Compose([
@@ -69,7 +71,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-2_manual_reducelr"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_CosineAnnealingWarmRestarts"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -93,5 +95,17 @@ lr_scheduler = None
 #         "min_lr":1e-6
 #     }
 # }
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_schedule = {
+    "class": CosineAnnealingWarmRestarts,
+    "metric":"epoch",
+    "step_type":"batch",
+    "schedule_args":{
+        "T_0":5,
+        "T_mult":2,
+        "eta_min":1e-5,
+    }
+}
+
 steps_save_loss = 100
 steps_save_image = 100
