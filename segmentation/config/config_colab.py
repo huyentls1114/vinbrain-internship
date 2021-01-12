@@ -69,28 +69,29 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-3_200epoch_lrchedule8"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet101_pretrained_1e-2_manual_reducelr"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-3
+lr = 1e-2
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
-lr_scheduler = {
-    "class": ReduceLROnPlateau,
-    "metric":"val_loss",
-    "step_type":"epoch",
-    "schedule_args":{
-        "mode":"min",
-        "factor":0.5,
-        "patience":8,
-        "threshold":1e-2,
-        "min_lr":1e-6
-    }
-}
+lr_scheduler = None
+# lr_scheduler = {
+#     "class": ReduceLROnPlateau,
+#     "metric":"val_loss",
+#     "step_type":"epoch",
+#     "schedule_args":{
+#         "mode":"min",
+#         "factor":0.5,
+#         "patience":8,
+#         "threshold":1e-2,
+#         "min_lr":1e-6
+#     }
+# }
 steps_save_loss = 100
 steps_save_image = 100
