@@ -5,6 +5,8 @@ from .unet_vgg import UnetVGG
 from .block import VGG16Block, UpBlock, Out
 from .block import Resnet18BlocksUp, UpLayer
 from .block import Resnet101BlockUp
+
+from fastai.vision.models.unet import DynamicUnet
 class Backbone:
     def __init__(self, encoder_args, decoder_args):
         self.encoder_args = encoder_args
@@ -17,6 +19,8 @@ class Backbone:
         self.list_channels = None
         self.up_class = None
         self.out_conv_class = None
+        self.blocks = None
+        self.out_conv = None
 
     def initial_decoder(self):
         list_channels = self.list_channels
@@ -88,3 +92,15 @@ class BackBoneResnet101(Backbone):
             )
         )
         self.out_conv = self.out_conv_class(list_channels[-2], list_channels[-1])
+
+class BackBoneResnet101Dynamic(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackBoneResnet101Dynamic, self).__init__(encoder_args, decoder_args)
+        self.encoder_args = encoder_args
+        self.base_model = resnet101(**encoder_args)
+        self.input_channel = 3
+        self.initial_decoder()
+    def initial_decoder(self):
+        m = nn.Sequential(*list(self.base_model.children())[:-2])
+        img_size = self.decoder_args["img_size"]
+        self.unet = DynamicUnet(m, 1, (img_size, img_size), norm_type=None)

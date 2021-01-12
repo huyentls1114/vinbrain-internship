@@ -39,3 +39,15 @@ class Unet(nn.Module):
             if name == self.backbone.last_layer:
                 break
         return x, features_value
+
+class UnetDynamic(Unet):
+    def __init__(self, 
+                backbone_class = BackboneOriginal,
+                encoder_args = {},
+                decoder_args = {}):
+        super(UnetDynamic, self).__init__(backbone_class, encoder_args, decoder_args)
+
+    def forward(self, x):
+        if x.shape[1] != self.backbone.input_channel:
+            x = torch.cat([x, x, x], 1)
+        return self.backbone.unet(x)
