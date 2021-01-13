@@ -185,7 +185,7 @@ class Trainer:
             img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
             output = self.net(img_tensor)
-            predicts = torch.sigmoid(outputs)
+            predicts = torch.sigmoid(output)
             predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
             return predicts
 
