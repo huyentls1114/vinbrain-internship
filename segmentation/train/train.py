@@ -57,7 +57,7 @@ class Trainer:
                                     self.num_epochs,
                                     self.data, 
                                     img_size = self.image_size)
-    
+        self.transform_test = configs.transform_test
     def initial_lr_scheduler(self, lr_scheduler):
         if lr_scheduler is not None:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])
