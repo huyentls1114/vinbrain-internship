@@ -104,3 +104,15 @@ class BackBoneResnet101Dynamic(Backbone):
         m = nn.Sequential(*list(self.base_model.children())[:-2])
         img_size = self.decoder_args["img_size"]
         self.unet = DynamicUnet(m, 1, (img_size, img_size), norm_type=None)
+
+class BackBoneResnet18Dynamic(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackBoneResnet18Dynamic, self).__init__(encoder_args, decoder_args)
+        self.encoder_args = encoder_args
+        self.base_model = resnet18(**encoder_args)
+        self.input_channel = 3
+        self.initial_decoder()
+    def initial_decoder(self):
+        m = nn.Sequential(*list(self.base_model.children())[:-2])
+        img_size = self.decoder_args["img_size"]
+        self.unet = DynamicUnet(m, 1, (img_size, img_size), norm_type=None)

@@ -11,7 +11,18 @@ lr_scheduler = {
         "min_lr":1-5
     }
 }
-
+lr_scheduler = {
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss",
+    "step_type":"epoch",
+    "schedule_args":{
+        "mode":"min",
+        "factor":0.5,
+        "patience":8,
+        "threshold":1e-2,
+        "min_lr":1e-6
+    }
+}
 # net
 net = {
     "class":Unet,
@@ -20,6 +31,19 @@ net = {
         "encoder_args":{},
         "decoder_args":{
             "bilinear": True
+        }
+    }
+}
+num_classes = 1
+net = {
+    "class":UnetDynamic,
+    "net_args":{
+        "backbone_class": BackBoneResnet101Dynamic,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "img_size": image_size
         }
     }
 }
