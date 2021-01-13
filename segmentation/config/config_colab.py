@@ -41,12 +41,13 @@ num_classes = 1
 net = {
     "class":UnetDynamic,
     "net_args":{
-        "backbone_class": BackBoneResnet18Dynamic,
+        "backbone_class": BackBoneResnet18,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
-            "img_size": image_size
+            "bilinear": False,
+            "pixel_shuffle":True
         }
     }
 }
@@ -71,7 +72,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet18_Dynamic_CosineAnnealingWarmRestarts_T0_1_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet18_CosineAnnealingWarmRestarts_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -94,6 +95,3 @@ lr_scheduler = {
         "eta_min":1e-5,
     }
 }
-
-steps_save_loss = 100
-steps_save_image = 100

@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from fastai.layers import PixelShuffle_ICNR 
 
 def crop_combine(x1, x2):
     diffY = x2.size()[2] - x1.size()[1]
@@ -47,7 +48,8 @@ class UpBlock(nn.Module):
                        output_channel,
                        batch_norm = True, 
                        padding = 1,
-                       bilinear = True):
+                       bilinear = True,
+                       pixel_shuffle = False):
         super(UpBlock, self).__init__()
 
         if bilinear:
@@ -58,7 +60,13 @@ class UpBlock(nn.Module):
                 nn.Conv2d(input_channel, input_channel//2, 3, padding=1)
             )
         else:
-            self.up = nn.ConvTranspose2d(input_channel, 
+            if pixel_shuffle:
+                self.up = nn.Sequential(
+                    nn.Conv2d(input_channel, output_channel, kernel_size = 1),
+                    PixelShuffle_ICNR(output_channel)
+                )
+            else:
+                self.up = nn.ConvTranspose2d(input_channel, 
                                         input_channel//2,
                                         kernel_size = 2,
                                         stride = 2)
@@ -82,7 +90,7 @@ class UpBlock(nn.Module):
         return self.conv_block(x)
 
 class UpLayer(nn.Module):
-    def __init__(self, input_channel, output_channel, bilinear = True, kernel_size =3, stride = 2, padding = 1):
+    def __init__(self, input_channel, output_channel, bilinear = True,  kernel_size =3, stride = 2, padding = 1, pixel_shuffle = False):
         super(UpLayer, self).__init__()
         if bilinear:
             self.up_layer = nn.Sequential(
@@ -92,7 +100,13 @@ class UpLayer(nn.Module):
                 nn.Conv2d(input_channel, output_channel, kernel_size = kernel_size, padding = padding)
             )
         else:
-            self.up_layer = nn.ConvTranspose2d(input_channel, 
+            if pixel_shuffle:
+                self.up_layer = nn.Sequential(
+                    nn.Conv2d(input_channel, output_channel, kernel_size = 1),
+                    PixelShuffle_ICNR(output_channel)
+                )
+            else:
+                self.up_layer = nn.ConvTranspose2d(input_channel, 
                                                 input_channel,
                                                 kernel_size = 2,
                                                 stride = stride)
@@ -100,14 +114,14 @@ class UpLayer(nn.Module):
         return self.up_layer(x)
 
 class Resnet18Block(nn.Module):
-    def __init__(self, input_channel, output_channel, up_sample = False, padding = 1, bilinear = True):
+    def __init__(self, input_channel, output_channel, up_sample = False, padding = 1, bilinear = True, pixel_shuffle = False):
         super(Resnet18Block, self).__init__()
         self.bilinear = bilinear
         self.up_sample = up_sample
         if up_sample:
-            self.conv1 = UpLayer(input_channel, output_channel, kernel_size=3, padding= padding, bilinear = bilinear)
+            self.conv1 = UpLayer(input_channel, output_channel, kernel_size=3, padding= padding, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
             self.up = nn.Sequential(
-                UpLayer(input_channel, output_channel, kernel_size=1, padding= 0, bilinear = bilinear),
+                UpLayer(input_channel, output_channel, kernel_size=1, padding= 0, bilinear = bilinear, pixel_shuffle = pixel_shuffle),
                 nn.BatchNorm2d(output_channel)
             )
         else:
@@ -128,10 +142,10 @@ class Resnet18Block(nn.Module):
         return self.relu(x)
 
 class Resnet18BlocksUp(nn.Module):
-    def __init__(self, input_channel, output_channel, padding = 1, bilinear = True):
+    def __init__(self, input_channel, output_channel, padding = 1, bilinear = True, pixel_shuffle = False):
         super(Resnet18BlocksUp, self).__init__()
-        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = 1, bilinear = True)
-        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = 1, bilinear = True)
+        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = 1, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
+        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = 1, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
     def forward(self, x1, x2):
         x1 = self.block1(x1)
         x2 = crop_combine(x1, x2)

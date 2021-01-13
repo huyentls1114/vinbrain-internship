@@ -47,7 +47,18 @@ net = {
         }
     }
 }
-
+net = {
+    "class":UnetDynamic,
+    "net_args":{
+        "backbone_class": BackBoneResnet18Dynamic,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "img_size": image_size
+        }
+    }
+}
 #metric
 metric = {
     "class":Dice_Score,
