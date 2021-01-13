@@ -180,6 +180,7 @@ class Trainer:
     def predict(self, img):
         self.net.eval()
         with torch.no_grad():
+            img = img[:, :, 0]
             img_tensor = self.transform_test(img)
             img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
