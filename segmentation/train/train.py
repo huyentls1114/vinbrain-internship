@@ -185,7 +185,9 @@ class Trainer:
             img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
             output = self.net(img_tensor)
-            return output
+            predicts = torch.sigmoid(outputs)
+            predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
+            return predicts
 
     def save_checkpoint(self, filename = None):
         if filename is None:
