@@ -39,7 +39,7 @@ dataset = {
 #train config
 num_classes = 1
 net = {
-    "class":UnetDynamic,
+    "class":Unet,
     "net_args":{
         "backbone_class": BackBoneResnet18,
         "encoder_args":{
