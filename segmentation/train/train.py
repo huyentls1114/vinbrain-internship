@@ -8,7 +8,7 @@ from utils.utils import save_loss_to_file, compose_images
 from visualize.visualize import Visualize
 
 class Trainer:
-    def __init__(self, configs, data):
+    def __init__(self, configs, data, copy_configs = True):
         self.data = data
         self.num_classes = configs.num_classes
 
@@ -40,7 +40,8 @@ class Trainer:
         self.output_folder = configs.output_folder
         self.loss_file = configs.loss_file
         self.config_file_path = configs.config_file_path
-        self.initial_output_folder()
+        if copy_configs:
+            self.initial_output_folder()
 
         #summary writer
         self.sumary_writer = SummaryWriter(self.output_folder)
