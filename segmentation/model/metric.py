@@ -7,8 +7,8 @@ class Dice_Score:
 
     def __call__(self, predict, ground_truth):
         predict = _threshold(predict, self.threshold)
-        predict = torch.view(predict.shape[0], -1)
-        ground_truth = torch.view(ground_truth.shape[0], -1)
+        predict = predict.view(predict.shape[0], -1)
+        ground_truth = ground_truth.view(ground_truth.shape[0], -1)
         intersection = torch.sum(predict*ground_truth, 1)
         union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
         return torch.mean((2*intersection + self.epsilon)/( union + self.epsilon))    
