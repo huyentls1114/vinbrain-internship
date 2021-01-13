@@ -182,6 +182,7 @@ class Trainer:
         with torch.no_grad():
             img_tensor = self.transform_test(img)
             img_tensor = img_tensor.to(self.device)
+            img_tensor = img_tensor[None, :, :, :]
             output = self.net(img_tensor)
             return output
 
