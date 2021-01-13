@@ -28,8 +28,6 @@ class Trainer:
         #config train parameters
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
-        self.steps_save_loss = configs.steps_save_loss
-        self.steps_save_image = configs.steps_save_image
         
         #loss and metric
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
