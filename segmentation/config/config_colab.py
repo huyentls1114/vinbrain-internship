@@ -45,8 +45,6 @@ net = {
             "pretrained":True           
         },
         "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
         }
     }
 }

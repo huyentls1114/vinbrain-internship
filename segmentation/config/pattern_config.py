@@ -24,6 +24,7 @@ lr_scheduler = {
     }
 }
 # net
+from model.backbone import BackboneResnet18
 net = {
     "class":Unet,
     "net_args":{
@@ -56,6 +57,19 @@ net = {
         },
         "decoder_args":{
             "img_size": image_size
+        }
+    }
+}
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneResnet18,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
         }
     }
 }
