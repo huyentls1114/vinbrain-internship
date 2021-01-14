@@ -5,8 +5,10 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
-from model.unet import Unet
-from model.backbone import BackboneOriginal, BackBoneResnet18
+from model.unet import Unet, UnetDynamic
+from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101, BackBoneResnet101Dynamic
+from model.backbone import BackBoneResnet18Dynamic
+from utils.utils import len_train_datatset
 
 #data config
 image_size = 256
@@ -41,10 +43,11 @@ net = {
     "net_args":{
         "backbone_class": BackBoneResnet18,
         "encoder_args":{
-            "padding" : 1,            
+            "pretrained":True           
         },
         "decoder_args":{
-            "bilinear": True
+            "bilinear": False,
+            "pixel_shuffle":True
         }
     }
 }
@@ -53,7 +56,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 50
+num_epochs = 200
 
 metric = {
     "class":Dice_Score,
@@ -69,28 +72,26 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet_pretrained"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet18_CosineAnnealingWarmRestarts_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-4
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
+
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_scheduler = {
-    "class": ReduceLROnPlateau,
-    "metric":"val_loss",
-    "step_type":"epoch",
+    "class": CosineAnnealingWarmRestarts,
+    "metric":"epoch",
+    "step_type":"iteration",
     "schedule_args":{
-        "mode":"min",
-        "factor":0.5,
-        "patience":4,
-        "threshold":1e-2,
-        "min_lr":1e-5
+        "T_0":1,
+        "T_mult":3,
+        "eta_min":1e-5,
     }
 }
-steps_save_loss = 100
-steps_save_image = 100

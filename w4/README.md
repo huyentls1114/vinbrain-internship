@@ -4,3 +4,4 @@
 3. Create a performance comparison table between backbones, hyperparameters, requireds: VGG, Resnet, Densenet, Efficientnet.
 4. Learn and implement Focal Loss.
 5. Achieve 80% dicescore on w3 test set.
+

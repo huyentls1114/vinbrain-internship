@@ -8,7 +8,7 @@ from utils.utils import save_loss_to_file, compose_images
 from visualize.visualize import Visualize
 
 class Trainer:
-    def __init__(self, configs, data):
+    def __init__(self, configs, data, copy_configs = True):
         self.data = data
         self.num_classes = configs.num_classes
 
@@ -28,8 +28,6 @@ class Trainer:
         #config train parameters
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
-        self.steps_save_loss = configs.steps_save_loss
-        self.steps_save_image = configs.steps_save_image
         
         #loss and metric
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
@@ -40,11 +38,13 @@ class Trainer:
         self.output_folder = configs.output_folder
         self.loss_file = configs.loss_file
         self.config_file_path = configs.config_file_path
-        self.initial_output_folder()
+        if copy_configs:
+            self.initial_output_folder()
 
         #summary writer
         self.sumary_writer = SummaryWriter(self.output_folder)
         self.global_step = 0
+        self.steps_per_epoch = len(self.data.train_loader)
 
         #inititalize variables
         self.liss_loss = []
@@ -56,7 +56,7 @@ class Trainer:
                                     self.num_epochs,
                                     self.data, 
                                     img_size = self.image_size)
-    
+        self.transform_test = configs.transform_test
     def initial_lr_scheduler(self, lr_scheduler):
         if lr_scheduler is not None:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])
@@ -103,6 +103,8 @@ class Trainer:
             if self.lr_scheduler is not None:
                 if self.lr_schedule_step_type == "batch":
                     self.schedule_lr()
+                elif self.lr_schedule_step_type == "iteration":
+                    self.schedule_lr(i)
             
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
@@ -141,6 +143,7 @@ class Trainer:
         self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
         self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
         self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
+        
 
         train_compose_images = compose_images(images[0], labels[0], predicts[0])
         val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
@@ -176,10 +179,14 @@ class Trainer:
     def predict(self, img):
         self.net.eval()
         with torch.no_grad():
+            img = img[:, :, 0]
             img_tensor = self.transform_test(img)
             img_tensor = img_tensor.to(self.device)
+            img_tensor = img_tensor[None, :, :, :]
             output = self.net(img_tensor)
-            return output
+            predicts = torch.sigmoid(output)
+            predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
+            return predicts
 
     def save_checkpoint(self, filename = None):
         if filename is None:
@@ -198,7 +205,7 @@ class Trainer:
         if self.lr_scheduler_metric is not None:
             if self.lr_schedule_step_type == "iteration":
                 #for Cosine Anealing Warm Restart
-                self.lr_scheduler.step(self.current_epoch+iteration/self.batch_size)
+                self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
             else:
                 #for ReduceLROnPlateau
                 val_loss, val_acc = self.evaluate(mode = "val")

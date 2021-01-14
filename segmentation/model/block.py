@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from fastai.layers import PixelShuffle_ICNR 
 
 def crop_combine(x1, x2):
     diffY = x2.size()[2] - x1.size()[1]
@@ -47,7 +48,8 @@ class UpBlock(nn.Module):
                        output_channel,
                        batch_norm = True, 
                        padding = 1,
-                       bilinear = True):
+                       bilinear = True,
+                       pixel_shuffle = False):
         super(UpBlock, self).__init__()
 
         if bilinear:
@@ -58,7 +60,13 @@ class UpBlock(nn.Module):
                 nn.Conv2d(input_channel, input_channel//2, 3, padding=1)
             )
         else:
-            self.up = nn.ConvTranspose2d(input_channel, 
+            if pixel_shuffle:
+                self.up = nn.Sequential(
+                    nn.Conv2d(input_channel, output_channel, kernel_size = 1),
+                    PixelShuffle_ICNR(output_channel)
+                )
+            else:
+                self.up = nn.ConvTranspose2d(input_channel, 
                                         input_channel//2,
                                         kernel_size = 2,
                                         stride = 2)
@@ -82,32 +90,38 @@ class UpBlock(nn.Module):
         return self.conv_block(x)
 
 class UpLayer(nn.Module):
-    def __init__(self, input_channel, output_channel, bilinear = True, kernel_size =3, padding = 1):
+    def __init__(self, input_channel, output_channel, bilinear = True,  kernel_size =3, stride = 2, padding = 1, pixel_shuffle = False):
         super(UpLayer, self).__init__()
         if bilinear:
             self.up_layer = nn.Sequential(
-                nn.Upsample(scale_factor=2,
+                nn.Upsample(scale_factor=stride,
                             mode = "bilinear",
                             align_corners=True),
                 nn.Conv2d(input_channel, output_channel, kernel_size = kernel_size, padding = padding)
             )
         else:
-            self.up_layer = nn.ConvTranspose2d(input_channel, 
+            if pixel_shuffle:
+                self.up_layer = nn.Sequential(
+                    nn.Conv2d(input_channel, output_channel, kernel_size = 1),
+                    PixelShuffle_ICNR(output_channel)
+                )
+            else:
+                self.up_layer = nn.ConvTranspose2d(input_channel, 
                                                 input_channel,
                                                 kernel_size = 2,
-                                                stride = 2)
+                                                stride = stride)
     def forward(self, x):
         return self.up_layer(x)
 
 class Resnet18Block(nn.Module):
-    def __init__(self, input_channel, output_channel, up_sample = False, padding = 1, bilinear = True):
+    def __init__(self, input_channel, output_channel, up_sample = False, padding = 1, bilinear = True, pixel_shuffle = False):
         super(Resnet18Block, self).__init__()
         self.bilinear = bilinear
         self.up_sample = up_sample
         if up_sample:
-            self.conv1 = UpLayer(input_channel, output_channel, kernel_size=3, padding= padding, bilinear = bilinear)
+            self.conv1 = UpLayer(input_channel, output_channel, kernel_size=3, padding= padding, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
             self.up = nn.Sequential(
-                UpLayer(input_channel, output_channel, kernel_size=1, padding= 0, bilinear = bilinear),
+                UpLayer(input_channel, output_channel, kernel_size=1, padding= 0, bilinear = bilinear, pixel_shuffle = pixel_shuffle),
                 nn.BatchNorm2d(output_channel)
             )
         else:
@@ -128,12 +142,74 @@ class Resnet18Block(nn.Module):
         return self.relu(x)
 
 class Resnet18BlocksUp(nn.Module):
-    def __init__(self, input_channel, output_channel, padding = 1, bilinear = True):
+    def __init__(self, input_channel, output_channel, padding = 1, bilinear = True, pixel_shuffle = False):
         super(Resnet18BlocksUp, self).__init__()
-        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = 1, bilinear = True)
-        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = 1, bilinear = True)
+        self.block1 = Resnet18Block(input_channel, output_channel, up_sample = True, padding = 1, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
+        self.block2 = Resnet18Block(output_channel*2, output_channel, up_sample = False, padding = 1, bilinear = bilinear, pixel_shuffle = pixel_shuffle)
     def forward(self, x1, x2):
         x1 = self.block1(x1)
         x2 = crop_combine(x1, x2)
         x = torch.cat([x1, x2], 1)
         return self.block2(x)
+
+
+class Resnet101Bottleneck(nn.Module):
+    def __init__(self, input_channel, middle_channel, output_channel, 
+                       up_sample = False, 
+                       padding = 1, 
+                       bilinear = True):
+        super(Resnet101Bottleneck, self).__init__()
+        
+        self.conv1 = nn.Conv2d(input_channel, middle_channel, kernel_size = 1, stride= 1)
+        if up_sample:
+            self.up = nn.Sequential(
+                UpLayer(input_channel, output_channel, kernel_size =3, stride = 2, padding = padding),
+                nn.BatchNorm2d(output_channel))
+        else:
+            self.up = nn.Conv2d(input_channel, output_channel, kernel_size = 1, stride = 1)
+        self.bn1 = nn.BatchNorm2d(middle_channel)
+
+        if up_sample:
+            self.conv2 = UpLayer(middle_channel, middle_channel, kernel_size =3, stride = 2, padding = padding)
+        else:
+            self.conv2 = nn.Conv2d(middle_channel, middle_channel, kernel_size = 3, stride= 1, padding = padding)
+        
+        self.bn2 = nn.BatchNorm2d(middle_channel)
+        self.conv3 = nn.Conv2d(middle_channel, output_channel, kernel_size=1, stride=1)
+        self.bn3 = nn.BatchNorm2d(output_channel)
+        self.relu = nn.ReLU(inplace=True)
+    
+    def forward(self, x):
+        residual = self.up(x)
+        # print(residual.shape)
+        x = self.relu(self.bn1(self.conv1(x)))
+        x = self.relu(self.bn2(self.conv2(x)))
+        x = self.bn3(self.conv3(x))
+        x = x+residual
+        return self.relu(x)
+
+class Resnet101BlockUp(nn.Module):
+    def __init__(self, input_channel, output_channel, 
+                       last_block = False,
+                       num_bottleneck = 2, 
+                       padding = 1, 
+                       bilinear = True):
+        super(Resnet101BlockUp, self).__init__()
+        list_bottlenecks = []
+        if last_block == True:
+            self.up_bottleneck = UpLayer(input_channel, output_channel)
+            list_bottlenecks.append(nn.Conv2d(output_channel*2, output_channel, kernel_size=1, stride=1))
+        else:
+            self.up_bottleneck = Resnet101Bottleneck(input_channel, input_channel//4, output_channel, up_sample=True)
+            bottleneck = Resnet101Bottleneck(input_channel, output_channel//4, output_channel, padding = padding)
+            list_bottlenecks.append(bottleneck)
+            for i in range(num_bottleneck-1):
+                bottleneck = Resnet101Bottleneck(output_channel, output_channel//4, output_channel, padding = padding)
+                list_bottlenecks.append(bottleneck)
+        self.blocks = nn.Sequential(*list_bottlenecks)
+    def forward(self, x1, x2):
+        x1 = self.up_bottleneck(x1)
+        x2 = crop_combine(x1, x2)
+        x = torch.cat([x1, x2], 1)
+        return self.blocks(x)
+            
