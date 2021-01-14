@@ -170,7 +170,7 @@ class ResnetUp(nn.Module):
             up(64*2, 1),
             nn.BatchNorm2d(1)
         )   
-        self.init_weight()
+        # self.init_weight()
     
     def init_weight(self):
         for m in self.modules():

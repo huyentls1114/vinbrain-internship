@@ -8,3 +8,4 @@
 
 #Result
 1. Demo notebook link: classifier/internship.ipynb
+6. Backbone version1: code vgg16, resnet18, resnet101
