@@ -65,8 +65,6 @@ class BasicBlockUp(nn.Module):
             residual = self.upsample(x)
         x = self.relu(self.bn1(self.conv1(x)))
         x = self.bn2(self.conv2(x))
-        if x.shape != residual.shape:
-            residual = nn.Conv2d(residual.shape[1], x.shape[1], kernel_size=1, stride=1)(residual)
         x+=residual
         return self.relu(x)
 class Bottleneck(nn.Module):
@@ -78,7 +76,8 @@ class Bottleneck(nn.Module):
                        type_up = "pixel_shuffle",
                        middle_channel = None):
         super(Bottleneck, self).__init__()
-        middle_channel = input_channel//self.expansion
+        if middle_channel is None:
+            middle_channel = input_channel//self.expansion
         self.conv1 = conv1x1(input_channel, middle_channel)
         self.bn1 = nn.BatchNorm2d(middle_channel)
         self.relu = nn.ReLU(inplace=True)
@@ -99,8 +98,7 @@ class Bottleneck(nn.Module):
         x = self.relu(self.bn2(self.conv2(x)))
         x = self.bn3(self.conv3(x))
         # import pdb; pdb.set_trace()
-        if x.shape != residual.shape:
-            residual = nn.Conv2d(residual.shape[1], x.shape[1], kernel_size=1, stride=1)(residual)
+        # print(x.shape, residual.shape)
         x+=residual
         return self.relu(x)
 
@@ -148,7 +146,7 @@ class ResnetLayerUp(nn.Module):
         )
         layers = []
         self.up_block = block(input_channel, output_channel, stride = stride, upsample = upsample, type_up = self.type_up)
-        self.first_block = block(output_channel*2, output_channel, middle_channel = output_channel//4)
+        self.first_block = block(output_channel*2, output_channel, upsample = conv1x1(output_channel*2, output_channel), middle_channel = output_channel//4)
         for i in range(2, num_block):
             layer = block(output_channel, output_channel, type_up = self.type_up)
             layers.append(layer)
