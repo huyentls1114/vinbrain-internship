@@ -7,6 +7,7 @@ from .block import Resnet18BlocksUp, UpLayer
 from .block import Resnet101BlockUp
 
 from fastai.vision.models.unet import DynamicUnet
+from fastai.layers import PixelShuffle_ICNR
 class Backbone:
     def __init__(self, encoder_args, decoder_args):
         self.encoder_args = encoder_args
@@ -50,13 +51,17 @@ class BackboneResnet18VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneResnet18VGG, self).__init__(encoder_args, decoder_args)        
         self.base_model = resnet18()
-        self.features_name = ["layer3", "layer2", "layer1","maxpool","relu"]
+        self.features_name = ["layer3", "layer2", "layer1","relu"]
         self.last_layer = "layer4"
         self.input_channel = 3
-        self.list_channels = [512, 256, 128, 64, 64, 64, 1]
+        self.list_channels = [512, 256, 128, 64, 64, 1]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
 
 
 class BackBoneResnet18(Backbone):
