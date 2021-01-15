@@ -49,15 +49,19 @@ class UpBlock(nn.Module):
                        batch_norm = True, 
                        padding = 1,
                        bilinear = True,
-                       pixel_shuffle = False):
+                       pixel_shuffle = False,
+                       middle_channel = None):
         super(UpBlock, self).__init__()
-
+        if middle_channel is None:
+            middle_channel = input_channel//2
+        if input_channel == output_channel:
+            middle_channel = input_channel
         if bilinear:
             self.up = nn.Sequential(
                 nn.Upsample(scale_factor=2,
                             mode = "bilinear",
                             align_corners=True),
-                nn.Conv2d(input_channel, input_channel//2, 3, padding=1)
+                nn.Conv2d(input_channel, middle_channel, 3, padding=1)
             )
         else:
             if pixel_shuffle:
@@ -70,6 +74,8 @@ class UpBlock(nn.Module):
                                         input_channel//2,
                                         kernel_size = 2,
                                         stride = 2)
+        if input_channel == output_channel:
+            input_channel = input_channel*2
         self.conv_block = VGG16Block([input_channel, output_channel, output_channel], batch_norm, padding)
     def forward(self, x1, x2):
         x1 = self.up(x1)

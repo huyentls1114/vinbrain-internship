@@ -7,6 +7,7 @@ from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
 from model.unet import Unet, UnetDynamic
 from model.backbone_resnet import BackboneResnet18
+from model.backbone import BackboneResnet18VGG
 from utils.utils import len_train_datatset
 
 #data config
@@ -40,11 +41,13 @@ num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet18,
+        "backbone_class": BackboneResnet18VGG,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
+            "bilinear":False, 
+            "pixel_shuffle":True
         }
     }
 }
@@ -69,7 +72,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet18_v2_CAWRLr_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet18VGG_v2_CAWRLr_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 

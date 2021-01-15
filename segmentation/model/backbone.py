@@ -46,6 +46,19 @@ class BackboneOriginal(Backbone):
         self.out_conv_class = Out
         self.initial_decoder()
 
+class BackboneResnet18VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneResnet18VGG, self).__init__(encoder_args, decoder_args)        
+        self.base_model = resnet18()
+        self.features_name = ["layer3", "layer2", "layer1","maxpool","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.list_channels = [512, 256, 128, 64, 64, 64, 1]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+
+
 class BackBoneResnet18(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackBoneResnet18, self).__init__(encoder_args, decoder_args)
