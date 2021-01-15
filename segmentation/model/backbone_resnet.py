@@ -114,17 +114,17 @@ class ResnetLayerUp(nn.Module):
         self.type_up = type_up
         self.last_layer = last_layer
         if last_layer:
-            self.first_block = block(input_channel*block.expansion, 64, stride = stride, upsample = up(input_channel*block.expansion, 64, stride = stride, kernel_size=1, type_ = self.type_up))
-            self.upsample = nn.Sequential(up(64, 64, type_=type_up), nn.BatchNorm2d(64))
-            self.relu = nn.ReLU(inplace= True)
+            self.upsample = nn.Sequential(up(input_channel, output_channel, type_=type_up), nn.BatchNorm2d(64))
+            self.first_block = block(input_channel*2, output_channel, stride = 1, upsample = conv1x1(input_channel*2, output_channel))
         else:
             self._make_layers(block, input_channel, output_channel, num_block, stride)
     def forward(self, x1, x2):
         if self.last_layer:
-            x1 = self.first_block(x1)
             x1 = self.upsample(x1)
+            # print(x1.shape)
             x1 = torch.cat([x1, x2], 1)
-            return self.relu(x1)
+            # print(x1.shape, x2.shape)
+            return self.first_block(x1)
         else:
             # import pdb; pdb.set_trace()
             x1 = self.up_block(x1)
@@ -137,16 +137,13 @@ class ResnetLayerUp(nn.Module):
                            output_channel,
                            num_block,
                            stride = 1):
-        input_channel = input_channel*block.expansion
-        output_channel = output_channel*block.expansion
-
         upsample = nn.Sequential(
             up(input_channel, output_channel, stride= stride, type_=self.type_up),
             nn.BatchNorm2d(output_channel)
         )
         layers = []
         self.up_block = block(input_channel, output_channel, stride = stride, upsample = upsample, type_up = self.type_up)
-        self.first_block = block(output_channel*2, output_channel, upsample = conv1x1(output_channel*2, output_channel), middle_channel = output_channel//4)
+        self.first_block = block(output_channel*2, output_channel, upsample = conv1x1(output_channel*2, output_channel), middle_channel = output_channel//block.expansion)
         for i in range(2, num_block):
             layer = block(output_channel, output_channel, type_up = self.type_up)
             layers.append(layer)
@@ -159,14 +156,15 @@ class ResnetUp(nn.Module):
         super(ResnetUp, self).__init__()
         self.type_up = type_up
         
-        self.layer1 = ResnetLayerUp(block, 128, 64, layers[-4], stride = 2, type_up =type_up)
-        self.layer2 = ResnetLayerUp(block, 256, 128, layers[-3], stride = 2, type_up =type_up)
-        self.layer3 = ResnetLayerUp(block, 512, 256, layers[-2], stride = 2, type_up =type_up)
+        self.layer1 = ResnetLayerUp(block, 128*block.expansion, 64*block.expansion, layers[-4], stride = 2, type_up =type_up)
+        self.layer2 = ResnetLayerUp(block, 256*block.expansion, 128*block.expansion, layers[-3], stride = 2, type_up =type_up)
+        self.layer3 = ResnetLayerUp(block, 512*block.expansion, 256*block.expansion, layers[-2], stride = 2, type_up =type_up)
         
-        self.up1 = ResnetLayerUp(block, 64, 64, layers[-4], stride = 1, type_up =type_up, last_layer=True)
-        self.up2 = nn.Sequential(
-            up(64*2, 1),
-            nn.BatchNorm2d(1)
+        self.up1 = ResnetLayerUp(block, 64*block.expansion, 64, 2, stride = 1, type_up =type_up)
+        self.up2 = ResnetLayerUp(block, 64, 64, 2, stride = 2, type_up =type_up, last_layer= True)
+        self.out_conv = nn.Sequential(
+            up(64, 64),
+            conv1x1(64, 1)
         )   
         # self.init_weight()
     
@@ -189,7 +187,7 @@ class BackboneResnet(Backbone):
         self.encoder_args = encoder_args
         self.decoder_args = decoder_args
         self.resnet_up = None
-        self.features_name = ["layer3","layer2","layer1","relu"]
+        self.features_name = ["layer3","layer2","layer1","maxpool","relu"]
         self.last_layer = "layer4"
 
     def initial_decoder(self):
@@ -198,7 +196,8 @@ class BackboneResnet(Backbone):
         self.blocks.append(self.resnet_up.layer2)
         self.blocks.append(self.resnet_up.layer1)
         self.blocks.append(self.resnet_up.up1)
-        self.out_conv = self.resnet_up.up2
+        self.blocks.append(self.resnet_up.up2)
+        self.out_conv = self.resnet_up.out_conv
 
 class BackboneResnet18(BackboneResnet):
     def __init__(self, encoder_args, decoder_args):
