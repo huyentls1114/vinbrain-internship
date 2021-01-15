@@ -25,7 +25,7 @@ class Unet(nn.Module):
         for i, block in enumerate(self.blocks):
             name = self.features_name[i]
             x = block(x, features_value[name])
-            print(name, x.shape)
+            # print(name, x.shape)
         x = self.out_conv(x)
         return x
 
@@ -33,7 +33,7 @@ class Unet(nn.Module):
         features_value = {}
         for name, child in self.base_model.named_children():
             x = child(x)
-            print(name, x.shape)
+            # print(name, x.shape)
             if name in self.features_name:
                 features_value[name] = x
             if name == self.backbone.last_layer:
