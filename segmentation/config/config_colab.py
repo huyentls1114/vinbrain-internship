@@ -41,11 +41,13 @@ num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneDense121,
+        "backbone_class": BackboneDensenet121VGG,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
         }
     }
 }
@@ -70,7 +72,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Densenet121_modified_CAWRLr_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Densenet121VGG_modified_CAWRLr_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
