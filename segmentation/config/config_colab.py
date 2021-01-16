@@ -9,6 +9,7 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
+from torch.optim.lr_scheduler import OneCycleLR
 
 #data config
 image_size = 256
@@ -61,7 +62,7 @@ num_epochs = 200
 metric = {
     "class":Dice_Score,
     "metric_args":{
-        "threshold":0.2,
+        "threshold":0.5,
         "epsilon":1e-4
     }
 }
@@ -72,7 +73,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_removelastCN_CAWRLr_Tmul2_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_removelastCN_OCLR_1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -84,14 +85,15 @@ optimizer = {
     }
 }
 
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-lr_scheduler = {
-    "class": CosineAnnealingWarmRestarts,
-    "metric":"epoch",
-    "step_type":"iteration",
+from torch.optim.lr_scheduler import OneCycleLR
+num_epochs = 30
+lr_schedule = {
+    "class":OneCycleLR,
+    "metric": None,
+    "step_type":"batch",
     "schedule_args":{
-        "T_0":1,
-        "T_mult":2,
-        "eta_min":1e-5,
-    }
+        "max_lr":0.01,
+        "epochs":configs.num_epochs,
+        "steps_per_epoch":configs.steps_per_epoch+1
+    }    
 }

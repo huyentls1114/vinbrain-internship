@@ -23,6 +23,20 @@ lr_scheduler = {
         "min_lr":1e-6
     }
 }
+
+#OneCycleLR
+from torch.optim.lr_scheduler import OneCycleLR
+configs.num_epochs = 30
+configs.lr_schedule = {
+    "class":OneCycleLR,
+    "metric": None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr":0.01,
+        "epochs":configs.num_epochs,
+        "steps_per_epoch":configs.steps_per_epoch+1
+    }    
+}
 # net
 from model.backbone import BackboneResnet18
 net = {
