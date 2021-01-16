@@ -85,6 +85,22 @@ net = {
         }
     }
 }
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneEfficientB0VGG,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
+
+
 #metric
 metric = {
     "class":Dice_Score,

@@ -9,6 +9,7 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
+from loss.loss import DiceLoss
 
 #data config
 image_size = 256
@@ -38,16 +39,17 @@ dataset = {
 
 #train config
 num_classes = 1
+from model.backbone import BackboneOriginal
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
+        "backbone_class": BackboneOriginal,
         "encoder_args":{
-            "pretrained":True           
+            "input_channel":1, 
+            "output_channel":1
         },
         "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
+            "bilinear": True
         }
     }
 }
@@ -67,12 +69,13 @@ metric = {
 }
 num_classes = 1
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": DiceLoss,
     "loss_args":{
+        "activation":nn.Sigmoid()
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_modified_CAWRLr_Tmul2_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_diceloss_CAWRLr_Tmul3_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
