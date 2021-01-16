@@ -19,8 +19,6 @@ class Unet(nn.Module):
         self.out_conv = self.backbone.out_conv
 
     def forward(self, x):
-        if x.shape[1] != self.backbone.input_channel:
-            x = torch.cat([x, x, x], 1)
         x, features_value = self.forward_backbone(x)
         # print(self.features_name)
         for i, block in enumerate(self.blocks):
@@ -32,6 +30,9 @@ class Unet(nn.Module):
 
     def forward_backbone(self, x):
         features_value = {}
+        features_value["x"] = x
+        if x.shape[1] != self.backbone.input_channel:
+            x = torch.cat([x, x, x], 1)
         for name, child in self.base_model.named_children():
             x = child(x)
             # print(name, x.shape)

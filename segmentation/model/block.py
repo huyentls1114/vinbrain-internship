@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from fastai.layers import PixelShuffle_ICNR 
 
 def crop_combine(x1, x2):
-    diffY = x2.size()[2] - x1.size()[1]
+    diffY = x2.size()[2] - x1.size()[2]
     diffX = x2.size()[3] - x1.size()[3]
     x2 = F.pad(x2, [
         -diffX//2, -diffX//2,
@@ -54,8 +54,6 @@ class UpBlock(nn.Module):
         super(UpBlock, self).__init__()
         if middle_channel is None:
             middle_channel = output_channel
-        if input_channel == output_channel:
-            middle_channel = input_channel
         if bilinear:
             self.up = nn.Sequential(
                 nn.Upsample(scale_factor=2,
@@ -74,15 +72,14 @@ class UpBlock(nn.Module):
                                         input_channel//2,
                                         kernel_size = 2,
                                         stride = 2)
-        if input_channel == output_channel:
-            input_channel = input_channel*2
-        if middle_channel == output_channel:
-            input_channel = output_channel*2
+        # if input_channel == output_channel:
+        #     input_channel = output_channel*2
+        # if middle_channel == output_channel:
+        input_channel = output_channel*2
         self.conv_block = VGG16Block([input_channel, output_channel, output_channel], batch_norm, padding)
     def forward(self, x1, x2):
         x1 = self.up(x1)
-
-        diffY = x2.size()[2] - x1.size()[1]
+        diffY = x2.size()[2] - x1.size()[2]
         diffX = x2.size()[3] - x1.size()[3]
         x2 = F.pad(x2, [
             -diffX//2, -diffX//2,
