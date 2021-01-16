@@ -73,7 +73,7 @@ def len_train_datatset(dataset_dict, transform, split_train_val):
         - split_train_val: ratio split
     '''
     DatasetClass = dataset_dict["class"]
-    train_dataset = DatasetClass(dataset_dict["argument"],transform = transform, mode = "train")
+    train_dataset = DatasetClass(dataset_dict["dataset_args"],transform = transform, mode = "train")
     return len(train_dataset)*split_train_val
 
 def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
