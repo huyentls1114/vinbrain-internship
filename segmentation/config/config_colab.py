@@ -72,7 +72,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_modified_CAWRLr_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_modified_CAWRLr_Tmul2_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -91,7 +91,7 @@ lr_scheduler = {
     "step_type":"iteration",
     "schedule_args":{
         "T_0":1,
-        "T_mult":3,
+        "T_mult":2,
         "eta_min":1e-5,
     }
 }
