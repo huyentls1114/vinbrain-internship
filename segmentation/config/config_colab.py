@@ -61,7 +61,7 @@ num_epochs = 200
 metric = {
     "class":Dice_Score,
     "metric_args":{
-        "threshold":0.5,
+        "threshold":0.2,
         "epsilon":1e-4
     }
 }
