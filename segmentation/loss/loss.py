@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+import torch.nn.functional as F
 
 class DiceLoss(nn.Module):
     def __init__(self, activation = nn.Sigmoid()):
@@ -17,4 +18,19 @@ class DiceLoss(nn.Module):
         dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
         return torch.mean(dice)    
 
-
+class FocalLoss(nn.Module):
+    def __init__(self, alpha = 0.25, gamma = 2):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.activation = nn.Sigmoid()
+    def forward(self, logits, ground_truth):
+        with torch.no_grad():
+            alpha = torch.empty_like(logits).fill_(1 - self.alpha)
+            alpha[ground_truth == 1] = self.alpha
+        probs = self.activation(logits)
+        pt = probs*ground_truth+(1-probs)*(1-ground_truth)
+        ce_loss = F.binary_cross_entropy_with_logits(logits, ground_truth, reduction="none")
+        loss = self.alpha*torch.pow(1-pt, self.gamma)*ce_loss
+        return loss.mean()
+        
