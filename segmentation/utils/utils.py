@@ -64,7 +64,7 @@ def save_loss_to_file(file_, epoch, loss_train, loss_val, acc_val, lr, step = 0)
     file_.writelines("\tLoss valid average %f, acc valid %f\n"%(loss_val, acc_val))
     file_.writelines("learning_rate %f\n"%(lr))
 
-def len_train_datatset(dataset_dict, transform, split_train_val):
+def len_train_datatset(dataset_dict, transform_image, transform_label, split_train_val):
     '''
     target: get train_dataset from unsplit dataset
     input:
@@ -73,7 +73,7 @@ def len_train_datatset(dataset_dict, transform, split_train_val):
         - split_train_val: ratio split
     '''
     DatasetClass = dataset_dict["class"]
-    train_dataset = DatasetClass(dataset_dict["dataset_args"],transform = transform, mode = "train")
+    train_dataset = DatasetClass(dataset_dict["dataset_args"],transform_image = transform_image, transform_label= transform_label, mode = "train")
     return len(train_dataset)*split_train_val
 
 def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
