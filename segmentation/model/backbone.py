@@ -114,15 +114,15 @@ class BackboneEfficientB0VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneEfficientB0VGG, self).__init__(encoder_args, decoder_args)        
         self.create_model(**encoder_args)
-        self.features_name = ["blocks_4","blocks_2","blocks_1","act1", "x"]
+        self.features_name = ["blocks_4","blocks_2","blocks_1","act1"]
         self.last_layer = "act2"
         self.input_channel = 3
-        self.list_channels = [1280, 112, 40, 24, 32, 1, 1]
+        self.list_channels = [1280, 112, 40, 24, 32, 1]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
         self.out_conv = nn.Sequential(
-            # PixelShuffle_ICNR(self.list_channels[-2]),
+            PixelShuffle_ICNR(self.list_channels[-2]),
             nn.Conv2d(self.list_channels[-2], self.list_channels[-1], kernel_size = 1, stride = 1)
         )
     def create_model(self, **encoder_args):
