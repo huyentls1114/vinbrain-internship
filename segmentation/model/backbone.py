@@ -1,5 +1,5 @@
 import torch.nn as nn
-from torchvision.models import resnet18, resnet101
+from torchvision.models import resnet18, resnet101, densenet161, densenet121
 
 from .unet_vgg import UnetVGG
 from .block import VGG16Block, UpBlock, Out
@@ -62,7 +62,51 @@ class BackboneResnet18VGG(Backbone):
             PixelShuffle_ICNR(64),
             nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
-
+class BackboneResnet18VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneResnet18VGG, self).__init__(encoder_args, decoder_args)        
+        self.base_model = resnet18()
+        self.features_name = ["layer3", "layer2", "layer1","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.list_channels = [512, 256, 128, 64, 64, 1]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
+class BackboneDensenet161VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneDensenet161VGG, self).__init__(encoder_args, decoder_args)        
+        self.base_model = densenet161(**encoder_args).features
+        self.features_name = ["denseblock3","denseblock2","denseblock1","relu0"]
+        self.last_layer = "denseblock4"
+        self.input_channel = 3
+        self.list_channels = [2208, 2112, 768, 384, 96, 1]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(96),
+            nn.Conv2d(96, 1, kernel_size = 1, stride = 1)
+        )
+class BackboneDensenet121VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneDensenet121VGG, self).__init__(encoder_args, decoder_args)        
+        self.base_model = densenet121(**encoder_args).features
+        self.features_name = ["denseblock3","denseblock2","denseblock1","relu0"]
+        self.last_layer = "denseblock4"
+        self.input_channel = 3
+        self.list_channels = [1024, 1024, 512, 256, 64, 1]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(self.list_channels[-2]),
+            nn.Conv2d(self.list_channels[-2], self.list_channels[-1], kernel_size = 1, stride = 1)
+        )
 
 class BackBoneResnet18(Backbone):
     def __init__(self, encoder_args, decoder_args):

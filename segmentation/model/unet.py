@@ -22,6 +22,7 @@ class Unet(nn.Module):
         if x.shape[1] != self.backbone.input_channel:
             x = torch.cat([x, x, x], 1)
         x, features_value = self.forward_backbone(x)
+        # print(self.features_name)
         for i, block in enumerate(self.blocks):
             name = self.features_name[i]
             x = block(x, features_value[name])

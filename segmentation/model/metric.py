@@ -11,6 +11,7 @@ class Dice_Score:
         ground_truth = ground_truth.view(ground_truth.shape[0], -1)
         intersection = torch.sum(predict*ground_truth, 1)
         union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
+        n = (2*intersection + self.epsilon)/( union + self.epsilon)
         return torch.mean((2*intersection + self.epsilon)/( union + self.epsilon))    
 
 def _threshold(x, threshold = 0.5):

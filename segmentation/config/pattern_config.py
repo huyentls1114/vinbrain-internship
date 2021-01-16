@@ -73,6 +73,18 @@ net = {
         }
     }
 }
+from model.backbone_resnet import BackboneResnet18
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneResnet18,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+        }
+    }
+}
 #metric
 metric = {
     "class":Dice_Score,

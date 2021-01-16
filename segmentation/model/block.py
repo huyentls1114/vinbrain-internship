@@ -53,7 +53,7 @@ class UpBlock(nn.Module):
                        middle_channel = None):
         super(UpBlock, self).__init__()
         if middle_channel is None:
-            middle_channel = input_channel//2
+            middle_channel = output_channel
         if input_channel == output_channel:
             middle_channel = input_channel
         if bilinear:
@@ -76,6 +76,8 @@ class UpBlock(nn.Module):
                                         stride = 2)
         if input_channel == output_channel:
             input_channel = input_channel*2
+        if middle_channel == output_channel:
+            input_channel = output_channel*2
         self.conv_block = VGG16Block([input_channel, output_channel, output_channel], batch_norm, padding)
     def forward(self, x1, x2):
         x1 = self.up(x1)

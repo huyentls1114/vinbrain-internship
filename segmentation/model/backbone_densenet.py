@@ -84,13 +84,6 @@ class _Up(nn.Module):
             self.up = nn.ConvTranspose2d(input_channel, output_channel, kernel_size = 2, stride = stride)
     def forward(self, x):
         return self.up(x)
-class _Transition(nn.Sequential):
-    def __init__(self, input_channel, output_channel, type_up = "pixel_shuffle"):
-        super(_Transition, self).__init__()
-        self.add_module("norm", nn.BatchNorm2d(input_channel))
-        self.add_module("relu", nn.ReLU(inplace=True))
-        self.add_module("conv", nn.Conv2d(input_channel, output_channel, kernel_size=1, stride=1, bias=False))
-        self.add_module("up", _Up(output_channel, output_channel, type_=type_up))
 
 class _DenseBlockUp(nn.Module):
     def __init__(self, num_layers,
@@ -103,16 +96,19 @@ class _DenseBlockUp(nn.Module):
                        last_layer = False):
         super(_DenseBlockUp, self).__init__()
         self.up = _Up(input_channel, output_channel, type_ = type_up)
+        self.conv = nn.Conv2d(output_channel*2, output_channel, kernel_size = 1, stride=1, bias=False)
         if last_layer:
-            self.dense_block = nn.Conv2d(output_channel*2, output_channel, kernel_size = 1, stride=1, bias=False)
-        self.dense_block = _DenseBlock(num_layers = num_layers, 
-                                       input_channel = output_channel*2,
+            self.dense_block = _Up(output_channel, output_channel, type_=type_up)
+        else:
+            self.dense_block = _DenseBlock(num_layers = num_layers, 
+                                       input_channel = output_channel,
                                        bottleneck_size = bottleneck_size,
                                        growth_rate = growth_rate,
                                        drop_rate = drop_rate)
     def forward(self, x1, x2):
         x1 = self.up(x1)
         x1 = torch.cat([x1, x2], 1)
+        x1 = self.conv(x1)
         return self.dense_block(x1)
 
 class BackboneDense(Backbone):
@@ -136,12 +132,11 @@ class BackboneDense(Backbone):
             output_channel = (input_channel + self.growth_rate*num_layer)
             input_channel = output_channel//2
             output_channel_encoder.append(output_channel)
-        # import pdb; pdb.set_trace()
         self.blocks = nn.ModuleList()
-        for i in range(len(self.block_configs)-1, 0, -1):
+        input_channel = output_channel_encoder[-1]
+        for i in range(len(self.block_configs)-2, -1, -1):
             num_layer = self.block_configs[i]
-            input_channel = output_channel_encoder[i]
-            output_channel = output_channel_encoder[i-1]
+            output_channel = output_channel_encoder[i]
             block = _DenseBlockUp(num_layer,
                                   input_channel,
                                   output_channel,
@@ -150,18 +145,13 @@ class BackboneDense(Backbone):
                                   drop_rate = self.drop_rate,
                                   type_up = self.type_up)
             self.blocks.append(block)
+            input_channel = output_channel + num_layer*self.growth_rate
         up1 = _DenseBlockUp(num_layer, 
-                            input_channel = output_channel, 
-                            output_channel = self.input_channel_dense1,
-                            type_up= self.type_up,
-                            last_layer= True)
-        up2 = _DenseBlockUp(num_layer, 
-                            input_channel = self.input_channel_dense1, 
+                            input_channel = input_channel, 
                             output_channel = self.input_channel_dense1,
                             type_up= self.type_up,
                             last_layer= True)
         self.blocks.append(up1)
-        self.blocks.append(up2)
         self.out_conv = nn.Conv2d(self.input_channel_dense1, 1, kernel_size=1, stride=1)
             
 class BackboneDense121(BackboneDense):
