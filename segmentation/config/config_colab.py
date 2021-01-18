@@ -10,6 +10,7 @@ from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
 from loss.loss import DiceLoss
+from torchvision import FocalLoss
 
 #data config
 image_size = 256
@@ -58,7 +59,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 200
+# num_epochs = 200
 
 metric = {
     "class":Dice_Score,
@@ -67,15 +68,14 @@ metric = {
         "epsilon":1e-4
     }
 }
-num_classes = 1
+from loss.loss import FocalLoss
 loss_function = {
-    "class": DiceLoss,
+    "class": FocalLoss,
     "loss_args":{
-        "activation":nn.Sigmoid()
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_diceloss_CAWRLr_Tmul3_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_focaloss_onecyle_2e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 

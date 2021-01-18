@@ -38,7 +38,8 @@ configs.lr_schedule = {
     }    
 }
 # net
-from model.backbone import BackboneResnet18
+num_classes = 1
+from model.backbone import BackboneOriginal
 net = {
     "class":Unet,
     "net_args":{
@@ -49,7 +50,6 @@ net = {
         }
     }
 }
-num_classes = 1
 net = {
     "class":UnetDynamic,
     "net_args":{
@@ -131,7 +131,13 @@ loss_function = {
     }
 }
 
-
+num_classes = 1
+loss_function = {
+    "class": DiceLoss,
+    "loss_args":{
+        "activation":nn.Sigmoid()
+    }
+}
 #optimizer
 optimizer = {
     "class":Adam,

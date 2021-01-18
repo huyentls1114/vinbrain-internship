@@ -34,12 +34,12 @@ dataset = {
 }
 
 #train config
+from model.backbone import BackboneOriginal
 num_classes = 1
-
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackBoneResnet101,
+        "backbone_class": BackboneOriginal,
         "encoder_args":{},
         "decoder_args":{
             "bilinear": True
@@ -50,7 +50,7 @@ net = {
 device = "cpu"
 gpu_id = 0
 
-batch_size = 4
+batch_size = 16
 num_epochs = 10
 
 metric = {
@@ -61,8 +61,10 @@ metric = {
     }
 }
 num_classes = 1
+
+from loss.loss import FocalLoss
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": FocalLoss,
     "loss_args":{
     }
 }
