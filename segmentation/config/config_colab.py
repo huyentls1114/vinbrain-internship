@@ -72,7 +72,7 @@ loss_function = {
     "class": FocalLoss,
     "loss_args":{
         "alpha": 0.98,
-        "gamma":2
+        "gamma":1
     }
 }
 
