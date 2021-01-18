@@ -71,8 +71,8 @@ from loss.loss import FocalLoss
 loss_function = {
     "class": FocalLoss,
     "loss_args":{
-        "alpha": 0.5,
-        "gamma": 3
+        "alpha": 0.98,
+        "gamma": 1
     }
 }
 
@@ -91,14 +91,14 @@ optimizer = {
 from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
 num_epochs = 200
-# lr_scheduler = None
-lr_scheduler = {
-    "class":OneCycleLR,
-    "metric": None,
-    "step_type":"batch",
-    "schedule_args":{
-        "max_lr":0.009,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
-    }    
-}
+lr_scheduler = None
+# lr_scheduler = {
+#     "class":OneCycleLR,
+#     "metric": None,
+#     "step_type":"batch",
+#     "schedule_args":{
+#         "max_lr":0.009,
+#         "epochs":num_epochs,
+#         "steps_per_epoch":steps_per_epoch+1
+#     }    
+# }
