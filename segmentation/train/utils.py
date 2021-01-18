@@ -1,5 +1,6 @@
+import math
 def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
-    num = len(trainer.train_loader)-1
+    num = len(trainer.data.train_loader)-1
     mult = (final_value / init_value) ** (1/num)
     lr = init_value
     trainer.optimizer.param_groups[0]['lr'] = lr
@@ -9,16 +10,17 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
     losses = []
     log_lrs = []
     i = 0
-    for data in trainer.train_loader:
+    for data in trainer.data.train_loader:
         batch_num += 1
         #As before, get the loss for this mini-batch of inputs/outputs
         inputs,labels = data
         inputs, labels = inputs.to(trainer.device), labels.to(trainer.device)
+        # print(inputs.shape)
         trainer.optimizer.zero_grad()
         outputs = trainer.net(inputs)
-        loss = trainer.criterion(outputs, labels)
+        loss = trainer.crition(outputs, labels)
         #Compute the smoothed loss
-        avg_loss = beta * avg_loss + (1-beta) *loss.dettach[0]
+        avg_loss = beta * avg_loss + (1-beta) *loss.item()
         smoothed_loss = avg_loss / (1 - beta**batch_num)
         #Stop if the loss is exploding
         if batch_num > 1 and smoothed_loss > 4 * best_loss:
