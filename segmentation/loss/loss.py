@@ -26,6 +26,21 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
     def forward(self, inputs, targets):
         return sigmoid_focal_loss(inputs, targets, self.alpha, self.gamma, reduction="mean")
+class FocalLossWithLogits(nn.Module):
+    def __init__(self, alpha = 0.25, gamma = 2):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+    def forward(self, inputs, targets):
+        probs = torch.sigmoid(inputs)
+        pt = probs*targets+(1-probs)*(1-targets)
+        bce = F.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
+        loss = ((1-pt)**self.gamma)*loss
+
+        alpha = self.alpha*targets+(1-self.alpha)*(1-targets)
+        loss = alpha*loss
+        return loss.mean()
+
 # class FocalLoss(nn.Module):
 #     def __init__(self, alpha = 0.25, gamma = 2):
 #         super(FocalLoss, self).__init__()

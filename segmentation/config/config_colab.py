@@ -65,14 +65,14 @@ metric = {
         "epsilon":1e-4
     }
 }
-from loss.loss import FocalLoss
+from loss.loss import FocalLossWithLogits
 loss_function = {
-    "class": FocalLoss,
+    "class": FocalLossWithLogits,
     "loss_args":{
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_focaloss_onecyle_2e-2"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_focaloss2_onecyle_2e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
