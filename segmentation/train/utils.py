@@ -37,7 +37,7 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
         #Update the lr for the next step
         lr *= mult
         trainer.optimizer.param_groups[0]['lr'] = lr
-        print(i, lr, avg_loss)
+        # print(i, lr, avg_loss)
         i+=1
     return log_lrs, losses
 
