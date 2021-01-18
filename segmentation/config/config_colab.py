@@ -66,7 +66,7 @@ metric = {
 }
 from loss.loss import FocalLoss
 loss_function = {
-    "class": nn.BCELoss,
+    "class": nn.BCEWithLogitsLoss,
     "loss_args":{
     }
 }
