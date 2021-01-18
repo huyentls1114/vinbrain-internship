@@ -71,10 +71,12 @@ from loss.loss import FocalLoss
 loss_function = {
     "class": FocalLoss,
     "loss_args":{
+        "alpha": 0.98,
+        "gamma":1
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle_2e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle0.98_0.02_2e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -94,7 +96,7 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":0.002,
+        "max_lr":6*1e-2,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1
     }    

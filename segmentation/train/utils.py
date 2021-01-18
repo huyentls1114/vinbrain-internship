@@ -38,3 +38,14 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
         print(i, lr, avg_loss)
         i+=1
     return log_lrs, losses
+
+def caculate_alpha_focalloss(trainer):
+    import torch
+    negative = 0
+    positive = 0
+    for data in trainer.data.train_loader:
+        #As before, get the loss for this mini-batch of inputs/outputs
+        inputs,labels = data
+        negative += torch.sum(labels ==0)
+        positive += torch.sum(labels==1)
+    return positive/negative
