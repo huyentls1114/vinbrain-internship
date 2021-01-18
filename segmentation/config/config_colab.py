@@ -65,9 +65,9 @@ metric = {
         "epsilon":1e-4
     }
 }
-from loss.loss import FocalLossWithLogits
+from loss.loss import DiceLoss
 loss_function = {
-    "class": FocalLossWithLogits,
+    "class": DiceLoss,
     "loss_args":{
     }
 }

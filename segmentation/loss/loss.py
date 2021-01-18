@@ -3,13 +3,13 @@ import torch
 import torch.nn.functional as F
 
 class DiceLoss(nn.Module):
-    def __init__(self, activation = nn.Sigmoid()):
+    def __init__(self, activation = nn.Sigmoid(), epsilon = 1e-4):
         super(DiceLoss, self).__init__()
-        
+        self.epsilon = epsilon
         self.activation = activation
 
     def forward(self, predict, ground_truth):
-        if activation is not None:
+        if self.activation is not None:
             predict = self.activation(predict)
         predict = predict.view(predict.shape[0], -1)
         ground_truth = ground_truth.view(ground_truth.shape[0], -1)
@@ -26,6 +26,7 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
     def forward(self, inputs, targets):
         return sigmoid_focal_loss(inputs, targets, self.alpha, self.gamma, reduction="mean")
+
 class FocalLossWithLogits(nn.Module):
     def __init__(self, alpha = 0.25, gamma = 2):
         super(FocalLossWithLogits, self).__init__()
