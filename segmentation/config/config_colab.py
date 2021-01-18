@@ -45,8 +45,6 @@ net = {
     "net_args":{
         "backbone_class": BackboneOriginal,
         "encoder_args":{
-            "input_channel":1, 
-            "output_channel":1
         },
         "decoder_args":{
             "bilinear": True
