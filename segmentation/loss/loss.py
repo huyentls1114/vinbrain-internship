@@ -35,7 +35,7 @@ class FocalLossWithLogits(nn.Module):
         probs = torch.sigmoid(inputs)
         pt = probs*targets+(1-probs)*(1-targets)
         bce = F.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
-        loss = ((1-pt)**self.gamma)*loss
+        loss = ((1-pt)**self.gamma)*bce
 
         alpha = self.alpha*targets+(1-self.alpha)*(1-targets)
         loss = alpha*loss
