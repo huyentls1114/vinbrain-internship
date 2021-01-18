@@ -39,16 +39,14 @@ dataset = {
 
 #train config
 num_classes = 1
+from model.backbone import BackboneOriginal
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
-        "encoder_args":{
-            "pretrained":True           
-        },
+        "backbone_class": BackboneOriginal,
+        "encoder_args":{},
         "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
+            "bilinear": True
         }
     }
 }
@@ -68,12 +66,12 @@ metric = {
 }
 from loss.loss import FocalLoss
 loss_function = {
-    "class": FocalLoss,
+    "class": nn.BCELoss,
     "loss_args":{
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_focalloss_onecyle_2e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_onecyle_2e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
