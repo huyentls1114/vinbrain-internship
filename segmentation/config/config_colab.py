@@ -96,7 +96,7 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":1e-2,
+        "max_lr":1e-1,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1
     }    
