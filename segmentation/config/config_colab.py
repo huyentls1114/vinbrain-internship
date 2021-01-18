@@ -10,7 +10,6 @@ from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
 from loss.loss import DiceLoss
-from torchvision import FocalLoss
 
 #data config
 image_size = 256
