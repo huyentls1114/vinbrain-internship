@@ -72,11 +72,11 @@ loss_function = {
     "class": FocalLoss,
     "loss_args":{
         "alpha": 0.98,
-        "gamma": 1
+        "gamma": 0
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle0.5_3_2e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle0.98_0_2e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -92,13 +92,13 @@ from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
 num_epochs = 200
 lr_scheduler = None
-lr_scheduler = {
-    "class":OneCycleLR,
-    "metric": None,
-    "step_type":"batch",
-    "schedule_args":{
-        "max_lr":0.005,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
-    }    
-}
+# lr_scheduler = {
+#     "class":OneCycleLR,
+#     "metric": None,
+#     "step_type":"batch",
+#     "schedule_args":{
+#         "max_lr":0.005,
+#         "epochs":num_epochs,
+#         "steps_per_epoch":steps_per_epoch+1
+#     }    
+# }
