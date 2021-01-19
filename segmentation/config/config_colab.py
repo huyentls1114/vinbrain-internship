@@ -74,7 +74,7 @@ loss_function = {
         "activation":nn.Sigmoid()
     }
 }
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle_1e-2_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle_1e-3_1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
