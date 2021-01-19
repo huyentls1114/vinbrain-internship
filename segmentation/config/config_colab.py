@@ -100,6 +100,6 @@ lr_scheduler = {
         "max_lr":1e-2,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1,
-        "final_div_factor ":1e-3,
+        "final_div_factor":1e-3,
     }    
 }
