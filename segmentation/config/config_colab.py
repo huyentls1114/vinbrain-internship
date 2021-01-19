@@ -5,8 +5,11 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
-from model.unet import Unet
-from model.backbone import BackboneOriginal, BackBoneResnet18
+from model.unet import Unet, UnetDynamic
+from model.backbone_densenet import BackboneDense121
+from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
+from utils.utils import len_train_datatset
+from loss.loss import DiceLoss
 
 #data config
 image_size = 256
@@ -36,12 +39,14 @@ dataset = {
 
 #train config
 num_classes = 1
+from model.backbone import BackboneOriginal
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackBoneResnet18,
+        "backbone_class": BackboneOriginal,
         "encoder_args":{
-            "padding" : 1,            
+            "input_channel":1, 
+            "output_channel":1
         },
         "decoder_args":{
             "bilinear": True
@@ -53,7 +58,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 50
+num_epochs = 200
 
 metric = {
     "class":Dice_Score,
@@ -64,33 +69,34 @@ metric = {
 }
 num_classes = 1
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": DiceLoss,
     "loss_args":{
+        "activation":nn.Sigmoid()
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_Resnet_pretrained"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_diceloss_CAWRLr_Tmul3_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-4
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
+
+from torch.optim.lr_scheduler import OneCycleLR
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
+num_epochs = 100
 lr_scheduler = {
-    "class": ReduceLROnPlateau,
-    "metric":"val_loss",
-    "step_type":"epoch",
+    "class":OneCycleLR,
+    "metric": None,
+    "step_type":"batch",
     "schedule_args":{
-        "mode":"min",
-        "factor":0.5,
-        "patience":4,
-        "threshold":1e-2,
-        "min_lr":1e-5
-    }
+        "max_lr":0.002,
+        "epochs":num_epochs,
+        "steps_per_epoch":steps_per_epoch+1
+    }    
 }
-steps_save_loss = 100
-steps_save_image = 100

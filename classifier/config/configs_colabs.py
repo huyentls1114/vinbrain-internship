@@ -84,7 +84,7 @@ steps_save_loss = 100
 lr_schedule = {
     "class": OneCycleLR,
     "metric":None,
-    "step_type":"batch",
+    "step_type":"iteration",
     "schedule_args":{
         "max_lr":.0001,
         "epochs": num_epochs,

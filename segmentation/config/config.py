@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
 from model.unet import Unet
-from model.backbone import BackboneOriginal, BackBoneResnet18
+from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 #data config
 image_size = 192
 transform_train = transforms.Compose([
@@ -39,7 +39,7 @@ num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneOriginal,
+        "backbone_class": BackBoneResnet101,
         "encoder_args":{},
         "decoder_args":{
             "bilinear": True
@@ -87,7 +87,7 @@ lr_scheduler = {
         "factor":0.5,
         "patience":4,
         "threshold":1e-2,
-        "min_lr":1-5
+        "min_lr":1e-5
     }
 }
 steps_save_loss = 2
