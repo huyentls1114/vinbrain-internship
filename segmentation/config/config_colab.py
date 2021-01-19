@@ -13,6 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 
 #data config
 image_size = 256
+
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(image_size),
@@ -33,7 +34,8 @@ transform_label = transforms.Compose([
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"/content/data/BrainTumor"
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation":None
     }
 }
 
@@ -74,7 +76,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_diceloss_OCLR_2e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_diceloss_OCLR_1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -94,7 +96,7 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":0.002,
+        "max_lr":0.001,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1
     }    

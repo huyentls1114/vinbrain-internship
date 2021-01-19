@@ -12,11 +12,14 @@ import torch
 class BrainTumorDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         self.input_folder = dataset_args["input_folder"]
+        self.augmentation = dataset_args["augmentation"]
+        self.mode = mode
         self.image_folder = os.path.join(self.input_folder, "images")
         self.mask_folder = os.path.join(self.input_folder, "masks")
         self.list_img_name = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
         self.transform_image = transform_image
         self.transform_label = transform_label
+        
     def __len__(self):
         return len(self.list_img_name)
     
@@ -29,6 +32,9 @@ class BrainTumorDataset(Dataset):
         mask_path = os.path.join(self.mask_folder, img_name)
         mask = plt.imread(mask_path)
         mask = mask[:, :, 0]
+
+        if (self.mode == "train") and (self.augmentation is not None):
+            image, mask = self.augmentation(image, mask)
         return self.transform_image(image), self.transform_label(mask)
     
     def load_sample(self, batch_size = 4):
