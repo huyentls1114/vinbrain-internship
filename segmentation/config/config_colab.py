@@ -9,7 +9,7 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
-from loss.loss import DiceLoss
+from torch.optim.lr_scheduler import OneCycleLR
 
 #data config
 image_size = 256
@@ -39,7 +39,6 @@ dataset = {
 
 #train config
 num_classes = 1
-from model.backbone import BackboneEfficientB0VGG
 net = {
     "class":Unet,
     "net_args":{
@@ -58,7 +57,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-# num_epochs = 200
+num_epochs = 200
 
 metric = {
     "class":Dice_Score,
@@ -67,14 +66,15 @@ metric = {
         "epsilon":1e-4
     }
 }
+num_classes = 1
 from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
-        "activation":nn.Sigmoid()
     }
 }
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_diceloss_onecyle_1e-3_1e-4"
+
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_EfficientB0VGG_diceloss_OCLR_2e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -89,14 +89,13 @@ optimizer = {
 from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
 num_epochs = 100
-lr_scheduler = None
 lr_scheduler = {
     "class":OneCycleLR,
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":0.001,
+        "max_lr":0.002,
         "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1,
+        "steps_per_epoch":steps_per_epoch+1
     }    
 }
