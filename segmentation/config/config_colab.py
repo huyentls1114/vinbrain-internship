@@ -90,14 +90,14 @@ from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
 num_epochs = 200
 lr_scheduler = None
-# lr_scheduler = {
-#     "class":OneCycleLR,
-#     "metric": None,
-#     "step_type":"batch",
-#     "schedule_args":{
-#         "max_lr":1e-2,
-#         "epochs":num_epochs,
-#         "steps_per_epoch":steps_per_epoch+1,
-#         "final_div_factor":1e-3,
-#     }    
-# }
+lr_scheduler = {
+    "class":OneCycleLR,
+    "metric": None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr":0.02,
+        "epochs":num_epochs,
+        "steps_per_epoch":steps_per_epoch+1,
+        "final_div_factor":0.005,
+    }    
+}
