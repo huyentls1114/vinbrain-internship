@@ -67,15 +67,13 @@ metric = {
         "epsilon":1e-4
     }
 }
-from loss.loss import FocalLoss
+from loss.loss import DiceLoss
 loss_function = {
-    "class": FocalLoss,
+    "class": DiceLoss,
     "loss_args":{
-        "alpha": 0.98,
-        "gamma": 0
+        "activation":nn.Sigmoid()
     }
 }
-
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle0.98_0_2e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"

@@ -132,12 +132,23 @@ loss_function = {
 }
 
 num_classes = 1
+from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
         "activation":nn.Sigmoid()
     }
 }
+
+from loss.loss import FocalLoss
+loss_function = {
+    "class": FocalLoss,
+    "loss_args":{
+        "alpha": 0.98,
+        "gamma": 0
+    }
+}
+
 #optimizer
 optimizer = {
     "class":Adam,
