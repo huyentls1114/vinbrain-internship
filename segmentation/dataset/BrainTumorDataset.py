@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import cv2
 import torch
+from .transform import ComposeTransform
+import torchvision.transforms as transforms
 
 class BrainTumorDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
@@ -27,16 +29,16 @@ class BrainTumorDataset(Dataset):
         img_name = self.list_img_name[idx]
         img_path = os.path.join(self.image_folder, img_name)
         image = plt.imread(img_path)
-        image = image[:, :, 0]
+        image = transforms.ToTensor()(np.array(image[:, :, 0]))
 
         mask_path = os.path.join(self.mask_folder, img_name)
         mask = plt.imread(mask_path)
-        mask = mask[:, :, 0]
+        mask = transforms.ToTensor()(np.array(mask[:, :, 0]))
 
         if (self.mode == "train") and (self.augmentation is not None):
-            image, mask = self.augmentation(image, mask)
+            compose_transform = ComposeTransform(self.augmentation)
+            image, mask = compose_transform(image, mask)
         return self.transform_image(image), self.transform_label(mask)
-    
     def load_sample(self, batch_size = 4):
         list_imgs = []
         list_masks = []

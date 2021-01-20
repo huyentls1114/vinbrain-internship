@@ -10,26 +10,29 @@ from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 #data config
 image_size = 192
 transform_train = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    # transforms.ToTensor(),
+    transforms.Resize(image_size)
+    
 ])
 transform_test = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    # transforms.ToTensor(),
+    transforms.Resize(image_size)
 
 ])
 transform_label = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    # transforms.ToTensor(),
+    transforms.Resize(image_size)
 ])
 
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"E:\data\BrainTumor"
+        "input_folder":"E:\data\BrainTumor",
+        "augmentation": transforms.Compose([
+            transforms.RandomCrop(500),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip()
+        ])
     }
 }
 
@@ -50,7 +53,7 @@ net = {
 device = "cpu"
 gpu_id = 0
 
-batch_size = 16
+batch_size = 4
 num_epochs = 10
 
 metric = {
