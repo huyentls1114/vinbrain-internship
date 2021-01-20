@@ -29,6 +29,7 @@ dataset = {
     "dataset_args":{
         "input_folder":"/content/data/BrainTumor",
         "augmentation":transforms.Compose([
+            transforms.Resize(512),
             transforms.RandomCrop(450),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip()
