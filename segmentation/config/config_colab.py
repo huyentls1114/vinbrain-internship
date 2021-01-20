@@ -43,18 +43,16 @@ dataset = {
 }
 
 #train config
-from model.backbone import BackboneEfficientB0VGG
+from model.backbone_densenet import BackboneDense121
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
+        "backbone_class": BackboneDense121,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
         }
     }
 }
@@ -80,7 +78,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_diceloss_OCLR_0.001_augment1"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneDense121_diceloss_OCLR_0.001_augment1"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
