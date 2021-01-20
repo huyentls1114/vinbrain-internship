@@ -163,3 +163,15 @@ dataset = {
         "input_folder":"E:\data\BrainTumor"
     }
 }
+dataset = {
+    "class": BrainTumorDataset,
+    "dataset_args":{
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
+        ])
+    }
+}
