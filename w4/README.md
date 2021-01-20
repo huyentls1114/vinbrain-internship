@@ -5,3 +5,7 @@
 4. Learn and implement Focal Loss.
 5. Achieve 80% dicescore on w3 test set.
 
+Week4:
+- Code backbone resnetTemplate, densenetTemplate
+- Code efficientnet, densenet vgg
+- Train and compair result, experiments with multi lr-scheduler and lr, backbone
