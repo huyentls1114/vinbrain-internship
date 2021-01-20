@@ -102,6 +102,7 @@ lr_scheduler = {
     "schedule_args":{
         "max_lr":0.001,
         "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
+        "steps_per_epoch":steps_per_epoch+1,
+        "final_div_factor":10,
     }    
 }
