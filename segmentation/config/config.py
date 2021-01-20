@@ -10,28 +10,29 @@ from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 #data config
 image_size = 192
 transform_train = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
-    
 ])
 transform_test = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
-
 ])
 transform_label = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 
+import albumentations as A
+from dataset.transform import *
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
         "input_folder":"E:\data\BrainTumor",
-        "augmentation": transforms.Compose([
-            transforms.RandomCrop(500),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip()
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
         ])
     }
 }

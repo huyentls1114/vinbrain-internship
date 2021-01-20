@@ -10,40 +10,45 @@ from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
 from torch.optim.lr_scheduler import OneCycleLR
-
+import albumentations as A
 #data config
 image_size = 256
 
 transform_train = transforms.Compose([
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 transform_test = transforms.Compose([
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 
+import albumentations as A
+from dataset.transform import *
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"/content/data/BrainTumor",
-        "augmentation":transforms.Compose([
-            transforms.Resize(512),
-            transforms.RandomCrop(450),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip()
+        "input_folder":"E:\data\BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
         ])
     }
 }
 
 #train config
-from model.backbone_densenet import BackboneDense121
+from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneDense121,
+        "backbone_class": BackboneEfficientB0VGG,
         "encoder_args":{
             "pretrained":True           
         },
@@ -75,7 +80,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneDense121_diceloss_OCLR_0.01_augment1"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneEfficientB0VGG_diceloss_OCLR_0.001_augment1"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 

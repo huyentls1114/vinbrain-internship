@@ -8,13 +8,15 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import cv2
 import torch
-from .transform import ComposeTransform
 import torchvision.transforms as transforms
 
 class BrainTumorDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         self.input_folder = dataset_args["input_folder"]
-        self.augmentation = dataset_args["augmentation"]
+        if "augmentation" in dataset_args.keys():
+            self.augmentation = dataset_args["augmentation"]
+        else:
+            self.augmentation = None
         self.mode = mode
         self.image_folder = os.path.join(self.input_folder, "images")
         self.mask_folder = os.path.join(self.input_folder, "masks")
@@ -29,16 +31,18 @@ class BrainTumorDataset(Dataset):
         img_name = self.list_img_name[idx]
         img_path = os.path.join(self.image_folder, img_name)
         image = plt.imread(img_path)
-        image = transforms.ToTensor()(np.array(image[:, :, 0]))
+        image = image[:, :, 0]
 
         mask_path = os.path.join(self.mask_folder, img_name)
         mask = plt.imread(mask_path)
-        mask = transforms.ToTensor()(np.array(mask[:, :, 0]))
+        mask = mask[:, :, 0]
 
         if (self.mode == "train") and (self.augmentation is not None):
-            compose_transform = ComposeTransform(self.augmentation)
-            image, mask = compose_transform(image, mask)
-        return self.transform_image(image), self.transform_label(mask)
+            # print(self.mode)
+            augmented = self.augmentation(image = image, mask = mask)
+            image, mask = augmented['image'], augmented['mask']
+        return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
+        
     def load_sample(self, batch_size = 4):
         list_imgs = []
         list_masks = []
