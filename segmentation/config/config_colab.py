@@ -32,7 +32,7 @@ from dataset.transform import *
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"E:\data\BrainTumor",
+        "input_folder":"/content/data/BrainTumor",
         "augmentation": A.Compose([
             A.Resize(512, 512),
             RandomCrop(450, 450),
