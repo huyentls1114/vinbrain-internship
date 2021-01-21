@@ -57,3 +57,18 @@ class RandomRotate(A.DualTransform):
         return {"angle":random.uniform(self.limit[0], self.limit[1])}
     def get_transform_init_args_names(self):
         return ("limit")
+
+class RandomBlur(A.ImageOnlyTransform):
+    def __init__(self, blur_limit, always_apply = False, p = 1.0):
+        "value of blur_limit from 1 to 3"
+        assert blur_limit>3
+        super(RandomBlur, self).__init__(always_apply, p)
+        self.blur_limit = tuple([3, blur_limit])
+    def apply(self, img, ksize, **params):
+        return cv2.blur(img, (ksize, ksize))
+    def get_params(self):
+        min_ = self.blur_limit[0]
+        max_ = self.blur_limit[1]
+        return {"ksize": int(random.choice(np.arange(min_, max_, 2)))}
+    def get_transform_init_args_names(self):
+        return ("blur_limit")

@@ -33,7 +33,8 @@ dataset = {
             RandomCrop(450, 450),
             RandomVerticalFlip(p=0.5),
             RandomHorizontalFlip(p=0.5),
-            RandomRotate((0, 270))
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.5)
         ])
     }
 }
