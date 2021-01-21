@@ -72,3 +72,44 @@ class RandomBlur(A.ImageOnlyTransform):
         return {"ksize": int(random.choice(np.arange(min_, max_, 2)))}
     def get_transform_init_args_names(self):
         return ("blur_limit")
+class RandomTranspose(A.DualTransform):
+    def apply(self, img, **params):
+        return transpose(img)
+    def get_transform_init_args_names(self):
+        return ()
+class RandomBrightnessContrast(A.ImageOnlyTransform):
+    def __init__(self, brightness_limit = 0.2, contrast_limit= 0.2, always_apply = False, p = 1):
+        super(RandomBrightnessContrast, self).__init__(always_apply, p)
+        if isinstance(brightness_limit, float):
+            self.brightness_limit = tuple([-brightness_limit, brightness_limit])
+        else:
+            self.brightness_limit = brightness_limit
+        if isinstance(contrast_limit, float):
+            self.contrast_limit = tuple([-contrast_limit, contrast_limit])
+        else:
+            self.contrast_limit = contrast_limit
+    def apply(self, img, alpha = 1, beta = 0, **params):
+        return brightness_and_constrast(img, alpha, beta)
+    def get_params(self):
+        return {
+            "alpha": 1 + random.uniform(self.contrast_limit[0], self.contrast_limit[1]),
+            "beta": random.uniform(self.brightness_limit[0], self.brightness_limit[1])
+        }
+    def get_transform_init_args_names(self):
+        return ("brightness_limit", "contrast_limit")
+
+class CLAHE(A.ImageOnlyTransform):
+    def __init__(self, tileGridSize = (8,8), always_apply = False, p = 1):
+        super(CLAHE, self).__init__(always_apply, p)
+        self.tileGridSize = tileGridSize
+
+    def apply(self, img, clipLimit, **params):
+        return clahe(img, clipLimit, self.tileGridSize)
+    
+    def get_params(self):
+        return {
+            "clipLimit": random.uniform(3, 4)
+        }
+    def get_transform_init_args_names(self):
+        return ("tileGridSize")
+

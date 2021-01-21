@@ -39,7 +39,9 @@ dataset = {
             RandomVerticalFlip(p=0.5),
             RandomHorizontalFlip(p=0.5),
             RandomRotate((0, 270), p = 0.5),
-            RandomBlur(blur_limit = 10, p = 0.5)
+            RandomBlur(blur_limit = 10, p = 0.5),
+            CLAHE(p = 0.5),
+            RandomBrightnessContrast(p = 0.5)
         ])
     }
 }
@@ -80,7 +82,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneDense121_diceloss_OCLR1e-4_addblur"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneDense121_diceloss_OCLR1e-4_addB&C"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
