@@ -32,7 +32,8 @@ dataset = {
             A.Resize(512, 512),
             RandomCrop(450, 450),
             RandomVerticalFlip(p=0.5),
-            RandomHorizontalFlip(p=0.5)
+            RandomHorizontalFlip(p=0.5),
+            RandomRotate((0, 270))
         ])
     }
 }

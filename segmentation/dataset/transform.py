@@ -46,3 +46,14 @@ class RandomHorizontalFlip(A.DualTransform):
         return horizontal_flip(img)
     def get_transform_init_args_names(self):
         return ()
+
+class RandomRotate(A.DualTransform):
+    def __init__(self, limit, always_apply = False, p = 1.0):
+        super(RandomRotate, self).__init__(always_apply, p)
+        self.limit = tuple(limit)
+    def apply(self, img, angle, **params):
+        return rotate(img, angle)
+    def get_params(self):
+        return {"angle":random.uniform(self.limit[0], self.limit[1])}
+    def get_transform_init_args_names(self):
+        return ("limit")
