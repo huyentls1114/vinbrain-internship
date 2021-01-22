@@ -30,11 +30,16 @@ dataset = {
         "input_folder":"E:\data\BrainTumor",
         "augmentation": A.Compose([
             A.Resize(512, 512),
-            RandomCrop(450, 450),
-            RandomVerticalFlip(p=0.5),
-            RandomHorizontalFlip(p=0.5),
+            RandomCrop(450, 450, p = 0.5),
+            A.OneOf([
+                RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                RandomTranspose(p = 0.5),
+            ]),
             RandomRotate((0, 270), p = 0.5),
-            RandomBlur(blur_limit = 10, p = 0.5)
+            RandomBlur(blur_limit = 10, p = 0.1),
+            CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1)
         ])
     }
 }

@@ -33,17 +33,35 @@ dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
         "input_folder":"/content/data/BrainTumor",
-        "augmentation": None
+        dataset = {
+    "class": BrainTumorDataset,
+    "dataset_args":{
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450, p = 0.5),
+            A.OneOf([
+                RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                RandomTranspose(p = 0.5),
+            ]),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.1),
+            CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1)
+        ])
+    }
+}
     }
 }
 
 #train config
-from model.backbone import BackboneResnet34VGG
+from model.backbone_densenet import BackboneDense121
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet34VGG,
+        "backbone_class": BackboneDense121,
         "encoder_args":{
             "pretrained":True           
         },
@@ -66,13 +84,14 @@ metric = {
     }
 }
 num_classes = 1
+from loss.loss import DiceLoss
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": DiceLoss,
     "loss_args":{
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneResnet34VGG_BCE_notargument"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_BackboneDense121_diceloss_argument"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -92,7 +111,7 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr": 1e-3,
+        "max_lr": 1e-4,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1,
         "final_div_factor":10,
