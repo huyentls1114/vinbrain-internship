@@ -18,24 +18,25 @@ class Backbone:
         self.base_model = None
         self.features_name = None
         self.last_layer = None
-        self.input_channel = None
-        self.list_channels = None
+        self.input_channle = None
         self.up_class = None
         self.out_conv_class = None
-        self.blocks = None
-        self.out_conv = None
+        self.list_encoder_channel = None
+        self.list_decoder_channel = [512, 256, 128, 64]
 
     def initial_decoder(self):
-        list_channels = self.list_channels
+        self.list_decoder_channel = [self.encoder_output] + self.list_decoder_channel
         self.blocks = nn.ModuleList()
-        for i in range(len(list_channels)-2):
-            input_channel = list_channels[i]
-            output_channel = list_channels[i+1]
-            up_block = self.up_class(input_channel,
+        for i in range(len(self.list_encoder_channel)):
+            input_channel_encoder = self.list_encoder_channel[i]
+            input_channel_decoder = self.list_decoder_channel[i]
+            output_channel = self.list_decoder_channel[i+1]
+            up_block = self.up_class(input_channel_encoder,
+                                     input_channel_decoder,
                                      output_channel,
                                      **self.decoder_args)
             self.blocks.append(up_block)
-        self.out_conv = self.out_conv_class(list_channels[-2], list_channels[-1])
+        self.out_conv = self.out_conv_class(self.list_decoder_channel[-1], 1)
 
 class BackboneOriginal(Backbone):
     def __init__(self, encoder_args, decoder_args):
@@ -44,11 +45,11 @@ class BackboneOriginal(Backbone):
         self.features_name = ["down3", "down2", "down1", "inc"]
         self.last_layer = "down4"
         self.input_channel = 1
-        self.list_channels = [1024, 512, 256, 128, 64, 1]
+        self.encoder_output = 1024
+        self.list_encoder_channel = [512, 256, 128, 64]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
-
 
 class BackboneResnet18VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
@@ -57,7 +58,8 @@ class BackboneResnet18VGG(Backbone):
         self.features_name = ["layer3", "layer2", "layer1","relu"]
         self.last_layer = "layer4"
         self.input_channel = 3
-        self.list_channels = [512, 256, 128, 64, 64, 1]
+        self.encoder_output = 512
+        self.list_encoder_channel = [256, 128, 64, 64]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
@@ -72,7 +74,8 @@ class BackboneResnet34VGG(Backbone):
         self.features_name = ["layer3", "layer2", "layer1","relu"]
         self.last_layer = "layer4"
         self.input_channel = 3
-        self.list_channels = [512, 256, 128, 64, 64, 1]
+        self.encoder_output = 512
+        self.list_encoder_channel = [256, 128, 64, 64]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
@@ -87,13 +90,14 @@ class BackboneDensenet161VGG(Backbone):
         self.features_name = ["denseblock3","denseblock2","denseblock1","relu0"]
         self.last_layer = "denseblock4"
         self.input_channel = 3
-        self.list_channels = [2208, 2112, 768, 384, 96, 1]
+        self.encoder_output = 2208
+        self.list_encoder_channel = [2112, 768, 384, 96]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
         self.out_conv = nn.Sequential(
-            PixelShuffle_ICNR(96),
-            nn.Conv2d(96, 1, kernel_size = 1, stride = 1)
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
 class BackboneDensenet121VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
@@ -102,13 +106,14 @@ class BackboneDensenet121VGG(Backbone):
         self.features_name = ["denseblock3","denseblock2","denseblock1","relu0"]
         self.last_layer = "denseblock4"
         self.input_channel = 3
-        self.list_channels = [1024, 1024, 512, 256, 64, 1]
+        self.encoder_output = 1024
+        self.list_encoder_channel = [1024, 512, 256, 64]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
         self.out_conv = nn.Sequential(
-            PixelShuffle_ICNR(self.list_channels[-2]),
-            nn.Conv2d(self.list_channels[-2], self.list_channels[-1], kernel_size = 1, stride = 1)
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
 
 class BackboneEfficientB0VGG(Backbone):
@@ -118,13 +123,14 @@ class BackboneEfficientB0VGG(Backbone):
         self.features_name = ["blocks_4","blocks_2","blocks_1","act1"]
         self.last_layer = "act2"
         self.input_channel = 3
-        self.list_channels = [1280, 112, 40, 24, 32, 1]
+        self.encoder_output = 1280
+        self.list_encoder_channel = [112, 40, 24, 32]
         self.up_class = UpBlock
         self.out_conv_class = Out
         self.initial_decoder()
         self.out_conv = nn.Sequential(
-            PixelShuffle_ICNR(self.list_channels[-2]),
-            nn.Conv2d(self.list_channels[-2], self.list_channels[-1], kernel_size = 1, stride = 1)
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
     def create_model(self, **encoder_args):
         m = timm.create_model("efficientnet_b0", **encoder_args)

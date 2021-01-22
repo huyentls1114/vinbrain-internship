@@ -44,7 +44,8 @@ class Out(nn.Module):
         return self.out_conv(x)
 
 class UpBlock(nn.Module):
-    def __init__(self, input_channel,
+    def __init__(self, input_channel_encoder,
+                       input_channel_decoder,
                        output_channel,
                        batch_norm = True, 
                        padding = 1,
@@ -52,45 +53,35 @@ class UpBlock(nn.Module):
                        pixel_shuffle = False,
                        middle_channel = None):
         super(UpBlock, self).__init__()
-        if middle_channel is None:
-            middle_channel = output_channel
+        self.input_channel_encoder = input_channel_encoder
+        self.input_channel_decoder = input_channel_decoder
+        self.output_channel = output_channel
+
+        self.conv_encoder = nn.Conv2d(input_channel_encoder, output_channel, kernel_size=1, stride=1)
+        self.conv_decoder = nn.Conv2d(input_channel_decoder, output_channel, kernel_size=1, stride=1)
         if bilinear:
             self.up = nn.Sequential(
                 nn.Upsample(scale_factor=2,
                             mode = "bilinear",
                             align_corners=True),
-                nn.Conv2d(input_channel, middle_channel, 3, padding=1)
             )
         else:
             if pixel_shuffle:
                 self.up = nn.Sequential(
-                    nn.Conv2d(input_channel, output_channel, kernel_size = 1),
                     PixelShuffle_ICNR(output_channel)
                 )
             else:
-                self.up = nn.ConvTranspose2d(input_channel, 
-                                        input_channel//2,
+                self.up = nn.ConvTranspose2d(output_channel, 
+                                        output_channel,
                                         kernel_size = 2,
                                         stride = 2)
-        # if input_channel == output_channel:
-        #     input_channel = output_channel*2
-        # if middle_channel == output_channel:
-        input_channel = output_channel*2
-        self.conv_block = VGG16Block([input_channel, output_channel, output_channel], batch_norm, padding)
+        self.conv_block = VGG16Block([output_channel*2, output_channel, output_channel], batch_norm, padding)
     def forward(self, x1, x2):
+        if self.input_channel_decoder != self.output_channel:
+            x1 = self.conv_decoder(x1)
+        if self.input_channel_encoder != self.output_channel:
+            x2 = self.conv_encoder(x2)
         x1 = self.up(x1)
-        diffY = x2.size()[2] - x1.size()[2]
-        diffX = x2.size()[3] - x1.size()[3]
-        x2 = F.pad(x2, [
-            -diffX//2, -diffX//2,
-            -diffY//2, -diffY//2
-        ])
-        diffY = x2.size()[2] - x1.size()[2]
-        diffX = x2.size()[3] - x1.size()[3]
-        x2 = F.pad(x2, [
-            -diffX, 0,
-            -diffY, 0
-        ])
         x =  torch.cat([x2, x1], dim = 1)
         return self.conv_block(x)
 
