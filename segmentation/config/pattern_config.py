@@ -175,3 +175,22 @@ dataset = {
         ])
     }
 }
+
+import albumentations as A
+from dataset.transform import *
+dataset = {
+    "class": BrainTumorDataset,
+    "dataset_args":{
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.5),
+            CLAHE(p = 0.5),
+            RandomBrightnessContrast(p = 0.5)
+        ])
+    }
+}
