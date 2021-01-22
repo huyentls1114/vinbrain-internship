@@ -38,12 +38,12 @@ dataset = {
 }
 
 #train config
-from model.backbone import BackboneResnet34VGG
+from model.backbone import BackboneDensenet121VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet34VGG,
+        "backbone_class": BackboneDensenet121VGG,
         "encoder_args":{
             "pretrained":True           
         },
@@ -74,7 +74,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneResnet34VGG_BCE_noargument"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneDensenet121VGG_BCE_noargument"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
