@@ -52,8 +52,6 @@ dataset = {
         ])
     }
 }
-    }
-}
 
 #train config
 from model.backbone_densenet import BackboneDense121
