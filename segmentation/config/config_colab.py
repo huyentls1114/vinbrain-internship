@@ -33,7 +33,19 @@ dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
         "input_folder":"/content/data/BrainTumor",
-        "augmentation": None
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450, p = 0.5),
+            A.OneOf([
+                RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                RandomTranspose(p = 0.5),
+            ]),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.1),
+            CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1)
+        ])
     }
 }
 
@@ -75,7 +87,7 @@ loss_function = {
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneOriginal_diceloss_noargument"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneOriginal_diceloss_augment"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
