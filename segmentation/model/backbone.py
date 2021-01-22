@@ -1,5 +1,5 @@
 import torch.nn as nn
-from torchvision.models import resnet18, resnet101, densenet161, densenet121
+from torchvision.models import resnet18, resnet101, densenet161, densenet121, resnet34
 
 from .unet_vgg import UnetVGG
 from .block import VGG16Block, UpBlock, Out
