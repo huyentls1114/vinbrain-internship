@@ -114,6 +114,24 @@ net = {
     }
 }
 
+from model.unet import UnetCRF
+from model.backbone import BackboneResnet18VGG
+num_classes = 1
+current_epoch = 99
+net = {
+    "class":UnetCRF,
+    "net_args":{
+        "checkpoint_path": os.path.join(output_folder, "checkpoint_"+str(current_epoch))
+        "backbone_class": BackboneResnet18VGG,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "pixel_shuffle":True,
+            "bilinear":False
+        }
+    }
+}
 
 #metric
 metric = {

@@ -6,6 +6,7 @@ import numpy as np
 
 from utils.utils import save_loss_to_file, compose_images
 from visualize.visualize import Visualize
+from model.unet import UnetCRF
 
 class Trainer:
     def __init__(self, configs, data, copy_configs = True):
@@ -22,8 +23,12 @@ class Trainer:
 
         #optimizer
         self.lr = configs.lr    
+        if configs.net["class"] == UnetCRF:
+            self.lr_scheduler = None
+            self.lr = 1e-5
+        else:
+            self.initial_lr_scheduler(configs.lr_scheduler)
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
-        self.initial_lr_scheduler(configs.lr_scheduler)
 
         #config train parameters
         self.batch_size = configs.batch_size
@@ -191,6 +196,7 @@ class Trainer:
     def save_checkpoint(self, filename = None):
         if filename is None:
             filename = "checkpoint_%d"%(self.current_epoch)
+        
         filepath = os.path.join(self.output_folder, filename)
         torch.save(self.net.state_dict(), filepath)
 
