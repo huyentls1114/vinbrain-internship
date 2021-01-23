@@ -25,12 +25,17 @@ class Trainer:
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
 
+        #inititalize variables
+        self.liss_loss = []
+        self.current_epoch = 0
+
         #optimizer
         self.lr = configs.lr    
         if configs.net["class"] == UnetCRF:
             self.lr_scheduler = None
             self.lr = 1e-5
             self.num_epochs = configs.num_epochs+10
+            self.current_epoch = configs.current_epoch
         else:
             self.initial_lr_scheduler(configs.lr_scheduler)
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
@@ -52,10 +57,7 @@ class Trainer:
         self.global_step = 0
         self.steps_per_epoch = len(self.data.train_loader)
 
-        #inititalize variables
-        self.liss_loss = []
-        self.current_epoch = 0
-
+        
         #initial Visualize
         self.image_size = configs.image_size
         self.visualize = Visualize(self.current_epoch, 
