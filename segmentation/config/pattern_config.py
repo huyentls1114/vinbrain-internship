@@ -23,7 +23,16 @@ lr_scheduler = {
         "min_lr":1e-6
     }
 }
-
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_scheduler_crf = {
+    "class":OneCycleLR,
+    "metric": None,
+    "step_type":"iteration",
+    "schedule_args":{
+        "T0": 1,
+        "Tmul":2
+    }    
+}
 #OneCycleLR
 from torch.optim.lr_scheduler import OneCycleLR
 configs.num_epochs = 30
@@ -114,6 +123,24 @@ net = {
     }
 }
 
+from model.unet import UnetCRF
+from model.backbone import BackboneResnet18VGG
+num_classes = 1
+current_epoch = 99
+net = {
+    "class":UnetCRF,
+    "net_args":{
+        "checkpoint_path": os.path.join(output_folder, "checkpoint_"+str(current_epoch))
+        "backbone_class": BackboneResnet18VGG,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "pixel_shuffle":True,
+            "bilinear":False
+        }
+    }
+}
 
 #metric
 metric = {
@@ -161,5 +188,39 @@ dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
         "input_folder":"E:\data\BrainTumor"
+    }
+}
+dataset = {
+    "class": BrainTumorDataset,
+    "dataset_args":{
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
+        ])
+    }
+}
+
+import albumentations as A
+from dataset.transform import *
+dataset = {
+    "class": BrainTumorDataset,
+    "dataset_args":{
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450, p = 0.5),
+            A.OneOf([
+                RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                RandomTranspose(p = 0.5),
+            ]),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.1),
+            CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1)
+        ])
     }
 }

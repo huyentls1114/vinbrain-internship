@@ -9,51 +9,63 @@ from model.unet import Unet
 from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 #data config
 image_size = 192
+output_folder = "E:\model\segmentation\BrainTumor"
+loss_file = "loss_file.txt"
+config_file_path = "E:\\vinbrain-internship\segmentation\config\config.py"
+
 transform_train = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
-    
 ])
 transform_test = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
-
 ])
 transform_label = transforms.Compose([
-    # transforms.ToTensor(),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 
+import albumentations as A
+from dataset.transform import *
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
         "input_folder":"E:\data\BrainTumor",
-        "augmentation": transforms.Compose([
-            transforms.RandomCrop(500),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip()
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.5)
         ])
     }
 }
 
 #train config
-from model.backbone import BackboneOriginal
+import os
+from model.unet import UnetCRF
+from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
+current_epoch = 0
 net = {
-    "class":Unet,
+    "class":UnetCRF,
     "net_args":{
-        "backbone_class": BackboneOriginal,
-        "encoder_args":{},
+        "checkpoint_path": os.path.join(output_folder, "checkpoint_"+str(current_epoch)),
+        "backbone_class": BackboneEfficientB0VGG,
+        "encoder_args":{
+            "pretrained": False           
+        },
         "decoder_args":{
-            "bilinear": True
+            "bilinear":True
         }
     }
 }
-
 device = "cpu"
 gpu_id = 0
 
-batch_size = 4
+batch_size = 16
 num_epochs = 10
 
 metric = {
@@ -72,9 +84,6 @@ loss_function = {
     }
 }
 
-output_folder = "E:\model\segmentation\BrainTumor"
-loss_file = "loss_file.txt"
-config_file_path = "E:\\vinbrain-internship\segmentation\config\config.py"
 
 #optimizer
 lr = 1e-3

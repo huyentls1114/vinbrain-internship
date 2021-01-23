@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from .backbone import BackboneOriginal
 from .block import UpBlock, VGG16Block, Out
+from crfseg import CRF
 
 class Unet(nn.Module):
     def __init__(self, 
@@ -41,6 +42,31 @@ class Unet(nn.Module):
             if name == self.backbone.last_layer:
                 break
         return x, features_value
+    
+class UnetCRF(nn.Module):
+    def __init__(self, 
+                checkpoint_path,
+                backbone_class = BackboneOriginal,
+                encoder_args = {},
+                decoder_args = {},
+                current_epoch = 0,
+                device = "cpu",
+                gpu_id = 0):
+        super(UnetCRF, self).__init__()
+        self.unet = Unet(backbone_class, encoder_args, decoder_args)
+        self.crf = CRF(n_spatial_dims=2)
+        self.device = torch.device( device if device == "cpu" else "cuda:"+str(gpu_id))
+        self.load_checkpoint(checkpoint_path)
+        self.freeze_unet()
+
+    def forward(self, x):
+        return self.crf(self.unet(x))
+
+    def load_checkpoint(self, filepath = None):
+        self.unet.load_state_dict(torch.load(filepath, map_location = self.device))
+    def freeze_unet(self):
+        for param in self.unet.parameters():
+            param.requires_grad = False
 
 class UnetDynamic(Unet):
     def __init__(self, 
