@@ -21,18 +21,19 @@ class Trainer:
         self.device = torch.device( cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
         self.net.to(self.device)
 
+        #config train parameters
+        self.batch_size = configs.batch_size
+        self.num_epochs = configs.num_epochs
+
         #optimizer
         self.lr = configs.lr    
         if configs.net["class"] == UnetCRF:
             self.lr_scheduler = None
             self.lr = 1e-5
+            self.num_epochs = configs.num_epochs+10
         else:
             self.initial_lr_scheduler(configs.lr_scheduler)
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
-
-        #config train parameters
-        self.batch_size = configs.batch_size
-        self.num_epochs = configs.num_epochs
         
         #loss and metric
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
