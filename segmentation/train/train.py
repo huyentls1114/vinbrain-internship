@@ -30,16 +30,18 @@ class Trainer:
         self.current_epoch = 0
 
         #optimizer
-        self.lr = configs.lr    
+         
         if configs.net["class"] == UnetCRF:
-            self.lr_scheduler = None
             self.lr = 1e-3
+            lr_scheduler = configs.lr_scheduler_crf
             self.num_epochs = configs.num_epochs+10
             self.current_epoch = configs.current_epoch
         else:
-            self.initial_lr_scheduler(configs.lr_scheduler)
+            self.lr = configs.lr  
+            lr_scheduler = configs.lr_scheduler 
         self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
-        
+        self.initial_lr_scheduler(lr_scheduler)
+
         #loss and metric
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
         self.crition = configs.loss_function["class"](**configs.loss_function["loss_args"])

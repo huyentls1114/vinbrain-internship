@@ -118,3 +118,14 @@ lr_scheduler = {
         "final_div_factor":10,
     }    
 }
+
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_scheduler_crf = {
+    "class":CosineAnnealingWarmRestarts,
+    "metric": None,
+    "step_type":"iteration",
+    "schedule_args":{
+        "T0": 1,
+        "Tmul":2
+    }    
+}
