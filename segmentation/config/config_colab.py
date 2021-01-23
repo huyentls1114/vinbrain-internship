@@ -125,7 +125,7 @@ lr_scheduler_crf = {
     "metric": None,
     "step_type":"iteration",
     "schedule_args":{
-        "T0": 1,
-        "Tmul":2
+        "T_0": 1,
+        "T_mult":2
     }    
 }
