@@ -32,7 +32,7 @@ class Trainer:
         #optimizer
          
         if configs.net["class"] == UnetCRF:
-            self.lr = 1e-6
+            self.lr = 1e-2
             lr_scheduler = configs.lr_scheduler_crf
             self.num_epochs = configs.num_epochs+10
             self.current_epoch = configs.current_epoch
