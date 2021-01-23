@@ -58,7 +58,7 @@ import os
 from model.unet import UnetCRF
 from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
-current_epoch = 91
+current_epoch = 99
 net = {
     "class":UnetCRF,
     "net_args":{
