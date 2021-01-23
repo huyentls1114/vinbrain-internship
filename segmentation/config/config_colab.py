@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneDensenet121VGG_diceloss_augment_CRF"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneEfficientB0VGG_diceloss_noaugment_CRF"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -56,14 +56,14 @@ dataset = {
 #train config
 import os
 from model.unet import UnetCRF
-from model.backbone import BackboneDensenet121VGG
+from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
 current_epoch = 91
 net = {
     "class":UnetCRF,
     "net_args":{
         "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch)),
-        "backbone_class": BackboneDensenet121VGG,
+        "backbone_class": BackboneEfficientB0VGG,
         "encoder_args":{
             "pretrained":True           
         },
