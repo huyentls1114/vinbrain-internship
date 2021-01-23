@@ -54,6 +54,7 @@ dataset = {
 }
 
 #train config
+import os
 from model.unet import UnetCRF
 from model.backbone import BackboneOriginal
 num_classes = 1
