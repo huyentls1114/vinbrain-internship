@@ -50,12 +50,12 @@ dataset = {
 }
 
 #train config
-from model.backbone import BackboneEfficientB0VGG
+from model.backbone import BackboneResnet18VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
+        "backbone_class": BackboneResnet18VGG,
         "encoder_args":{
             "pretrained":True           
         },
@@ -82,12 +82,12 @@ metric = {
 num_classes = 1
 from loss.loss import DiceLoss
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": DiceLoss,
     "loss_args":{
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneEfficientB0VGG_BCE_augment"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneResnet18VGG_diceloss_augment"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
