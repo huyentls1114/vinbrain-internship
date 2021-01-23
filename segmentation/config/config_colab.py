@@ -61,7 +61,7 @@ current_epoch = 99
 net = {
     "class":UnetCRF,
     "net_args":{
-        "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch))
+        "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch)),
         "backbone_class": BackboneOriginal,
         "encoder_args":{
             "pretrained":True           
