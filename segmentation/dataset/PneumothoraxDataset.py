@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
 import cv2
 from utils.utils import conver_numpy_image, contour
+import torch
+import torchvision.transforms as transforms
 
 
 class PneumothoraxDataset(Dataset):
