@@ -9,7 +9,7 @@ from model.unet import Unet
 from model.backbone import BackboneOriginal, BackBoneResnet18, BackBoneResnet101
 #data config
 image_size = 192
-output_folder = "E:\model\segmentation\BrainTumor"
+output_folder = "E:\model\segmentation\Pneumothorax"
 loss_file = "loss_file.txt"
 config_file_path = "E:\\vinbrain-internship\segmentation\config\config.py"
 
@@ -28,10 +28,11 @@ transform_label = transforms.Compose([
 
 import albumentations as A
 from dataset.transform import *
+from dataset.PneumothoraxDataset import *
 dataset = {
-    "class": BrainTumorDataset,
+    "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"E:\data\BrainTumor",
+        "input_folder":"E:\data\Pneumothorax",
         "augmentation": A.Compose([
             A.Resize(512, 512),
             RandomCrop(450, 450),
