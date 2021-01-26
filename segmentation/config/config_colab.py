@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneEfficientB0VGG_diceloss_noaugment_CRF"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_augment"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -33,10 +33,11 @@ transform_label = transforms.Compose([
 
 import albumentations as A
 from dataset.transform import *
+from dataset.PneumothoraxDataset import *
 dataset = {
-    "class": BrainTumorDataset,
+    "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"/content/data/BrainTumor",
+        "input_folder":"/content/data/Pneumothorax",
         "augmentation": A.Compose([
             A.Resize(512, 512),
             RandomCrop(450, 450, p = 0.5),
@@ -58,18 +59,16 @@ import os
 from model.unet import UnetCRF
 from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
-current_epoch = 99
 net = {
-    "class":UnetCRF,
+    "class":Unet,
     "net_args":{
-        "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch)),
         "backbone_class": BackboneEfficientB0VGG,
         "encoder_args":{
             "pretrained":True           
         },
         "decoder_args":{
-            "pixel_shuffle":True,
-            "bilinear":False
+            "bilinear": False,
+            "pixel_shuffle":True
         }
     }
 }
