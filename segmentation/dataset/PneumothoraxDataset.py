@@ -100,7 +100,7 @@ class PneumothoraxDataset(Dataset):
         return list_img_name
 
 class PneumothoraxPreprocess:
-    def __init__(self, input_folder, output_folder, val_size = 0.3):
+    def __init__(self, input_folder, output_folder, val_size = 0.3, reset_folder = True):
         self.input_folder = input_folder
         self.output_folder = output_folder
         train = sorted(glob(input_folder+os.sep+"dicom-images-train/*/*/*.dcm"))
@@ -110,9 +110,10 @@ class PneumothoraxPreprocess:
         self.all_img_path = np.concatenate([self.train, self.val, self.test], axis =0)
 
         self.images_output_folder = os.path.join(self.output_folder, "images")
-        self.create_new_dir(self.images_output_folder)
         self.masks_output_folder = os.path.join(self.output_folder, "masks")
-        self.create_new_dir(self.masks_output_folder)
+        if reset_folder:
+            self.create_new_dir(self.images_output_folder)
+            self.create_new_dir(self.masks_output_folder)
 
         # self.save_txt(self.train, os.path.join(self.output_folder, "train.txt"))
         # self.save_txt(self.test, os.path.join(self.output_folder, "test.txt"))
@@ -142,6 +143,9 @@ class PneumothoraxPreprocess:
         file_ = open(file_path, "w")
         for img in list_img:
             uid = img.split(os.sep)[-1].replace(".dcm",".jpg")
+            # print(os.path.join(self.output_folder+os.sep+"images", uid))
+            if not os.path.isfile(os.path.join(self.output_folder+os.sep+"images", uid)):
+                continue
             file_.writelines(uid+"\n")
         file_.close()
 
