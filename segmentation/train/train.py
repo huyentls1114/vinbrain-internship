@@ -6,6 +6,7 @@ import numpy as np
 
 from utils.utils import save_loss_to_file, compose_images
 from visualize.visualize import Visualize
+from model.unet import UnetCRF
 
 class Trainer:
     def __init__(self, configs, data, copy_configs = True):
@@ -20,15 +21,27 @@ class Trainer:
         self.device = torch.device( cuda if cuda == "cpu" else "cuda:"+str(configs.gpu_id))
         self.net.to(self.device)
 
-        #optimizer
-        self.lr = configs.lr    
-        self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
-        self.initial_lr_scheduler(configs.lr_scheduler)
-
         #config train parameters
         self.batch_size = configs.batch_size
         self.num_epochs = configs.num_epochs
-        
+
+        #inititalize variables
+        self.liss_loss = []
+        self.current_epoch = 0
+
+        #optimizer
+         
+        if configs.net["class"] == UnetCRF:
+            self.lr = 1e-2
+            lr_scheduler = configs.lr_scheduler_crf
+            self.num_epochs = configs.num_epochs+10
+            self.current_epoch = configs.current_epoch
+        else:
+            self.lr = configs.lr  
+            lr_scheduler = configs.lr_scheduler 
+        self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
+        self.initial_lr_scheduler(lr_scheduler)
+
         #loss and metric
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
         self.crition = configs.loss_function["class"](**configs.loss_function["loss_args"])
@@ -46,10 +59,7 @@ class Trainer:
         self.global_step = 0
         self.steps_per_epoch = len(self.data.train_loader)
 
-        #inititalize variables
-        self.liss_loss = []
-        self.current_epoch = 0
-
+        
         #initial Visualize
         self.image_size = configs.image_size
         self.visualize = Visualize(self.current_epoch, 
@@ -191,6 +201,7 @@ class Trainer:
     def save_checkpoint(self, filename = None):
         if filename is None:
             filename = "checkpoint_%d"%(self.current_epoch)
+        
         filepath = os.path.join(self.output_folder, filename)
         torch.save(self.net.state_dict(), filepath)
 

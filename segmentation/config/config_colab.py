@@ -9,47 +9,67 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
-from loss.loss import DiceLoss
-
+from torch.optim.lr_scheduler import OneCycleLR
+import albumentations as A
 #data config
 image_size = 256
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneEfficientB0VGG_diceloss_noaugment_CRF"
+loss_file = "loss_file.txt"
+config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
+
+
 transform_train = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Resize(image_size)
 ])
 transform_test = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
-
+    transforms.ToTensor(),
+    transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Resize(image_size)
 ])
 
+import albumentations as A
+from dataset.transform import *
 dataset = {
     "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"/content/data/BrainTumor"
+        "input_folder":"/content/data/BrainTumor",
+        "augmentation": A.Compose([
+            A.Resize(512, 512),
+            RandomCrop(450, 450, p = 0.5),
+            A.OneOf([
+                RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                RandomTranspose(p = 0.5),
+            ]),
+            RandomRotate((0, 270), p = 0.5),
+            RandomBlur(blur_limit = 10, p = 0.1),
+            CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1)
+        ])
     }
 }
 
 #train config
+import os
+from model.unet import UnetCRF
+from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
-from model.backbone import BackboneOriginal
+current_epoch = 99
 net = {
-    "class":Unet,
+    "class":UnetCRF,
     "net_args":{
-        "backbone_class": BackboneOriginal,
+        "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch)),
+        "backbone_class": BackboneEfficientB0VGG,
         "encoder_args":{
-            "input_channel":1, 
-            "output_channel":1
+            "pretrained":True           
         },
         "decoder_args":{
-            "bilinear": True
+            "pixel_shuffle":True,
+            "bilinear":False
         }
     }
 }
@@ -68,16 +88,13 @@ metric = {
     }
 }
 num_classes = 1
+from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
-        "activation":nn.Sigmoid()
     }
 }
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/BrainTumor_VGG16_diceloss_CAWRLr_Tmul3_1e-3"
-loss_file = "loss_file.txt"
-config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
 lr = 1e-3
@@ -95,8 +112,20 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":0.002,
+        "max_lr": 1e-3,
         "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
+        "steps_per_epoch":steps_per_epoch+1,
+        "final_div_factor":10,
+    }    
+}
+
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_scheduler_crf = {
+    "class":CosineAnnealingWarmRestarts,
+    "metric": None,
+    "step_type":"iteration",
+    "schedule_args":{
+        "T_0": 1,
+        "T_mult":2
     }    
 }

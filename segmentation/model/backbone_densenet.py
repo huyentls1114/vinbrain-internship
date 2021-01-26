@@ -116,7 +116,7 @@ class BackboneDense(Backbone):
         super(BackboneDense, self).__init__(encoder_args, decoder_args)
         self.features_name = ["layer3","layer2","layer1","maxpool","relu"]
         self.last_layer = "layer4"
-
+        self.input_channel = 3
         self.bottleneck_size = 4
         self.growth_rate = 32
         self.drop_rate = 0
