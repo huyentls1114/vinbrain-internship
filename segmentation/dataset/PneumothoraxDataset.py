@@ -11,7 +11,7 @@ import cv2
 from utils.utils import conver_numpy_image, contour
 import torch
 import torchvision.transforms as transforms
-
+import tqdm
 
 class PneumothoraxDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
@@ -102,14 +102,16 @@ class PneumothoraxDataset(Dataset):
         return list_img_name
 
 class PneumothoraxPreprocess:
-    def __init__(self, input_folder, output_folder, val_size = 0.3, reset_folder = True):
+    def __init__(self, input_folder, output_folder, val_size=0.3, reset_folder=True):
         self.input_folder = input_folder
         self.output_folder = output_folder
-        train = sorted(glob(input_folder+os.sep+"dicom-images-train/*/*/*.dcm"))
-        self.train, self.val = train_test_split(train, test_size = val_size)
-        self.test = sorted(glob(input_folder+os.sep+"dicom-images-test/*/*/*.dcm"))
+
         self.masks = pd.read_csv(os.path.join(self.input_folder, "stage_2_train.csv"))
-        self.all_img_path = np.concatenate([self.train, self.val, self.test], axis =0)
+        self.masks["label"] = (self.masks["EncodedPixels"] != "-1").astype(np.float)
+
+        self.train_df = self.init_df("train")
+        self.test_df = self.init_df("val")
+        self.train_df, self.val_df, y_train, y_val = train_test_split(self.train_df, self.train_df["label"], test_size=val_size)
 
         self.images_output_folder = os.path.join(self.output_folder, "images")
         self.masks_output_folder = os.path.join(self.output_folder, "masks")
@@ -117,64 +119,60 @@ class PneumothoraxPreprocess:
             self.create_new_dir(self.images_output_folder)
             self.create_new_dir(self.masks_output_folder)
 
-        # self.save_txt(self.train, os.path.join(self.output_folder, "train.txt"))
-        # self.save_txt(self.test, os.path.join(self.output_folder, "test.txt"))
-        # self.save_txt(self.val, os.path.join(self.output_folder, "val.txt"))
-        self.list_img_dict = {
-            "train": self.train,
-            "test": self.test,
-            "val": self.val
+        self.combine_df = pd.concat([self.train_df, self.test_df, self.val_df])
+        self.list_df = {
+            "train": self.train_df,
+            "test": self.test_df,
+            "val": self.val_df
         }
+
+    def init_df(self, mode="train"):
+        list_path = sorted(glob(input_folder+os.sep+"dicom-images-%s/*/*/*.dcm" % (mode)))
+        list_uid = list(map(find_uid, list_path))
+
+        df = pd.DataFrame({"ImageId": list_uid, "path": list_path})
+        df = df.join(self.masks.set_index("ImageId"), on="ImageId")
+        df = df[df["label"].notna()]
+        return df
 
     def create_new_dir(self, dir_path):
         if os.path.isdir(dir_path):
             shutil.rmtree(dir_path)
         os.makedirs(dir_path)
 
-    def save_txt(self, mode = "train"):
-        file_path_dict = {
-            "train":os.path.join(self.output_folder, "train.txt"),
-            "test":os.path.join(self.output_folder, "test.txt"),
-            "val":os.path.join(self.output_folder, "val.txt")
-        }
-        file_path = file_path_dict[mode]
-        list_img = self.list_img_dict[mode]
+    def save_txt(self, mode="train"):
+        file_path = os.path.join(self.output_folder, "%s.txt" % mode),
 
         if os.path.isfile(file_path):
             os.remove(file_path)
         file_ = open(file_path, "w")
-        for img in list_img:
-            uid = img.split(os.sep)[-1].replace(".dcm",".jpg")
-            # print(os.path.join(self.output_folder+os.sep+"images", uid))
-            if not os.path.isfile(os.path.join(self.output_folder+os.sep+"images", uid)):
-                continue
-            file_.writelines(uid+"\n")
+        for index, row in tqdm(self.list_df[model]):
+            uid = row["uid"]
+            file_.writelines(uid+".jpg\n")
         file_.close()
 
     def save_img(self):
-        for img_path in self.all_img_path:
+        for index, row in tqdm(self.combine_df.iterrows()):
             try:
-                uid, img, mask = load_sample(img_path, self.masks)
+                uid, img, mask = load_sample(row["path"], row["EncodedPixels"])
                 img = cv2.resize(img, (512, 512))
                 mask = cv2.resize(mask, (512, 512))
             except Exception as e:
-                print(e)
+                print(e, row["path"])
                 continue
-            plt.imsave(os.path.join(self.images_output_folder, uid+".jpg"), img, cmap = "gray")
-            plt.imsave(os.path.join(self.masks_output_folder, uid+".jpg"), mask, cmap = "gray")            
+            plt.imsave(os.path.join(self.images_output_folder, uid+".jpg"), img, cmap="gray")
+            plt.imsave(os.path.join(self.masks_output_folder, uid+".jpg"), mask, cmap="gray")
 
-def load_sample(img_path, masks, width = 1024, height = 1024):
+def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
     data = pydicom.dcmread(img_path)
     img = pydicom.read_file(img_path).pixel_array
     
     uid = data.SOPInstanceUID
-    encoded_pixels = masks[masks["ImageId"] == uid].values[0][2]
     if encoded_pixels == "-1":
         mask = np.zeros((width, height)).astype(np.float)
     else:
         mask = rle2mask(encoded_pixels, width, height)
     return uid, img, mask.T
-
 
 def mask2rle(img, width, height):
     rle = []
