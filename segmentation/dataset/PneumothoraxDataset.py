@@ -11,7 +11,7 @@ import cv2
 from utils.utils import conver_numpy_image, contour
 import torch
 import torchvision.transforms as transforms
-import tqdm
+from tqdm import tqdm
 
 class PneumothoraxDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
