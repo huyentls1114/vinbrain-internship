@@ -101,6 +101,15 @@ class PneumothoraxDataset(Dataset):
         file_.close()
         return list_img_name
 
+from dataset.PneumothoraxDataset import *
+import numpy as np
+from glob import glob
+from tqdm import tqdm
+from sklearn.model_selection import train_test_split
+import shutil
+import pydicom
+import random
+
 class PneumothoraxPreprocess:
     def __init__(self, input_folder, output_folder, val_size=0.3, reset_folder=True):
         self.input_folder = input_folder
@@ -108,11 +117,10 @@ class PneumothoraxPreprocess:
 
         self.masks = pd.read_csv(os.path.join(self.input_folder, "stage_2_train.csv"))
         self.masks["label"] = (self.masks["EncodedPixels"] != "-1").astype(np.float)
-        self.masks = self.masks.drop_duplicates("ImageId")
 
         self.train_df = self.init_df("train")
         self.test_df = self.init_df("test")
-        self.train_df, self.val_df, y_train, y_val = train_test_split(self.train_df, self.train_df["label"], test_size=val_size)
+        self.train_df, self.val_df, y_train, y_val = train_test_split(self.train_df, self.train_df["label"], test_size=val_size, random_state = 100)
 
         self.images_output_folder = os.path.join(self.output_folder, "images")
         self.masks_output_folder = os.path.join(self.output_folder, "masks")
@@ -129,11 +137,13 @@ class PneumothoraxPreprocess:
 
     def init_df(self, mode="train"):
         list_path = sorted(glob(self.input_folder+os.sep+"dicom-images-%s/*/*/*.dcm" % (mode)))
+        
         list_uid = list(map(find_uid, list_path))
-
         df = pd.DataFrame({"ImageId": list_uid, "path": list_path})
         df = df.join(self.masks.set_index("ImageId"), on="ImageId")
         df = df[df["label"].notna()]
+        df = df.drop_duplicates("ImageId")
+        
         return df
 
     def create_new_dir(self, dir_path):
@@ -151,17 +161,47 @@ class PneumothoraxPreprocess:
             file_.writelines(uid+".jpg\n")
         file_.close()
 
-    def save_img(self):
+    def save_img(self, path, encoded_pixels):
+        if not os.path.isfile(path):
+            return
+        uid, img, mask = load_sample(path, encoded_pixels)
+        img = cv2.resize(img, (512, 512))
+        mask = cv2.resize(mask, (512, 512))
+        plt.imsave(os.path.join(self.images_output_folder, uid+".jpg"), img, cmap="gray")
+        plt.imsave(os.path.join(self.masks_output_folder, uid+".jpg"), mask, cmap="gray")
+
+    def save_imgs(self):
         for index, row in tqdm(self.combine_df.iterrows()):
-            try:
-                uid, img, mask = load_sample(row["path"], row["EncodedPixels"])
-                img = cv2.resize(img, (512, 512))
-                mask = cv2.resize(mask, (512, 512))
-            except Exception as e:
-                print(e, row["path"])
-                continue
-            plt.imsave(os.path.join(self.images_output_folder, uid+".jpg"), img, cmap="gray")
-            plt.imsave(os.path.join(self.masks_output_folder, uid+".jpg"), mask, cmap="gray")
+            path = row["path"]
+            encoded_pixels = self.masks[self.masks["ImageId"]==row["ImageId"]]["EncodedPixels"].values
+            # print("encoded_pixels", encoded_pixels)
+            self.save_img(path, encoded_pixels)
+    def plot_pneumothorax(self):
+        index = random.randint(0, len(self.combine_df))
+        row = self.combine_df.iloc[index]
+        encoded_pixels = self.masks[self.masks["ImageId"]==row["ImageId"]]["EncodedPixels"].values
+        while (len(encoded_pixels) <=1):
+            index = random.randint(0, len(self.combine_df))
+            row = self.combine_df.iloc[index]
+            encoded_pixels = self.masks[self.masks["ImageId"]==row["ImageId"]]["EncodedPixels"].values
+        uid, img, mask = load_sample(row["path"], encoded_pixels)
+        plot_sample(img, mask)
+    def plot_non_pneumothorax(self):
+        index = random.randint(0, len(self.combine_df))
+        row = self.combine_df.iloc[index]
+        encoded_pixels = self.masks[self.masks["ImageId"]==row["ImageId"]]["EncodedPixels"].values
+        while (len(encoded_pixels) >1):
+            index = random.randint(0, len(self.combine_df))
+            row = self.combine_df.iloc[index]
+            encoded_pixels = self.masks[self.masks["ImageId"]==row["ImageId"]]["EncodedPixels"].values
+        uid, img, mask = load_sample(row["path"], encoded_pixels)
+        plot_sample(img, mask)
+
+
+def plot_sample(img, mask):
+    plt.imshow(img, cmap = "bone")
+    plt.imshow(mask, cmap = "binary", alpha = 0.3)
+    plt.show()
 def find_uid(path):
   return path.split(os.sep)[-1].replace(".dcm","")
 
@@ -170,12 +210,18 @@ def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
     img = pydicom.read_file(img_path).pixel_array
     
     uid = data.SOPInstanceUID
-    if encoded_pixels == "-1":
-        mask = np.zeros((width, height)).astype(np.float)
-    else:
-        mask = rle2mask(encoded_pixels, width, height)
+    # if isinstance(encoded_pixels, str):
+    #   if encoded_pixels == "-1":
+    #       mask = np.zeros((width, height)).astype(np.float)
+    #   else:
+    #       mask = rle2mask(encoded_pixels, width, height)
+    # else:
+    mask = np.zeros((width, height)).astype(np.float)
+    for encoded_pixel in encoded_pixels:
+        if encoded_pixel != "-1":
+            mask += rle2mask(encoded_pixel, width, height)
+    mask = np.clip(mask, 0.0, 255.0)
     return uid, img, mask.T
-
 def mask2rle(img, width, height):
     rle = []
     lastColor = 0;
