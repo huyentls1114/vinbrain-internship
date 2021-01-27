@@ -108,6 +108,7 @@ class PneumothoraxPreprocess:
 
         self.masks = pd.read_csv(os.path.join(self.input_folder, "stage_2_train.csv"))
         self.masks["label"] = (self.masks["EncodedPixels"] != "-1").astype(np.float)
+        self.masks = self.masks.drop_duplicates("ImageId")
 
         self.train_df = self.init_df("train")
         self.test_df = self.init_df("test")
