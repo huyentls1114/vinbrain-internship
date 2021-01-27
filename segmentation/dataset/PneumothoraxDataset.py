@@ -127,7 +127,7 @@ class PneumothoraxPreprocess:
         }
 
     def init_df(self, mode="train"):
-        list_path = sorted(glob(input_folder+os.sep+"dicom-images-%s/*/*/*.dcm" % (mode)))
+        list_path = sorted(glob(self.input_folder+os.sep+"dicom-images-%s/*/*/*.dcm" % (mode)))
         list_uid = list(map(find_uid, list_path))
 
         df = pd.DataFrame({"ImageId": list_uid, "path": list_path})
