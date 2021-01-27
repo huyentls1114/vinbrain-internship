@@ -76,7 +76,7 @@ net = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 16
+batch_size = 32
 num_epochs = 200
 
 metric = {
