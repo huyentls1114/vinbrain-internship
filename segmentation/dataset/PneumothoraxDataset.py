@@ -162,6 +162,8 @@ class PneumothoraxPreprocess:
                 continue
             plt.imsave(os.path.join(self.images_output_folder, uid+".jpg"), img, cmap="gray")
             plt.imsave(os.path.join(self.masks_output_folder, uid+".jpg"), mask, cmap="gray")
+def find_uid(path):
+  return path.split(os.sep)[-1].replace(".dcm","")
 
 def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
     data = pydicom.dcmread(img_path)
