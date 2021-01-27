@@ -110,7 +110,7 @@ class PneumothoraxPreprocess:
         self.masks["label"] = (self.masks["EncodedPixels"] != "-1").astype(np.float)
 
         self.train_df = self.init_df("train")
-        self.test_df = self.init_df("val")
+        self.test_df = self.init_df("test")
         self.train_df, self.val_df, y_train, y_val = train_test_split(self.train_df, self.train_df["label"], test_size=val_size)
 
         self.images_output_folder = os.path.join(self.output_folder, "images")
@@ -141,13 +141,12 @@ class PneumothoraxPreprocess:
         os.makedirs(dir_path)
 
     def save_txt(self, mode="train"):
-        file_path = os.path.join(self.output_folder, "%s.txt" % mode),
-
+        file_path = os.path.join(self.output_folder, "%s.txt" % mode)
         if os.path.isfile(file_path):
             os.remove(file_path)
         file_ = open(file_path, "w")
-        for index, row in tqdm(self.list_df[model]):
-            uid = row["uid"]
+        for index, row in tqdm(self.list_df[mode].iterrows()):
+            uid = row["ImageId"]
             file_.writelines(uid+".jpg\n")
         file_.close()
 
