@@ -35,22 +35,20 @@ class PneumothoraxDataset(Dataset):
         self.transform_image = transform_image
         self.transform_label = transform_label
 
-    def update_train_ds(self, method = "downsample"):
+    def update_train_ds(self, weight_positive = 0.8):
         if self.mode == "train":
-            self.df_img = self.downsample_data(self.df_img_all)
+            self.df_img = self.downsample_data(self.df_img_all, weight_positive)
         else:
             self.df_img = self.df_img_all
         self.list_img_name =self.df_img["img_name"].values
     
-    def downsample_data(self, df):
+    def downsample_data(self, df, weight_positive):
         df_label0 = df[df["label"] == 0]
         df_label1 = df[df["label"] == 1]
 
-        min_length = np.min([len(df_label0), len(df_label1)])
-        if len(df_label0) > min_length:
-            df_label0 = df_label0.sample(min_length)
-        else:
-            df_label1 = df_label1.sample(min_length)
+        positive_length = len(df_label1)
+        negative_length = int(positive_length*(1-weight_positive)/weight_positive)
+        df_label0 = df_label0.sample(negative_length)
         return pd.concat([df_label0, df_label1])
 
     def __len__(self):

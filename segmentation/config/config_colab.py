@@ -51,7 +51,9 @@ dataset = {
             CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1)
         ]),
-        "update_ds": "downsample"
+        "update_ds": {
+            "weight_positive": 0.8
+        }
     }
 }
 
