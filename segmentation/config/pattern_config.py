@@ -163,7 +163,7 @@ from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
-        "activation":nn.Sigmoid()
+        "activation":DiceLoss
     }
 }
 
