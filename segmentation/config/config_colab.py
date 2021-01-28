@@ -50,7 +50,8 @@ dataset = {
             RandomBlur(blur_limit = 10, p = 0.1),
             CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1)
-        ])
+        ]),
+        "update_ds": "downsample"
     }
 }
 
@@ -128,4 +129,8 @@ lr_scheduler_crf = {
         "T_0": 1,
         "T_mult":2
     }    
+}
+
+update_ds = {
+    "method":"downsample"
 }

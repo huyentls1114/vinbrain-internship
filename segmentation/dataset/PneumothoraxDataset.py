@@ -34,10 +34,10 @@ class PneumothoraxDataset(Dataset):
 
         self.transform_image = transform_image
         self.transform_label = transform_label
-        
-    def update_ds(self):
+
+    def update_train_ds(self, method = "downsample"):
         if mode == "train":
-            self.df_img = self.downsample_data(self.dataframe)
+            self.df_img = self.downsample_data(self.df_img_all)
         else:
             self.df_img = self.df_img_all
         self.list_img_name =self.df_img["img_name"].values

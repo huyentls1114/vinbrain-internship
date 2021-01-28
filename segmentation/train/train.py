@@ -11,6 +11,10 @@ from model.unet import UnetCRF
 class Trainer:
     def __init__(self, configs, data, copy_configs = True):
         self.data = data
+        if "update_ds" in  configs.data["dataset_args"].keys():
+            self.update_ds = configs.data["dataset_args"]["update_ds"]
+        else:
+            self.update_ds = None
         self.num_classes = configs.num_classes
 
         #net
@@ -88,6 +92,8 @@ class Trainer:
                                     self.data, 
                                     img_size = self.image_size)
         for epoch in self.visualize.mb:
+            if self.update_ds is not None:
+                self.data.update_train_ds(self.update_ds["method"])
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
