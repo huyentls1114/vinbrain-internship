@@ -93,7 +93,7 @@ class Trainer:
                                     img_size = self.image_size)
         for epoch in self.visualize.mb:
             if self.update_ds is not None:
-                self.data.update_train_ds(self.update_ds["method"])
+                self.data.update_train_ds(self.update_ds)
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()
