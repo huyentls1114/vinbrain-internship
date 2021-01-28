@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_augment_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_augment_1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -114,7 +114,7 @@ lr_scheduler = {
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr": 1e-3,
+        "max_lr": 1e-4,
         "epochs":num_epochs,
         "steps_per_epoch":steps_per_epoch+1,
         "final_div_factor":10,
