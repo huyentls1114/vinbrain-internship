@@ -23,10 +23,36 @@ class PneumothoraxDataset(Dataset):
         self.mode = mode
         self.image_folder = os.path.join(self.input_folder, "images")
         self.mask_folder = os.path.join(self.input_folder, "masks")
-        self.list_img_name = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
+        
+        #data process
+        self.df_img_all = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
+        if mode == "train":
+            self.df_img = self.downsample_data(self.dataframe)
+        else:
+            self.df_img = self.df_img_all
+        self.list_img_name =self.df_img["img_name"].values
+
         self.transform_image = transform_image
         self.transform_label = transform_label
         
+    def update_ds(self):
+        if mode == "train":
+            self.df_img = self.downsample_data(self.dataframe)
+        else:
+            self.df_img = self.df_img_all
+        self.list_img_name =self.df_img["img_name"].values
+    
+    def downsample_data(self, df):
+        df_label0 = df[df["label"] == 0]
+        df_label1 = df[df["label"] == 1]
+
+        min_length = np.min(len(df_label0), len(df_label1))
+        if len(df_label0) > min_length:
+            df_label0 = df_label0.sample(min_length)
+        else:
+            df_label1 = df_label1.sample(min_length)
+        return pd.concat([df_label0, df_label1])
+
     def __len__(self):
         return len(self.list_img_name)
     
@@ -95,11 +121,22 @@ class PneumothoraxDataset(Dataset):
         file_ = open(txt_file, "r")
         list_ = file_.readlines()
         list_img_name = []
+        list_label = []
         for line in list_:
-            img_name = line.replace("\n","")
+            img_name, label = line.replace("\n","").split(",")
             list_img_name.append(img_name)
+            list_label.append(int(label))
         file_.close()
-        return list_img_name
+        return pd.DataFrame({"img_name": list_img_name, "label":list_label})
+
+from dataset.PneumothoraxDataset import *
+import numpy as np
+from glob import glob
+from tqdm import tqdm
+from sklearn.model_selection import train_test_split
+import shutil
+import pydicom
+import random
 
 from dataset.PneumothoraxDataset import *
 import numpy as np
@@ -158,7 +195,8 @@ class PneumothoraxPreprocess:
         file_ = open(file_path, "w")
         for index, row in tqdm(self.list_df[mode].iterrows()):
             uid = row["ImageId"]
-            file_.writelines(uid+".jpg\n")
+            label = row["label"]
+            file_.writelines("%s.jpg,%d\n"%(uid, int(label)))
         file_.close()
 
     def save_img(self, path, encoded_pixels):
@@ -210,12 +248,6 @@ def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
     img = pydicom.read_file(img_path).pixel_array
     
     uid = data.SOPInstanceUID
-    # if isinstance(encoded_pixels, str):
-    #   if encoded_pixels == "-1":
-    #       mask = np.zeros((width, height)).astype(np.float)
-    #   else:
-    #       mask = rle2mask(encoded_pixels, width, height)
-    # else:
     mask = np.zeros((width, height)).astype(np.float)
     for encoded_pixel in encoded_pixels:
         if encoded_pixel != "-1":
