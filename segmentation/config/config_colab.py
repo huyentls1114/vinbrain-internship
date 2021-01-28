@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_augment_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_focalloss_augment_1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -87,13 +87,14 @@ metric = {
     }
 }
 num_classes = 1
-from loss.loss import DiceLoss
+from loss.loss import FocalLoss
 loss_function = {
-    "class": DiceLoss,
+    "class": FocalLoss,
     "loss_args":{
+        "alpha": 0.25,
+        "gamma": 2
     }
 }
-
 
 #optimizer
 lr = 1e-3
