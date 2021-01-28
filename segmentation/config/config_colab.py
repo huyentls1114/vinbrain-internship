@@ -89,13 +89,15 @@ metric = {
 }
 num_classes = 1
 num_classes = 1
+num_classes = 1
 from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
-        "activation":DiceLoss
+        "activation":nn.Sigmoid()
     }
 }
+
 
 #optimizer
 lr = 1e-3
