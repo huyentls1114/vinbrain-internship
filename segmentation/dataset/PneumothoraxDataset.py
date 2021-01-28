@@ -27,7 +27,7 @@ class PneumothoraxDataset(Dataset):
         #data process
         self.df_img_all = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
         if mode == "train":
-            self.df_img = self.downsample_data(self.dataframe)
+            self.df_img = self.downsample_data(self.df_img_all)
         else:
             self.df_img = self.df_img_all
         self.list_img_name =self.df_img["img_name"].values
@@ -254,6 +254,12 @@ def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
             mask += rle2mask(encoded_pixel, width, height)
     mask = np.clip(mask, 0.0, 255.0)
     return uid, img, mask.T
+
+def positive_negative_count(df):
+    positive = len(df[df["label"] == 1])
+    negative = len(df[df["label"] == 0])
+    return positive, negative, positive/(negative+1e-9)
+
 def mask2rle(img, width, height):
     rle = []
     lastColor = 0;
