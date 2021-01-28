@@ -46,7 +46,7 @@ class PneumothoraxDataset(Dataset):
         df_label0 = df[df["label"] == 0]
         df_label1 = df[df["label"] == 1]
 
-        min_length = np.min(len(df_label0), len(df_label1))
+        min_length = np.min([len(df_label0), len(df_label1)])
         if len(df_label0) > min_length:
             df_label0 = df_label0.sample(min_length)
         else:
