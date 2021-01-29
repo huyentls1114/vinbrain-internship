@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_focalloss_augment_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_focalloss_augment_1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -60,12 +60,12 @@ dataset = {
 #train config
 import os
 from model.unet import UnetCRF
-from model.backbone import BackboneEfficientB0VGG
+from model.backbone import BackboneResnet34VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
+        "backbone_class": BackboneResnet34VGG,
         "encoder_args":{
             "pretrained":True           
         },
