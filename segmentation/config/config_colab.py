@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_diceloss_augment_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_diceloss_augment_Plateau"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
