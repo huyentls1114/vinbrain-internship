@@ -106,6 +106,7 @@ optimizer = {
     }
 }
 
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_scheduler = {
     "class": CosineAnnealingWarmRestarts,
     "metric":None,
