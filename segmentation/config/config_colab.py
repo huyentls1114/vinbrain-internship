@@ -94,8 +94,8 @@ loss = {
     "class":CombineLoss,
     "loss_args":{
         "weights":{
-            "dice":1,
-            "focal":1,
+            "dice":0.3,
+            "focal":0.7,
         },
         "alpha":0.5,
         "gamma":2
