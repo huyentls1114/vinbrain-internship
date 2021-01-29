@@ -28,6 +28,7 @@ class PneumothoraxDataset(Dataset):
         self.df_img_all = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
         if mode == "train":
             self.df_img = self.downsample_data(self.df_img_all, dataset_args["update_ds"]["weight_positive"])
+            self.df_img = self.df_img.sample(frac=1)
         else:
             self.df_img = self.df_img_all
         self.list_img_name =self.df_img["img_name"].values
@@ -38,9 +39,8 @@ class PneumothoraxDataset(Dataset):
     def update_train_ds(self, weight_positive = 0.8):
         if self.mode == "train":
             self.df_img = self.downsample_data(self.df_img_all, weight_positive)
-        else:
-            self.df_img = self.df_img_all
-        self.list_img_name =self.df_img["img_name"].values
+            self.df_img = self.df_img.sample(frac=1)
+            self.list_img_name =self.df_img["img_name"].values
     
     def downsample_data(self, df, weight_positive):
         df_label0 = df[df["label"] == 0]
