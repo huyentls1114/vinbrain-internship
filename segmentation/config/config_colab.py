@@ -41,12 +41,12 @@ dataset = {
         "augmentation": A.Compose([
             A.Resize(512, 512),
             RandomCrop(450, 450, p = 0.5),
+            RandomRotate((-30, 30), p = 0.5),
             A.OneOf([
-                RandomVerticalFlip(p=0.5),
-                # RandomHorizontalFlip(p=0.5),
+                # RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
                 # RandomTranspose(p = 0.5),
             ]),
-            RandomRotate((-30, 30), p = 0.5),
             RandomBlur(blur_limit = 3.1, p = 0.1),
             CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1)
@@ -114,6 +114,7 @@ lr_scheduler = {
         "factor":0.1,
         "patience":4,
         "threshold":1e-4,
+        "cooldown":2,
         "min_lr":1e-6
     }
 }
