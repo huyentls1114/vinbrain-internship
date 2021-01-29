@@ -179,6 +179,7 @@ loss_function = {
     }
 }
 
+
 #optimizer
 optimizer = {
     "class":Adam,

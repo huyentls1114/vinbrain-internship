@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_focalloss_augment_Plateau"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_combine_augment_Plateau"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -89,12 +89,16 @@ metric = {
         "epsilon":1e-4
     }
 }
-from loss.loss import FocalLoss
-loss_function = {
-    "class": FocalLoss,
+from loss.loss import CombineLoss
+loss = {
+    "class":CombineLoss,
     "loss_args":{
-        "alpha": 0.98,
-        "gamma": 2
+        "weights":{
+            "dice":1,
+            "focal":1,
+        },
+        "alpha":0.5,
+        "gamma":2
     }
 }
 
