@@ -217,6 +217,8 @@ class Trainer:
 
     def schedule_lr(self, iteration = 0, metric_value = 0):
         assert self.lr_scheduler is not None
+        import pdb
+        pdb.set_trace()
         if self.lr_scheduler_metric is not None:
             if self.lr_schedule_step_type == "iteration":
                 #for Cosine Anealing Warm Restart
