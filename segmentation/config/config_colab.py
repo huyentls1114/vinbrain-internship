@@ -47,7 +47,7 @@ dataset = {
                 # RandomTranspose(p = 0.5),
             ]),
             RandomRotate((-30, 30), p = 0.5),
-            RandomBlur(blur_limit = 3, p = 0.1),
+            RandomBlur(blur_limit = 3.1, p = 0.1),
             CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1)
         ]),
