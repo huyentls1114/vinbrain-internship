@@ -70,7 +70,8 @@ class BackboneResnet18VGG(Backbone):
 class BackboneResnet34VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneResnet34VGG, self).__init__(encoder_args, decoder_args)
-        print(encoder_args)        
+        print(encoder_args)
+        print(resnet34(pretrained=True))        
         self.base_model = resnet34(**encoder_args)
         self.features_name = ["layer3", "layer2", "layer1","relu"]
         self.last_layer = "layer4"
