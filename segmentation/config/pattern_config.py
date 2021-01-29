@@ -160,6 +160,13 @@ loss_function = {
     "loss_args":{
     }
 }
+from loss.loss import DiceLoss
+loss_function = {
+    "class":DiceLoss,
+    "loss_args":{
+        "mean_type":"pixel"
+    }
+}
 
 num_classes = 1
 from loss.loss import DiceLoss

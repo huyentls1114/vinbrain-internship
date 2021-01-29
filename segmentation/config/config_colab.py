@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_mixloss_metter_augment2_Plateau"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_mixloss_metter_augment2_CAW1e-5"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -89,16 +89,17 @@ metric = {
     }
 }
 # from pattern_model import MixedLoss
-from loss.loss import DiceLoss
+from loss.loss import MixedLoss
 loss_function = {
-    "class":DiceLoss,
+    "class":MixedLoss,
     "loss_args":{
-        "mean_type":"pixel"
+        "alpha": 10,
+        "gamma":2
     }
 }
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -106,13 +107,12 @@ optimizer = {
 }
 
 lr_scheduler = {
-    "class": ReduceLROnPlateau,
-    "metric":"val_loss_avg",
-    "step_type":"epoch",
+    "class": CosineAnnealingWarmRestarts,
+    "metric":None,
+    "step_type":"iteration",
     "schedule_args":{
-        "mode":"min",
-        "patience":4,
-        "cooldown":2,
+        "T_0":1,
+        "T_mul":2
     }
 }
 
