@@ -82,21 +82,16 @@ gpu_id = 0
 batch_size = 32
 num_epochs = 200
 
+from pattern_model import Meter
 metric = {
-    "class":Dice_Score,
+    "class":Meter,
     "metric_args":{
-        "threshold":0.5,
-        "epsilon":1e-4
     }
 }
-from loss.loss import CombineLoss
+from pattern_config import MixedLoss
 loss_function = {
-    "class":CombineLoss,
+    "class":MixedLoss,
     "loss_args":{
-        "weights":{
-            "dice":0.3,
-            "focal":0.7,
-        },
         "alpha":0.5,
         "gamma":2
     }

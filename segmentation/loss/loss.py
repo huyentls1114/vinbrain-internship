@@ -70,4 +70,4 @@ class CombineLoss(nn.Module):
 #         ce_loss = F.binary_cross_entropy_with_logits(logits, ground_truth, reduction="none")
 #         loss = self.alpha*torch.pow(1-pt, self.gamma)*ce_loss
 #         return loss.mean()
-        
+
