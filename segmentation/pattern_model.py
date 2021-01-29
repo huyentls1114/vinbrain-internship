@@ -72,9 +72,10 @@ def metric(probability, truth, threshold=0.5, reduction='none'):
 
     return dice, dice_neg, dice_pos, num_neg, num_pos
 
-class Meter:
+class Meter(nn.Module):
     '''A meter to keep track of iou and dice scores throughout an epoch'''
     def __init__(self):
+        super(Meter, self).__init__()
         self.base_threshold = 0.5 # <<<<<<<<<<< here's the threshold
 
     def forward(self, predict, ground_truth):
