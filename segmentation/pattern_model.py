@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 def dice_loss(input, target):
     input = torch.sigmoid(input)
