@@ -96,11 +96,7 @@ class Trainer:
                 self.data.update_train_ds(**self.update_ds)
             self.current_epoch = epoch
             self.train_one_epoch()
-            self.save_checkpoint()
-            
-            if (self.lr_scheduler is not None):
-                if self.lr_schedule_step_type == "epoch":
-                    self.schedule_lr()
+            self.save_checkpoint()                
 
     def train_one_epoch(self):
         train_loss = 0
@@ -133,6 +129,8 @@ class Trainer:
         i = step
         train_loss_avg = train_loss/num_batches
         val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
+        if self.lr_schedule_step_type == "epoch":
+            self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
         lr = self.optimizer.param_groups[0]['lr']
         print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, dice valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
         loss_file_path = os.path.join(self.output_folder, self.loss_file)
@@ -217,7 +215,7 @@ class Trainer:
         file_path = os.path.join(self.output_folder, filename)
         self.net.load_state_dict(torch.load(file_path, map_location=self.device))
 
-    def schedule_lr(self, iteration = 0):
+    def schedule_lr(self, iteration = 0, metric_value = 0):
         assert self.lr_scheduler is not None
         if self.lr_scheduler_metric is not None:
             if self.lr_schedule_step_type == "iteration":
@@ -225,7 +223,7 @@ class Trainer:
                 self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
             else:
                 #for ReduceLROnPlateau
-                val_loss, val_acc = self.evaluate(mode = "val")
-                self.lr_scheduler.step(eval(self.lr_scheduler_metric))
+                # val_loss, val_acc = self.evaluate(mode = "val")
+                self.lr_scheduler.step(metric_value)
         else:
             self.lr_scheduler.step()

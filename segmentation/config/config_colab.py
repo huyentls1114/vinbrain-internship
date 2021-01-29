@@ -106,19 +106,17 @@ optimizer = {
     }
 }
 
-from torch.optim.lr_scheduler import OneCycleLR
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
-num_epochs = 80
 lr_scheduler = {
-    "class":OneCycleLR,
-    "metric": None,
-    "step_type":"batch",
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss",
+    "step_type":"epoch",
     "schedule_args":{
-        "max_lr": 1e-4,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1,
-        "final_div_factor":10,
-    }    
+        "mode":"min",
+        "factor":0.1,
+        "patience":6,
+        "threshold":1e-7,
+        "min_lr":1e-6
+    }
 }
 
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts

@@ -35,17 +35,20 @@ lr_scheduler_crf = {
 }
 #OneCycleLR
 from torch.optim.lr_scheduler import OneCycleLR
-configs.num_epochs = 30
-configs.lr_schedule = {
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
+num_epochs = 80
+lr_scheduler = {
     "class":OneCycleLR,
     "metric": None,
     "step_type":"batch",
     "schedule_args":{
-        "max_lr":0.01,
-        "epochs":configs.num_epochs,
-        "steps_per_epoch":configs.steps_per_epoch+1
+        "max_lr": 1e-4,
+        "epochs":num_epochs,
+        "steps_per_epoch":steps_per_epoch+1,
+        "final_div_factor":10,
     }    
 }
+
 # net
 num_classes = 1
 from model.backbone import BackboneOriginal
