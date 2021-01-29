@@ -45,8 +45,8 @@ class FocalLossWithLogits(nn.Module):
 class CombineLoss(nn.Module):
     def __init__(self, weights, **args):
         super(CombineLoss, self).__init__()
-        weight_dice = weights["dice"]
-        weight_focal = weights["focal"]
+        self.weight_dice = weights["dice"]
+        self.weight_focal = weights["focal"]
         alpha = args["alpha"]
         gamma = args["gamma"]
 
