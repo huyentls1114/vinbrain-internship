@@ -88,8 +88,8 @@ metric = {
     "metric_args":{
     }
 }
-# from pattern_model import MixedLoss
-from loss.loss import MixedLoss
+from pattern_model import MixedLoss
+# from loss.loss import MixedLoss
 loss_function = {
     "class":MixedLoss,
     "loss_args":{
