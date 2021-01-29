@@ -3,7 +3,10 @@ import torch
 import torch.nn.functional as F
 
 class DiceLoss(nn.Module):
-    def __init__(self, activation = nn.Sigmoid(), epsilon = 1e-4, mean_type = "pixel"):
+    def __init__(self, activation = nn.Sigmoid(), epsilon = 1e-4, mean_type = "image"):
+        '''
+        mean_type is one of ["pixel", "image"]
+        '''
         super(DiceLoss, self).__init__()
         self.epsilon = epsilon
         self.activation = activation
@@ -15,16 +18,16 @@ class DiceLoss(nn.Module):
         predict = predict.view(predict.shape[0], -1)
         ground_truth = ground_truth.view(ground_truth.shape[0], -1)
 
-        if mean_type == "pixel":
-            intersection = torch.sum(predict*ground_truth, 1)
-            union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
-            dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
-            return torch.mean(dice)
-        else:
+        if self.mean_type == "pixel":
             intersection = torch.sum(predict*ground_truth)
             union = torch.sum(predict) + torch.sum(ground_truth)
             dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
             return dice
+        else:
+            intersection = torch.sum(predict*ground_truth, 1)
+            union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
+            dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
+            return torch.mean(dice)
 
 from torchvision.ops import sigmoid_focal_loss
 class FocalLoss(nn.Module):

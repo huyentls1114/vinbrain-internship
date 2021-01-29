@@ -88,12 +88,12 @@ metric = {
     "metric_args":{
     }
 }
-from pattern_model import MixedLoss
+# from pattern_model import MixedLoss
+from loss.loss import DiceLoss
 loss_function = {
-    "class":MixedLoss,
+    "class":DiceLoss,
     "loss_args":{
-        "alpha":0.5,
-        "gamma":2
+        "mean_type":"pixel"
     }
 }
 
@@ -111,11 +111,8 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-        "factor":0.1,
         "patience":4,
-        "threshold":1e-4,
         "cooldown":2,
-        "min_lr":1e-6
     }
 }
 
