@@ -112,8 +112,8 @@ lr_scheduler = {
     "metric":None,
     "step_type":"iteration",
     "schedule_args":{
-        "T_0":1,
-        "T_mul":2
+        "T0":1,
+        "Tmul":2
     }
 }
 
