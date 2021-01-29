@@ -52,7 +52,7 @@ dataset = {
             RandomBrightnessContrast(p = 0.1)
         ]),
         "update_ds": {
-            "weight_positive": 0.8
+            "weight_positive": 1
         }
     }
 }
@@ -110,7 +110,7 @@ optimizer = {
 
 from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
-num_epochs = 40
+num_epochs = 80
 lr_scheduler = {
     "class":OneCycleLR,
     "metric": None,

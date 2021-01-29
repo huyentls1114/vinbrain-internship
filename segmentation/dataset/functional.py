@@ -25,7 +25,7 @@ def vertical_flip(img):
 def horizontal_flip(img):
     return np.ascontiguousarray(img[:,::-1, ...])
 
-def rotate(img, angle, interpolation = cv2.INTER_LINEAR, boder_mode= cv2.BORDER_REFLECT_101, value = None):
+def rotate(img, angle, interpolation = cv2.INTER_LINEAR, boder_mode= cv2.BORDER_CONSTANT, value = None):
     h, w = img.shape[:2]
     matrix = cv2.getRotationMatrix2D((w//2, h//2), angle, scale = 1.0)
     return cv2.warpAffine(img, M = matrix, dsize=(w, h), flags=interpolation, borderMode=boder_mode, borderValue=value)
