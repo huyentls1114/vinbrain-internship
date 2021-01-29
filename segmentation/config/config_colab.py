@@ -90,12 +90,12 @@ metric = {
     }
 }
 from loss.loss import CombineLoss
-loss = {
+loss_function = {
     "class":CombineLoss,
     "loss_args":{
         "weights":{
-            "dice":0.3,
-            "focal":0.7,
+            "dice":0.5,
+            "focal":0.5,
         },
         "alpha":0.5,
         "gamma":2
