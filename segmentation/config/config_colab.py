@@ -90,24 +90,29 @@ gpu_id = 0
 batch_size = 32
 num_epochs = 20
 
-from pattern_model import Meter
+# from pattern_model import 
+from won.loss import DiceMetric
 metric = {
-    "class":Meter,
+    "class":DiceMetric,
     "metric_args":{
     }
 }
-from pattern_model import MixedLoss
+# from pattern_model import MixedLoss
 # from loss.loss import MixedLoss
+from won.loss import ComboLoss
 loss_function = {
-    "class":MixedLoss,
+    "class":ComboLoss,
     "loss_args":{
-        "alpha": 10,
-        "gamma":2
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
     }
 }
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
