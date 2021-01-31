@@ -61,8 +61,8 @@ dataset = {
 
 #train config
 import os
-from model.unet import UnetCRF
-from model.backbone import BackboneResnet34VGG
+# from model.unet import UnetCRF
+# from model.backbone import BackboneResnet34VGG
 num_classes = 1
 # net = {
 #     "class":Unet,
@@ -77,13 +77,11 @@ num_classes = 1
 #         }
 #     }
 # }
-
+from won.ternausnets import AlbuNet
 net = {
-    "class":smp.Unet,
+    "class":AlbuNet,
     "net_args":{
-        "encoder_name":"resnet34",
-        "encoder_weights":"imagenet",
-        "activation":None
+        "pretrained":True
     }
 }
 device = "gpu"
