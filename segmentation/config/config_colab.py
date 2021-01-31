@@ -63,7 +63,7 @@ dataset = {
 import os
 # from model.unet import UnetCRF
 # from model.backbone import BackboneResnet34VGG
-num_classes = 3
+num_classes = 1
 # net = {
 #     "class":Unet,
 #     "net_args":{
