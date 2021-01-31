@@ -88,7 +88,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 32
-num_epochs = 200
+num_epochs = 20
 
 from pattern_model import Meter
 metric = {
@@ -107,24 +107,26 @@ loss_function = {
 }
 
 #optimizer
-lr = 1e-4
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
 
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
-    "class": CosineAnnealingWarmRestarts,
-    "metric":None,
-    "step_type":"iteration",
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss",
+    "step_type":"epoch",
     "schedule_args":{
-        "T_0":1,
-        "T_mult":2
+        "mode":"min",
+        "factor":0.5,
+        "patience":8,
+        "threshold":1e-2,
+        "min_lr":1e-6
     }
 }
-
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_scheduler_crf = {
     "class":CosineAnnealingWarmRestarts,
