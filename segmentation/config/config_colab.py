@@ -11,9 +11,11 @@ from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneE
 from utils.utils import len_train_datatset
 from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
+import segmentation_models_pytorch as smp
+
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneResnet34VGG_mixloss_metter_augment2_CAW1e-5"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/smp_mixloss_metter_augment2_CAW1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -62,20 +64,28 @@ import os
 from model.unet import UnetCRF
 from model.backbone import BackboneResnet34VGG
 num_classes = 1
+# net = {
+#     "class":Unet,
+#     "net_args":{
+#         "backbone_class": BackboneResnet34VGG,
+#         "encoder_args":{
+#             "pretrained":True           
+#         },
+#         "decoder_args":{
+#             "bilinear": False,
+#             "pixel_shuffle":True
+#         }
+#     }
+# }
+
 net = {
-    "class":Unet,
+    "class":smp.Unet,
     "net_args":{
-        "backbone_class": BackboneResnet34VGG,
-        "encoder_args":{
-            "pretrained":True           
-        },
-        "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
-        }
+        "encoder_name":"resnet34",
+        "encoder_weights":"imagenet",
+        "activation":None
     }
 }
-
 device = "gpu"
 gpu_id = 0
 
