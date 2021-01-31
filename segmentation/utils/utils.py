@@ -37,8 +37,8 @@ def compose_images(image, mask, predict):
     image = conver_numpy_image(image)
     mask = conver_numpy_image(mask)
     predict = conver_numpy_image(predict)
-    if img.shape[2] == 3:
-        image = iamge[:,:,0:1]
+    if image.shape[2] == 3:
+        image = image[:,:,0:1]
     return np.hstack([image, mask, predict])
 
 def contour(image, mask):
