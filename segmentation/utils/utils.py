@@ -14,7 +14,7 @@ def show_img(image):
     plt.imshow(image)
     plt.show()
 
-def conver_numpy_image(image, normalize = False):
+def conver_numpy_image(image, normalize = True):
     '''
     convert tensor image to numpy array
     inputs:
