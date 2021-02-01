@@ -14,7 +14,7 @@ def show_img(image):
     plt.imshow(image)
     plt.show()
 
-def conver_numpy_image(image, normalize = True):
+def conver_numpy_image(image, normalize = False):
     '''
     convert tensor image to numpy array
     inputs:
@@ -34,9 +34,9 @@ def compose_images(image, mask, predict):
     inputs:
         - image, masks, predict: torch tensor shape (C, H, W)
     '''
-    image = conver_numpy_image(image)
-    mask = conver_numpy_image(mask)
-    predict = conver_numpy_image(predict)
+    image = conver_numpy_image(image, normalize = True)
+    mask = conver_numpy_image(mask, normalize = False)
+    predict = conver_numpy_image(predict, normalize = False)
     if image.shape[2] == 3:
         image = image[:,:,0:1]
     return np.hstack([image, mask, predict])
