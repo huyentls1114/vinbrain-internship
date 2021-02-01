@@ -26,10 +26,12 @@ transform_train = transforms.Compose([
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
     transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 
@@ -54,7 +56,7 @@ dataset = {
             RandomBrightnessContrast(p = 0.1)
         ]),
         "update_ds": {
-            "weight_positive": 1
+            "weight_positive": 0.8
         }
     }
 }
