@@ -122,7 +122,7 @@ optimizer = {
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
     "class": ReduceLROnPlateau,
-    "metric":"val_loss",
+    "metric":"val_loss_avg",
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
