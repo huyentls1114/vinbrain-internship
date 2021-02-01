@@ -31,7 +31,7 @@ class BrainTumorDataset(Dataset):
         img_name = self.list_img_name[idx]
         img_path = os.path.join(self.image_folder, img_name)
         image = plt.imread(img_path)
-        image = image[:, :, 0]
+        # image = image[:, :, 0]
 
         mask_path = os.path.join(self.mask_folder, img_name)
         mask = plt.imread(mask_path)
