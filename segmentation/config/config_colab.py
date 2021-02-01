@@ -31,7 +31,7 @@ transform_test = transforms.Compose([
 ])
 transform_label = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    # transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 
