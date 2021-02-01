@@ -21,12 +21,13 @@ config_file_path = "/content/vinbrain-internship/segmentation/config/config_cola
 
 
 transform_train = transforms.Compose([
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 transform_test = transforms.Compose([
-    transforms.ToTensor(),
     transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.ToTensor(),
     transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
