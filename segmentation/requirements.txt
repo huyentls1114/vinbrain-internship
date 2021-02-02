@@ -1,4 +1,5 @@
 albumentations
-crfseg
-pydicom
-timm==0.3.4
+# crfseg
+# pydicom
+# segmentation_models_pytorch
+# timm==0.3.4
