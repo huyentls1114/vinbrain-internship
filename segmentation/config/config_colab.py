@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Albunet_Comboloss_rate0.8_augment2_RLOPe-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Resnet34VGG_Comboloss_rate0.8_augment2_RLOPe-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -80,11 +80,21 @@ num_classes = 1
 #         }
 #     }
 # }
-from won.ternausnets import AlbuNet
+# from won.ternausnets import AlbuNet
+from model.unet import Unet
+from model.backbone import BackboneResnet34VGG
+num_classes = 1
 net = {
-    "class":AlbuNet,
+    "class":Unet,
     "net_args":{
-        "pretrained":True
+        "backbone_class": BackboneResnet34VGG,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
     }
 }
 device = "gpu"
