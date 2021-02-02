@@ -1,5 +1,5 @@
-timm==0.3.2
+timm==0.3.4
 albumentations
 crfseg
 pydicom
-# segmentation_models_pytorch
+segmentation_models_pytorch
