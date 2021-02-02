@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Albunet_Focaloss_rate0.8_augment2_RLOPe-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Resnet34VGG_ComboLoss_rate0.8_augment2_RLOPe-4_2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -65,29 +65,30 @@ dataset = {
 #train config
 import os
 # from model.unet import UnetCRF
-# from model.backbone import BackboneResnet34VGG
-num_classes = 1
-# net = {
-#     "class":Unet,
-#     "net_args":{
-#         "backbone_class": BackboneResnet34VGG,
-#         "encoder_args":{
-#             "pretrained":True           
-#         },
-#         "decoder_args":{
-#             "bilinear": False,
-#             "pixel_shuffle":True
-#         }
-#     }
-# }
-from won.ternausnets import AlbuNet
+from model.unet import Unet
+from model.backbone import BackboneResnet34VGG
 num_classes = 1
 net = {
-    "class":AlbuNet,
+    "class":Unet,
     "net_args":{
-        "pretrained":True
+        "backbone_class": BackboneResnet34VGG,
+        "encoder_args":{
+            "pretrained":True           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
     }
 }
+# from won.ternausnets import AlbuNet
+# num_classes = 1
+# net = {
+#     "class":AlbuNet,
+#     "net_args":{
+#         "pretrained":True
+#     }
+# }
 device = "gpu"
 gpu_id = 0
 
@@ -104,14 +105,17 @@ metric = {
 }
 # from pattern_model import MixedLoss
 # from loss.loss import MixedLoss
-# from won.loss import ComboLoss
-from loss.loss import FocalLoss
+from won.loss import ComboLoss
 loss_function = {
-    "class": FocalLoss,
+    "class":ComboLoss,
     "loss_args":{
-        "alpha": 0.5,
-        "gamma": 2
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
     }
+}
 }
 #optimizer
 lr = 1e-4

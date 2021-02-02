@@ -176,6 +176,17 @@ loss_function = {
         "mean_type":"pixel"
     }
 }
+from loss.loss import FocalLoss
+loss_function = {
+    "class":ComboLoss,
+    "loss_args":{
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
+    }
+}
 
 num_classes = 1
 from loss.loss import DiceLoss
