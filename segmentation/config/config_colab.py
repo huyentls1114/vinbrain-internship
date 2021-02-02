@@ -116,7 +116,6 @@ loss_function = {
         }
     }
 }
-}
 #optimizer
 lr = 1e-4
 optimizer = {
