@@ -51,6 +51,15 @@ lr_scheduler = {
 
 # net
 num_classes = 1
+net = {
+    "class":AlbuNet,
+    "net_args":{
+        "pretrained":True
+    }
+}
+
+
+num_classes = 1
 from model.backbone import BackboneOriginal
 net = {
     "class":Unet,
