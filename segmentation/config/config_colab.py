@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/smp_mixloss_metter_augment2_CAW1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Albunet_Comboloss_rate0.8_augment2_RLOPe-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 

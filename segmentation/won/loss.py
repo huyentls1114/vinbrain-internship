@@ -33,11 +33,6 @@ def dice_metric(preds, trues, per_image=False, per_channel=False):
     preds = preds.float()
     return 1 - soft_dice_loss(preds, trues, per_image, per_channel)
 
-class DiceMetric(nn.Module):
-    def __init__(self):
-        super(DiceMetric, self).__init__()
-    def forward(self, preds, trues, per_image=False, per_channel=False):
-        return dice_metric(preds, trues, per_image, per_channel)
 def jaccard(outputs, targets, per_image=False, non_empty=False, min_pixels=5):
     batch_size = outputs.size()[0]
     eps = 1e-3
@@ -73,7 +68,14 @@ class DiceLoss(nn.Module):
 
     def forward(self, input, target):
         return soft_dice_loss(input, target, per_image=self.per_image)
-
+        
+class DiceMetric(nn.Module):
+    def __init__(self, per_image = True, per_channel = False):
+        super(DiceMetric, self).__init__()
+        self.per_image = per_image
+        self.per_channel = per_channel
+    def forward(self, preds, trues):
+        return dice_metric(preds, trues, self.per_image, self.per_channel)
 
 class JaccardLoss(nn.Module):
     def __init__(self, weight=None, size_average=True, per_image=False, non_empty=False, apply_sigmoid=False,
