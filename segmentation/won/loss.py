@@ -70,12 +70,14 @@ class DiceLoss(nn.Module):
         return soft_dice_loss(input, target, per_image=self.per_image)
         
 class DiceMetric(nn.Module):
-    def __init__(self, per_image = True, per_channel = False):
+    def __init__(self, threshold = 0.5, per_image = True, per_channel = False):
         super(DiceMetric, self).__init__()
         self.per_image = per_image
         self.per_channel = per_channel
-    def forward(self, preds, trues):
-        return dice_metric(preds, trues, self.per_image, self.per_channel)
+        self.threshold = threshold
+    def forward(self, outputs, labels):
+        predicts = (outputs > self.threshold).float() 
+        return dice_metric(predicts, labels, self.per_image, self.per_channel)
 
 class JaccardLoss(nn.Module):
     def __init__(self, weight=None, size_average=True, per_image=False, non_empty=False, apply_sigmoid=False,
