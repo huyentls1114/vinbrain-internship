@@ -70,7 +70,7 @@ net = {
     "net_args":{
         "backbone_class": BackboneEfficientB7VGG,
         "encoder_args":{
-            "type":"ns",
+            "type":"vanila",
             "pretrained":True,           
         },
         "decoder_args":{
