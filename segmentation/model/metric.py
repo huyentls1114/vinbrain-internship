@@ -32,7 +32,9 @@ class DiceMetric:
         #     labels = labels.numpy()
         predict = (predict>self.threshold).astype(type(predict))
         labels = labels.reshape(labels.shape[0], -1)
+        print(labels.shape)
         predict = predict.reshape(predict.shape[0], -1)
+        print(predict.shape)
         intersection = np.sum(predict * labels, axis=1)
         union = np.sum(predict, axis=1) + np.sum(labels, axis=1) + self.eps
         loss = np.mean((2 * intersection + self.eps) / union)
