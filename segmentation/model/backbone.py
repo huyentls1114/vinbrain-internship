@@ -133,7 +133,27 @@ class BackboneDensenet121VGG(Backbone):
             PixelShuffle_ICNR(64),
             nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
-
+from torchvision.models import resnext101_32x8d
+import torch
+class BackboneRestnext101VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneRestnext101VGG, self).__init__(encoder_args, decoder_args)
+        if encoder_args["pretrained"] == "Instagram":   
+            self.base_model = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x8d_wsl')
+        else:
+            self.base_model = resnext101_32x8d(pretrained=True)
+        self.features_name = ["layer3","layer2","layer1","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.encoder_output = 2048
+        self.list_encoder_channel = [1024, 512, 256, 64]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
 class BackboneEfficientB0VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneEfficientB0VGG, self).__init__(encoder_args, decoder_args)        

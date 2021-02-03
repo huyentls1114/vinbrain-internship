@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Resnet101VGG_DiceLoss_rate0.8_augment2_RLOPe-4_2"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneRestnext101VGG_instagram_DiceLoss_rate0.8_augment2_RLOPe-4_2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -63,14 +63,14 @@ dataset = {
 }
 
 from model.unet import Unet
-from model.backbone import BackboneResnet101VGG
+from model.backbone import BackboneRestnext101VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet101VGG,
+        "backbone_class": BackboneRestnext101VGG,
         "encoder_args":{
-            "pretrained":True           
+            "pretrained":"Instagram"           
         },
         "decoder_args":{
             "bilinear": False,
