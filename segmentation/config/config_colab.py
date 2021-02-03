@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Resnet34VGG_ComboLoss_rate0.8_augment2_RLOPe-4_2"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Resnet34VGG_DiceLoss_rate0.8_augment2_RLOPe-4_2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
@@ -105,15 +105,13 @@ metric = {
 }
 # from pattern_model import MixedLoss
 # from loss.loss import MixedLoss
-from won.loss import ComboLoss
+from loss.loss import DiceLoss
+num_classes = 1
+from loss.loss import DiceLoss
 loss_function = {
-    "class":ComboLoss,
+    "class": DiceLoss,
     "loss_args":{
-        "weights": {
-            "bce":3,
-            "dice":1,
-            "focal":4
-        }
+        "activation":nn.Sigmoid()
     }
 }
 #optimizer
