@@ -25,17 +25,6 @@ class DiceMetric:
         self.per_channel = per_channel
         self.threshold = threshold
         self.eps = 1e-6
-    def __call__(self, predict, labels):
-        # if isinstance(outputs, torch.Tensor):
-        #     outputs = outputs.numpy()
-        # if isinstance(labels, torch.Tensor):
-        #     labels = labels.numpy()
-        predict = (predict>self.threshold).astype(type(predict))
-        labels = labels.reshape(labels.shape[0], -1)
-        print(labels.shape)
-        predict = predict.reshape(predict.shape[0], -1)
-        print(predict.shape)
-        intersection = np.sum(predict * labels, axis=1)
-        union = np.sum(predict, axis=1) + np.sum(labels, axis=1) + self.eps
-        loss = np.mean((2 * intersection + self.eps) / union)
+    def __call__(self, intersection, union):
+        loss = torch.mean((2 * intersection + self.eps) / (union+self.eps))
         return loss

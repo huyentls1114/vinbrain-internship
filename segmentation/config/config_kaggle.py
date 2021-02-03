@@ -87,6 +87,7 @@ num_epochs = 20
 from model.metric import DiceMetric
 metric = {
     "class":DiceMetric,
+    "metric_type":"dice_largeimg",
     "metric_args":{
         "threshold": 0.5
     }
