@@ -2,6 +2,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import os
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
@@ -12,38 +13,61 @@ from utils.utils import len_train_datatset
 from loss.loss import DiceLoss
 
 #data config
-image_size = 256
+image_size = 512
+output_folder = "/kaggle/working/Pneumothorax_BackboneResnet101VGG_comboloss_ROLR_1e-4"
+loss_file = "loss_file.txt"
+config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle.py"
+
+
 transform_train = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.Resize(image_size)
 ])
 transform_test = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
-
+    transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(image_size),
-    transforms.ToTensor()
+    transforms.ToTensor(),
+    # transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.Resize(image_size)
 ])
 
+import albumentations as A
+from dataset.transform import *
+from dataset.PneumothoraxDataset import *
 dataset = {
-    "class": BrainTumorDataset,
+    "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"/kaggle/input/braintumor/BrainTumor"
+        "input_folder":"/kaggle/input/penumothorax512"
+        "augmentation": A.Compose([
+            A.Resize(576, 576),
+            RandomRotate((-30, 30), p = 0.5),
+            A.OneOf([
+                # RandomVerticalFlip(p=0.5),
+                RandomHorizontalFlip(p=0.5),
+                # RandomTranspose(p = 0.5),
+            ]),
+            RandomBlur(blur_limit = 3.1, p = 0.1),
+            # CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1),
+            RandomCrop(512, 512, p = 0.5)
+        ]),
+        "update_ds": {
+            "weight_positive": 0.8
+        }
     }
 }
 
-#train config
+from model.unet import Unet
+from model.backbone import BackboneResnet101VGG
 num_classes = 1
-from model.backbone import BackboneEfficientB0VGG
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB0VGG,
+        "backbone_class": BackboneResnet101VGG,
         "encoder_args":{
             "pretrained":True           
         },
@@ -53,51 +77,63 @@ net = {
         }
     }
 }
-
 device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-# num_epochs = 200
+num_epochs = 20
 
+# from pattern_model import 
+from won.loss import DiceMetric
 metric = {
-    "class":Dice_Score,
+    "class":DiceMetric,
     "metric_args":{
-        "threshold":0.5,
-        "epsilon":1e-4
+        "threshold": 0.5
     }
 }
-from loss.loss import FocalLoss
+# from pattern_model import MixedLoss
+# from loss.loss import MixedLoss
+from won.loss import FocalLoss
 loss_function = {
-    "class": FocalLoss,
+    "class":ComboLoss,
     "loss_args":{
-        "alpha": 0,
-        "gamma": 0
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
     }
 }
 
-output_folder = "/kaggle/working/BrainTumor_BackboneEfficientB0VGG_focaloss_onecyle0_0_2e-3"
-loss_file = "loss_file.txt"
-config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_colab.py"
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
 
-from torch.optim.lr_scheduler import OneCycleLR
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
-num_epochs = 60
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
-    "class":OneCycleLR,
-    "metric": None,
-    "step_type":"batch",
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss_avg",
+    "step_type":"epoch",
     "schedule_args":{
-        "max_lr":0.006,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
+        "mode":"min",
+        "factor":0.5,
+        "patience":8,
+        "threshold":1e-2,
+        "min_lr":1e-6
+    }
+}
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_scheduler_crf = {
+    "class":CosineAnnealingWarmRestarts,
+    "metric": None,
+    "step_type":"iteration",
+    "schedule_args":{
+        "T_0": 1,
+        "T_mult":2
     }    
 }

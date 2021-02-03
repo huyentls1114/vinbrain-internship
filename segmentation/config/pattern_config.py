@@ -176,7 +176,7 @@ loss_function = {
         "mean_type":"pixel"
     }
 }
-from loss.loss import FocalLoss
+from won.loss import FocalLoss
 loss_function = {
     "class":ComboLoss,
     "loss_args":{
@@ -193,6 +193,7 @@ from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
+        "mean_type":"pixel",
         "activation":nn.Sigmoid()
     }
 }

@@ -83,6 +83,24 @@ class BackboneResnet34VGG(Backbone):
             PixelShuffle_ICNR(64),
             nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
+
+class BackboneResnet101VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneResnet101VGG, self).__init__(encoder_args, decoder_args)
+        self.base_model = resnet101(**encoder_args)
+        self.features_name = ["layer3", "layer2", "layer1","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.encoder_output = 2048
+        self.list_encoder_channel = [1024, 512, 256, 64]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
+
 class BackboneDensenet161VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneDensenet161VGG, self).__init__(encoder_args, decoder_args)        
