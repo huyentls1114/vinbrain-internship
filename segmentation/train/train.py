@@ -183,8 +183,8 @@ class Trainer:
                 loss += self.crition(outputs, labels).item()
                 if self.num_classes == 1:
                     outputs = torch.sigmoid(outputs)
-                output_list.append(outputs.numpy())
-                label_list.append(labels.numpy())
+                output_list.append(outputs.cpu().numpy())
+                label_list.append(labels.cpu().numpy())
             output_list = np.concatenate(output_list)
             label_list = np.concatenate(label_list)
             metrict_result = metric(output_list, label_list)
