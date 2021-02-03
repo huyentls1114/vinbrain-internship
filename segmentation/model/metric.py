@@ -31,9 +31,9 @@ class DiceMetric:
         # if isinstance(labels, torch.Tensor):
         #     labels = labels.numpy()
         predict = (outputs>self.threshold).astype(type(outputs))
-        dice_labels = labels.reshape(labels.shape[0], -1)
-        dice_output = outputs.reshape(outputs.shape[0], -1)
-        intersection = np.sum(dice_output * dice_labels, axis=1)
-        union = np.sum(dice_output, axis=1) + np.sum(dice_labels, axis=1) + self.eps
+        labels = labels.reshape(labels.shape[0], -1)
+        predict = predict.reshape(predict.shape[0], -1)
+        intersection = np.sum(predict * labels, axis=1)
+        union = np.sum(predict, axis=1) + np.sum(labels, axis=1) + self.eps
         loss = np.mean((2 * intersection + self.eps) / union)
         return loss
