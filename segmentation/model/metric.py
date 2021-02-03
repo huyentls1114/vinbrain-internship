@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 
 class Dice_Score:
     def __init__(self, epsilon = 1e-4, threshold = 0.5):
@@ -16,3 +17,23 @@ class Dice_Score:
 
 def _threshold(x, threshold = 0.5):
     return (x > threshold).type(x.dtype)
+
+
+class DiceMetric:
+    def __init__(self, threshold = 0.5, per_image = True, per_channel = False):
+        self.per_image = per_image
+        self.per_channel = per_channel
+        self.threshold = threshold
+        self.eps = 1e-6
+    def __call__(self, outputs, labels):
+        if isinstance(outputs, torch.Tensor):
+            outputs = outputs.numpy()
+        if isinstance(labels, torch.Tensor):
+            labels = labels.numpy()
+
+        dice_labels = labels.reshape(labels.shape[0], -1)
+        dice_output = outputs.reshape(outputs.shape[0], -1)
+        intersection = np.sum(dice_output * dice_labels, axis=1)
+        union = np.sum(dice_output, axis=1) + np.sum(dice_labels, axis=1) + self.eps
+        loss = np.mean((2 * intersection + self.eps) / union)
+        return loss

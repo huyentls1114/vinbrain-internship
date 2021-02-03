@@ -80,11 +80,11 @@ net = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 2
+batch_size = 8
 num_epochs = 20
 
 # from pattern_model import 
-from won.loss import DiceMetric
+from loss.loss import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{

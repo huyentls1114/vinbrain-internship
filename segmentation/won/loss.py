@@ -76,8 +76,17 @@ class DiceMetric(nn.Module):
         self.per_channel = per_channel
         self.threshold = threshold
     def forward(self, outputs, labels):
-        predicts = (outputs > self.threshold).float() 
-        return dice_metric(predicts, labels, self.per_image, self.per_channel)
+        if isinstance(outputs, torch.Tensor):
+            outputs = outputs.numpy()
+        if isinstance(labels, torch.Tensor):
+            labels = labels.numpy()
+        
+        dice_target = targets.reshape(targets.shape[0], -1)
+        dice_output = outputs.reshape(outputs.shape[0], -1)
+        intersection = torch.sum(dice_output * dice_target, dim=1)
+        union = torch.sum(dice_output, dim=1) + torch.sum(dice_target, dim=1) + eps
+        loss = (1 - (2 * intersection + eps) / union).mean()
+        return loss
 
 class JaccardLoss(nn.Module):
     def __init__(self, weight=None, size_average=True, per_image=False, non_empty=False, apply_sigmoid=False,
