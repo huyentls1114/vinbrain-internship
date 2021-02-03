@@ -80,7 +80,7 @@ net = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 8
+batch_size = 16
 num_epochs = 20
 
 # from pattern_model import 
