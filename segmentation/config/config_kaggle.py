@@ -93,7 +93,7 @@ metric = {
 }
 # from pattern_model import MixedLoss
 # from loss.loss import MixedLoss
-from won.loss import FocalLoss
+from won.loss import ComboLoss
 loss_function = {
     "class":ComboLoss,
     "loss_args":{
