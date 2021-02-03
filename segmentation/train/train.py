@@ -207,7 +207,7 @@ class Trainer:
             '''
             Apply in dice metric, if image size too large causes out of memory
             '''
-            return evaluate_dice_largeimg(self, mode, metric)
+            return self.evaluate_dice_largeimg(self, mode, metric)
         if metric is None:
             metric = self.metric
         progress = {
