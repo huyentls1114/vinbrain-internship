@@ -84,7 +84,7 @@ batch_size = 8
 num_epochs = 20
 
 # from pattern_model import 
-from model.metric import DiceMetric
+from won.loss import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{
