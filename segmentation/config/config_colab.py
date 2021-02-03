@@ -111,6 +111,7 @@ from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
+        "mean_type":"pixel",
         "activation":nn.Sigmoid()
     }
 }
