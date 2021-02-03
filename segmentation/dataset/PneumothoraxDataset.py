@@ -193,7 +193,8 @@ class PneumothoraxPreprocess:
         file_ = open(file_path, "w")
         for index, row in tqdm(self.list_df[mode].iterrows()):
             uid = row["ImageId"]
-            file_.writelines(uid+".jpg\n")
+            label = row["label"]
+            file_.writelines("%s.jpg,%d\n"%(uid, int(label)))
         file_.close()
 
     def save_img(self, path, encoded_pixels):
@@ -245,12 +246,6 @@ def load_sample(img_path, encoded_pixels, width = 1024, height = 1024):
     img = pydicom.read_file(img_path).pixel_array
     
     uid = data.SOPInstanceUID
-    # if isinstance(encoded_pixels, str):
-    #   if encoded_pixels == "-1":
-    #       mask = np.zeros((width, height)).astype(np.float)
-    #   else:
-    #       mask = rle2mask(encoded_pixels, width, height)
-    # else:
     mask = np.zeros((width, height)).astype(np.float)
     for encoded_pixel in encoded_pixels:
         if encoded_pixel != "-1":
