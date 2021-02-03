@@ -44,8 +44,7 @@ dataset = {
     "dataset_args":{
         "input_folder":"/content/data/Pneumothorax",
         "augmentation": A.Compose([
-            A.Resize(512, 512),
-            RandomCrop(450, 450, p = 0.5),
+            A.Resize(576, 576),
             RandomRotate((-30, 30), p = 0.5),
             A.OneOf([
                 # RandomVerticalFlip(p=0.5),
@@ -54,7 +53,8 @@ dataset = {
             ]),
             RandomBlur(blur_limit = 3.1, p = 0.1),
             # CLAHE(p = 0.1),
-            RandomBrightnessContrast(p = 0.1)
+            RandomBrightnessContrast(p = 0.1),
+            RandomCrop(512, 512, p = 0.5)
         ]),
         "update_ds": {
             "weight_positive": 0.8
@@ -62,16 +62,13 @@ dataset = {
     }
 }
 
-#train config
-import os
-# from model.unet import UnetCRF
 from model.unet import Unet
-from model.backbone import BackboneResnet34VGG
+from model.backbone import BackboneResnet101VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet34VGG,
+        "backbone_class": BackboneResnet101VGG,
         "encoder_args":{
             "pretrained":True           
         },
@@ -81,18 +78,10 @@ net = {
         }
     }
 }
-# from won.ternausnets import AlbuNet
-# num_classes = 1
-# net = {
-#     "class":AlbuNet,
-#     "net_args":{
-#         "pretrained":True
-#     }
-# }
 device = "gpu"
 gpu_id = 0
 
-batch_size = 16
+batch_size = 8
 num_epochs = 20
 
 # from pattern_model import 
@@ -105,16 +94,19 @@ metric = {
 }
 # from pattern_model import MixedLoss
 # from loss.loss import MixedLoss
-from loss.loss import DiceLoss
-num_classes = 1
-from loss.loss import DiceLoss
+from won.loss import ComboLoss
 loss_function = {
-    "class": DiceLoss,
+    "class":ComboLoss,
     "loss_args":{
-        "mean_type":"pixel",
-        "activation":nn.Sigmoid()
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
     }
 }
+
+
 #optimizer
 lr = 1e-4
 optimizer = {
@@ -145,8 +137,4 @@ lr_scheduler_crf = {
         "T_0": 1,
         "T_mult":2
     }    
-}
-
-update_ds = {
-    "method":"downsample"
 }
