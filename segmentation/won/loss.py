@@ -12,7 +12,7 @@ except ImportError:  # py3k
 eps = 1e-6
 
 
-def soft_dice_loss(outputs, targets, per_image=False, per_channel=False):
+def soft_dice_loss(outputs, targets, per_image=False, per_channel=False, reduction = "mean"):
     batch_size, n_channels = outputs.size(0), outputs.size(1)
     
     eps = 1e-6
@@ -26,12 +26,24 @@ def soft_dice_loss(outputs, targets, per_image=False, per_channel=False):
     dice_output = outputs.contiguous().view(n_parts, -1)
     intersection = torch.sum(dice_output * dice_target, dim=1)
     union = torch.sum(dice_output, dim=1) + torch.sum(dice_target, dim=1) + eps
-    loss = (1 - (2 * intersection + eps) / union).mean()
+    loss = (1 - (2 * intersection + eps) / union)
+    if reduction == "mean":
+        loss = loss.mean()
     return loss
 
-def dice_metric(preds, trues, per_image=False, per_channel=False):
+def dice_metric(preds, trues, per_image=False, per_channel=False, reduction = "mean"):
     preds = preds.float()
-    return 1 - soft_dice_loss(preds, trues, per_image, per_channel)
+    return 1 - soft_dice_loss(preds, trues, per_image, per_channel, reduction)
+
+class DiceMetric(nn.Module):
+    def __init__(self, threshold):
+        super(DiceMetric, self).__init__()
+        self.threshold = threshold
+        self.per_image = True
+        self.per_channel = False
+    def forward(self, outputs, labels):
+        predicts = (outputs > self.threshold).float()
+        return dice_metric(preds, trues, self.per_image, self.per_channel, reduction= None)
 
 def jaccard(outputs, targets, per_image=False, non_empty=False, min_pixels=5):
     batch_size = outputs.size()[0]
@@ -68,25 +80,7 @@ class DiceLoss(nn.Module):
 
     def forward(self, input, target):
         return soft_dice_loss(input, target, per_image=self.per_image)
-        
-class DiceMetric(nn.Module):
-    def __init__(self, threshold = 0.5, per_image = True, per_channel = False):
-        super(DiceMetric, self).__init__()
-        self.per_image = per_image
-        self.per_channel = per_channel
-        self.threshold = threshold
-    def forward(self, outputs, labels):
-        if isinstance(outputs, torch.Tensor):
-            outputs = outputs.numpy()
-        if isinstance(labels, torch.Tensor):
-            labels = labels.numpy()
-        
-        dice_target = targets.reshape(targets.shape[0], -1)
-        dice_output = outputs.reshape(outputs.shape[0], -1)
-        intersection = torch.sum(dice_output * dice_target, dim=1)
-        union = torch.sum(dice_output, dim=1) + torch.sum(dice_target, dim=1) + eps
-        loss = (1 - (2 * intersection + eps) / union).mean()
-        return loss
+
 
 class JaccardLoss(nn.Module):
     def __init__(self, weight=None, size_average=True, per_image=False, non_empty=False, apply_sigmoid=False,

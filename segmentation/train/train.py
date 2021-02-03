@@ -168,46 +168,7 @@ class Trainer:
         # import pdb; pdb.set_trace()
         self.visualize.update_image(np.vstack([train_compose_images, val_compose_images]))
     
-    def evaluate_dice_largeimg(self, mode = "val", metric = None):
-        if metric is None:
-            metric = self.metric
-        progress = {
-            "train":self.visualize.progress_train,
-            "val":self.visualize.progress_val,
-            "test":self.visualize.progress_test
-        }
-        interstection_list = []
-        union_list = []
-        loss = 0
-        self.net.eval()
-        with torch.no_grad():
-            for i, samples in enumerate(progress[mode]):
-                images, labels = samples[0].to(self.device), samples[1].to(self.device)
-                outputs = self.net(images)
-                loss += self.crition(outputs, labels).item()
-                if self.num_classes == 1:
-                    outputs = torch.sigmoid(outputs)
-
-                predicts = (outputs>metric.threshold).float()
-                predicts = predicts.view(predicts.shape[0], -1)
-                labels = labels.view(labels.shape[0], -1)
-                intersection = torch.sum(predicts*labels, dim = 1)
-                union = torch.sum(predicts, dim=1) + torch.sum(labels, dim=1)
-                interstection_list.append(intersection)
-                union_list.append(union)
-                # if len(interstection_list) > 1200//self.batch_size:
-                #     break
-            intersection = torch.cat(interstection_list)
-            union = torch.cat(union_list)
-            metrict_result = metric(intersection, union)
-            return loss/(i+1), metrict_result
-
     def evaluate(self, mode = "val", metric_type = "normal", metric = None):
-        if metric_type == "dice_largeimg":
-            '''
-            Apply in dice metric, if image size too large causes out of memory
-            '''
-            return self.evaluate_dice_largeimg(mode, metric)
         if metric is None:
             metric = self.metric
         progress = {
@@ -215,8 +176,7 @@ class Trainer:
             "val":self.visualize.progress_val,
             "test":self.visualize.progress_test
         }
-        output_list = []
-        label_list = []
+        metrict_list = []
         loss = 0
         self.net.eval()
         with torch.no_grad():
@@ -226,12 +186,13 @@ class Trainer:
                 loss += self.crition(outputs, labels).item()
                 if self.num_classes == 1:
                     outputs = torch.sigmoid(outputs)
-                output_list.append(outputs)
-                label_list.append(labels)
-            output_list = torch.cat(output_list)
-            label_list = torch.cat(label_list)
-            metrict_result = metric(output_list, label_list)
-            return loss/(i+1), metrict_result
+                # output_list.append(outputs)
+                # label_list.append(labels)
+                metrict_list.append(metric(outputs, labels))
+            # output_list = torch.cat(output_list)
+            # label_list = torch.cat(label_list)
+            metrict_list = torch.cat(metrict_list)
+            return loss/(i+1), metrict_list.mean()
             
     def predict(self, img):
         self.net.eval()

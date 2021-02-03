@@ -17,14 +17,3 @@ class Dice_Score:
 
 def _threshold(x, threshold = 0.5):
     return (x > threshold).type(x.dtype)
-
-
-class DiceMetric:
-    def __init__(self, threshold = 0.5, per_image = True, per_channel = False):
-        self.per_image = per_image
-        self.per_channel = per_channel
-        self.threshold = threshold
-        self.eps = 1e-6
-    def __call__(self, intersection, union):
-        loss = torch.mean((2 * intersection + self.eps) / (union+self.eps))
-        return loss
