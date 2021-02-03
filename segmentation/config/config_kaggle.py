@@ -41,7 +41,7 @@ from dataset.PneumothoraxDataset import *
 dataset = {
     "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"/kaggle/input/penumothorax_512/Pneumothorax",
+        "input_folder":"/kaggle/input/penumothorax-512/Pneumothorax",
         "augmentation": A.Compose([
             A.Resize(576, 576),
             RandomRotate((-30, 30), p = 0.5),
