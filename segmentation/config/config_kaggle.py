@@ -14,7 +14,7 @@ from loss.loss import DiceLoss
 
 #data config
 image_size = 512
-output_folder = "/kaggle/input/model/Pneumothorax_BackboneResnet101VGG_comboloss_ROLR_1e-4"
+output_folder = "/kaggle/working/model/Pneumothorax_BackboneResnet101VGG_comboloss_ROLR_1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle.py"
 
