@@ -202,7 +202,7 @@ class Trainer:
             metrict_result = metric(intersection, union)
             return loss/(i+1), metrict_result
 
-    def evaluate(self, mode = "val", metric = None, metric_type = "normal"):
+    def evaluate(self, mode = "val", metric_type = "normal", metric = None):
         if metric_type == "dice_largeimg":
             '''
             Apply in dice metric, if image size too large causes out of memory
