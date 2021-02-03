@@ -43,7 +43,7 @@ class DiceMetric(nn.Module):
         self.per_channel = False
     def forward(self, outputs, labels):
         predicts = (outputs > self.threshold).float()
-        return dice_metric(preds, trues, self.per_image, self.per_channel, reduction= None)
+        return dice_metric(predicts, labels, self.per_image, self.per_channel, reduction= None)
 
 def jaccard(outputs, targets, per_image=False, non_empty=False, min_pixels=5):
     batch_size = outputs.size()[0]
