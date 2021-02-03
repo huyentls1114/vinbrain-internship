@@ -185,7 +185,7 @@ class Trainer:
                     outputs = torch.sigmoid(outputs)
                 output_list.append(outputs.cpu().numpy())
                 label_list.append(labels.cpu().numpy())
-                if len(output_list) > 2100//trainer.batch_size:
+                if len(output_list) > 2100//self.batch_size:
                     break
             output_list = np.concatenate(output_list)
             label_list = np.concatenate(label_list)
