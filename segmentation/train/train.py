@@ -194,7 +194,7 @@ class Trainer:
                 intersection = torch.sum(predicts*labels, dim = 1)
                 union = torch.sum(predicts, dim=1) + torch.sum(labels, dim=1)
                 interstection_list.append(intersection)
-                union_list.appen(union)
+                union_list.append(union)
                 if len(interstection_list) > 1200//self.batch_size:
                     break
             intersection = torch.cat(interstection_list)
