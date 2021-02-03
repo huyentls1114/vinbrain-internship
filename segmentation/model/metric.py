@@ -26,11 +26,10 @@ class DiceMetric:
         self.threshold = threshold
         self.eps = 1e-6
     def __call__(self, outputs, labels):
-        if isinstance(outputs, torch.Tensor):
-            outputs = outputs.numpy()
-        if isinstance(labels, torch.Tensor):
-            labels = labels.numpy()
-
+        # if isinstance(outputs, torch.Tensor):
+        #     outputs = outputs.numpy()
+        # if isinstance(labels, torch.Tensor):
+        #     labels = labels.numpy()
         dice_labels = labels.reshape(labels.shape[0], -1)
         dice_output = outputs.reshape(outputs.shape[0], -1)
         intersection = np.sum(dice_output * dice_labels, axis=1)

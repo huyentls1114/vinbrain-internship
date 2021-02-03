@@ -183,11 +183,11 @@ class Trainer:
                 loss += self.crition(outputs, labels).item()
                 if self.num_classes == 1:
                     outputs = torch.sigmoid(outputs)
-                output_list.append(outputs)
-                label_list.append(labels)
-            output_tensor = torch.cat(output_list)
-            label_tensor = torch.cat(label_list)
-            metrict_result = metric(output_tensor, label_tensor)
+                output_list.append(outputs.numpy())
+                label_list.append(labels.numpy())
+            output_list = np.concatenate(output_list)
+            label_list = np.concatenate(label_list)
+            metrict_result = metric(output_list, label_list)
             return loss/(i+1), metrict_result
             
     def predict(self, img):
