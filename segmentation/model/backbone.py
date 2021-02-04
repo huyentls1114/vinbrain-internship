@@ -137,7 +137,7 @@ from torchvision.models import resnext101_32x8d
 import torch
 class BackboneResnext101VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
-        super(BackboneRestnext101VGG, self).__init__(encoder_args, decoder_args)
+        super(BackboneResnext101VGG, self).__init__(encoder_args, decoder_args)
         if encoder_args["pretrained"] == "Instagram":   
             self.base_model = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x8d_wsl')
         else:
