@@ -36,12 +36,15 @@ def dice_metric(preds, trues, per_image=False, per_channel=False, reduction = "m
     return 1 - soft_dice_loss(preds, trues, per_image, per_channel, reduction)
 
 class DiceMetric(nn.Module):
-    def __init__(self, threshold):
+    def __init__(self, threshold, num_classes = 1):
         super(DiceMetric, self).__init__()
         self.threshold = threshold
         self.per_image = True
         self.per_channel = False
+        self.num_classes = num_classes
     def forward(self, outputs, labels):
+        if self.num_classes == 1:
+            outputs = torch.sigmoid(outputs)
         predicts = (outputs > self.threshold).float()
         return dice_metric(predicts, labels, self.per_image, self.per_channel, reduction= None)
 

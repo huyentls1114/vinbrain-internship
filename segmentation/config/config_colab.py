@@ -85,16 +85,15 @@ gpu_id = 0
 batch_size = 4
 num_epochs = 20
 
-# from pattern_model import 
 from won.loss import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{
+        "num_classes": num_classes,
         "threshold": 0.5
     }
 }
-# from pattern_model import MixedLoss
-# from loss.loss import MixedLoss
+
 from won.loss import ComboLoss
 loss_function = {
     "class":ComboLoss,
@@ -106,7 +105,6 @@ loss_function = {
         }
     }
 }
-
 
 #optimizer
 lr = 1e-4
@@ -124,7 +122,7 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.5,
-        "patience":8,
+        "patience":4,
         "threshold":1e-2,
         "min_lr":1e-6
     }

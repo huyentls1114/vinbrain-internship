@@ -184,13 +184,7 @@ class Trainer:
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
                 loss += self.crition(outputs, labels).item()
-                if self.num_classes == 1:
-                    outputs = torch.sigmoid(outputs)
-                # output_list.append(outputs)
-                # label_list.append(labels)
                 metrict_list.append(metric(outputs, labels))
-            # output_list = torch.cat(output_list)
-            # label_list = torch.cat(label_list)
             metrict_list = torch.cat(metrict_list)
             return loss/(i+1), metrict_list.mean()
             
