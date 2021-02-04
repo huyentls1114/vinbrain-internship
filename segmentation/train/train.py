@@ -256,5 +256,3 @@ class Trainer:
 
         if lr_scheduler is not None:
             self.initial_lr_scheduler(lr_scheduler)
-
-        return trainer
