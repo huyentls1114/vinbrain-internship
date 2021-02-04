@@ -93,7 +93,9 @@ class Trainer:
             self.loss_file = loss_file
         self.visualize = Visualize(self.current_epoch, 
                                     self.num_epochs,
-                                    self.data, 
+                                    self.data,
+                                    train_loss = self.visualize.train_loss,
+                                    valid_loss = self.visualize.valid_loss, 
                                     img_size = self.image_size)
         for epoch in self.visualize.mb:
             if self.update_ds is not None:
