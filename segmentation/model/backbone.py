@@ -135,7 +135,7 @@ class BackboneDensenet121VGG(Backbone):
         )
 from torchvision.models import resnext101_32x8d
 import torch
-class BackboneRestnext101VGG(Backbone):
+class BackboneResnext101VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneRestnext101VGG, self).__init__(encoder_args, decoder_args)
         if encoder_args["pretrained"] == "Instagram":   

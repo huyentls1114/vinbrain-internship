@@ -63,7 +63,7 @@ dataset = {
 }
 
 from model.unet import Unet
-from model.backbone import BackboneEfficientB7VGG
+from model.backbone import BackboneRestnext101VGG
 num_classes = 1
 net = {
     "class":Unet,
