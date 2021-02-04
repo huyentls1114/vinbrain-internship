@@ -203,15 +203,26 @@ class Trainer:
     def save_checkpoint(self, filename = None):
         if filename is None:
             filename = "checkpoint_%d"%(self.current_epoch)
-        
+        state_dict = {
+            "current_epoch": self.current_epoch,
+            "train_loss_list":self.visualize.train_loss,
+            "val_loss_list":self.visualize.valid_loss,
+            "net":self.net.state_dict(),
+            "optimizer":self.optimizer.state_dict()
+        }
         filepath = os.path.join(self.output_folder, filename)
-        torch.save(self.net.state_dict(), filepath)
+        torch.save(state_dict, filepath)
 
     def load_checkpoint(self, filename = None):
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
         file_path = os.path.join(self.output_folder, filename)
-        self.net.load_state_dict(torch.load(file_path, map_location=self.device))
+        state_dict = torch.load(file_path, map_location=self.device)
+        self.net.load_state_dict(state_dict["net"])
+        self.optimizer.load_state_dict(state_dict["optimizer"])
+        self.current_epoch = state_dict["current_epoch"]
+        self.visualize.train_loss = state_dict["train_loss_list"]
+        self.visualize.valid_loss = state_dict["val_loss_list"]
 
     def schedule_lr(self, iteration = 0, metric_value = 0):
         assert self.lr_scheduler is not None
