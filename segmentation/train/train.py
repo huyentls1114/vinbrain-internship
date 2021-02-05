@@ -240,19 +240,14 @@ class Trainer:
             self.lr_scheduler.step()
 
     def update(self, best_epoch = None, num_epochs = None, positive_rate = None, lr = None, lr_scheduler = None):
-        if best_epoch is None:
-            best_epoch = self.num_epochs - 1
-        if num_epochs is None:
-            num_epochs = self.num_epochs
-        if positive_rate is None:
-            positive_rate = self.update_ds["weight_positive"]
-        if lr is None:
-            lr = self.optimizer.param_groups[0]['lr']
-        self.load_checkpoint("checkpoint_%d"%(best_epoch))
-
-        self.num_epochs = num_epochs
-        self.update_ds["weight_positive"] = positive_rate
-        self.optimizer.param_groups[0]['lr'] = lr
-
+        if best_epoch is not None:
+            # best_epoch = self.num_epochs - 1
+            self.load_checkpoint("checkpoint_%d"%(best_epoch))
+        if num_epochs is not None:
+            self.num_epochs = num_epochs
+        if positive_rate is not None:
+            self.update_ds["weight_positive"] = positive_rate
+        if lr is not None:
+            self.optimizer.param_groups[0]['lr'] = lr 
         if lr_scheduler is not None:
             self.initial_lr_scheduler(lr_scheduler)
