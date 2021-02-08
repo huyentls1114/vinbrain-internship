@@ -10,7 +10,7 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
     losses = []
     log_lrs = []
     i = 0
-    for i, data in enumerate(self.visualize.progress_train):
+    for i, data in enumerate(trainer.visualize.progress_train):
         batch_num += 1
         #As before, get the loss for this mini-batch of inputs/outputs
         inputs,labels = data
