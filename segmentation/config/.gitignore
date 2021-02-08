@@ -1,2 +1,2 @@
 config_BackboneResnet101VGG*
-config_BackboneRestnext101VGG_instagram*
+config_colab_*
