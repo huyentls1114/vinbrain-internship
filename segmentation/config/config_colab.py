@@ -17,7 +17,7 @@ import segmentation_models_pytorch as smp
 image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB7VGG_ns_comboloss_rate0.8_augment2_RLOP5e-3"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_efficientb7.py"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb7.py"
 
 from model.unet import Unet
 from model.backbone import BackboneRestnext101VGG
