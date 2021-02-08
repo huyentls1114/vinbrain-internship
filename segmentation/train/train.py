@@ -231,7 +231,7 @@ class Trainer:
         if "lr_scheduler" in state_dict.keys():
             self.lr_scheduler = state_dict["lr_scheduler"]
             self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
-            self.lr_scheduler_step_type = state_dict["lr_scheduler_step_type"]
+            self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
 
     def schedule_lr(self, iteration = 0, metric_value = 0):
         assert self.lr_scheduler is not None
