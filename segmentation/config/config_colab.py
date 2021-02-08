@@ -19,6 +19,23 @@ output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/B
 loss_file = "loss_file.txt"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_efficientb7.py"
 
+from model.unet import Unet
+from model.backbone import BackboneRestnext101VGG
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneEfficientB7VGG,
+        "encoder_args":{
+            "type":"ns",
+            "pretrained":True,           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -62,23 +79,7 @@ dataset = {
     }
 }
 
-from model.unet import Unet
-from model.backbone import BackboneRestnext101VGG
-num_classes = 1
-net = {
-    "class":Unet,
-    "net_args":{
-        "backbone_class": BackboneEfficientB7VGG,
-        "encoder_args":{
-            "type":"ns",
-            "pretrained":True,           
-        },
-        "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
-        }
-    }
-}
+
 device = "gpu"
 gpu_id = 0
 
