@@ -215,10 +215,11 @@ class Trainer:
         filepath = os.path.join(self.output_folder, filename)
         torch.save(state_dict, filepath)
 
-    def load_checkpoint(self, filename = None):
+    def load_checkpoint(self, filename = None, file_path = None):
         if filename is None:
             filename = "checkpoint_%d"%(self.num_epochs-1)
-        file_path = os.path.join(self.output_folder, filename)
+        if file_path is None:
+            file_path = os.path.join(self.output_folder, filename)
         state_dict = torch.load(file_path, map_location=self.device)
         self.net.load_state_dict(state_dict["net"])
         self.optimizer.load_state_dict(state_dict["optimizer"])
