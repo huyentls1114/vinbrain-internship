@@ -91,15 +91,10 @@ class Trainer:
     def train(self, loss_file = None):
         if loss_file is not None:
             self.loss_file = loss_file
-        self.visualize = Visualize(self.current_epoch, 
-                                    self.num_epochs,
-                                    self.data,
-                                    train_loss = self.visualize.train_loss,
-                                    valid_loss = self.visualize.valid_loss, 
-                                    img_size = self.image_size)
         for epoch in self.visualize.mb:
             if self.update_ds is not None:
                 self.data.update_train_ds(**self.update_ds)
+                self.visualize.update_train_ds(self.data)
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()                
