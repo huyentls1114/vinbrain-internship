@@ -92,3 +92,6 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
     file_.writelines("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, metric valid: %5f, learning rate: %5f"%(epoch, step, loss_train, loss_val, metric_val, lr))
     file_.writelines("\n")
     file_.close()
+
+def caculate_num_parameter(net):
+    return (p.numel() for p in net.parameters() if p.requires_grad)

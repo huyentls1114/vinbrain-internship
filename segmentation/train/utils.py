@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
     num = len(trainer.data.train_loader)-1
     mult = (final_value / init_value) ** (1/num)
@@ -11,6 +12,7 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
     log_lrs = []
     i = 0
     for data in trainer.data.train_loader:
+        print(i)
         batch_num += 1
         #As before, get the loss for this mini-batch of inputs/outputs
         inputs,labels = data
@@ -39,6 +41,8 @@ def find_lr(trainer, init_value = 1e-8, final_value=10., beta = 0.98):
         trainer.optimizer.param_groups[0]['lr'] = lr
         # print(i, lr, avg_loss)
         i+=1
+    plt.plot(log_lrs, losses)
+    plt.show()
     return log_lrs, losses
 
 def caculate_alpha_focalloss(trainer):

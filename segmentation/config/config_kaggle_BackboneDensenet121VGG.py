@@ -2,6 +2,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import os
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
@@ -9,25 +10,22 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
-from torch.optim.lr_scheduler import OneCycleLR
-import albumentations as A
-import segmentation_models_pytorch as smp
+from loss.loss import DiceLoss
 
 #data config
-image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB7VGG_ns_comboloss_rate0.8_augment2_RLOP5e-3"
+image_size = 512
+output_folder = "/kaggle/working/model/BackboneDensenet121VGG_comboloss_ROLR_1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb7.py"
+config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle_BackboneDensenet121VGG.py"
 
 from model.unet import Unet
-from model.backbone import BackboneRestnext101VGG
+from model.backbone import BackboneDensenet121VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB7VGG,
+        "backbone_class": BackboneDensenet121VGG,
         "encoder_args":{
-            "type":"ns",
             "pretrained":True,           
         },
         "decoder_args":{
@@ -59,7 +57,7 @@ from dataset.PneumothoraxDataset import *
 dataset = {
     "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"/content/data/Pneumothorax",
+        "input_folder":"/kaggle/input/pneumothorax-512/Pneumothorax",
         "augmentation": A.Compose([
             A.Resize(576, 576),
             RandomRotate((-30, 30), p = 0.5),

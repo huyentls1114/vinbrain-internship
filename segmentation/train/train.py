@@ -210,7 +210,10 @@ class Trainer:
             "train_loss_list":self.visualize.train_loss,
             "val_loss_list":self.visualize.valid_loss,
             "net":self.net.state_dict(),
-            "optimizer":self.optimizer.state_dict()
+            "optimizer":self.optimizer.state_dict(),
+            "lr_scheduler": self.lr_scheduler.state_dict(),
+            "lr_scheduler_metric": self.lr_scheduler_metric,
+            "lr_scheduler_step_type":self.lr_schedule_step_type,
         }
         filepath = os.path.join(self.output_folder, filename)
         torch.save(state_dict, filepath)
@@ -225,6 +228,13 @@ class Trainer:
         self.current_epoch = state_dict["current_epoch"]
         self.visualize.train_loss = state_dict["train_loss_list"]
         self.visualize.valid_loss = state_dict["val_loss_list"]
+        if "lr_scheduler" in state_dict.keys():
+            try:
+                self.lr_scheduler.load_state_dict(state_dict["lr_scheduler"])
+            except:
+                self.lr_scheduler = state_dict["lr_scheduler"]
+            self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
+            self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
 
     def schedule_lr(self, iteration = 0, metric_value = 0):
         assert self.lr_scheduler is not None
