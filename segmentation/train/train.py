@@ -89,12 +89,14 @@ class Trainer:
         shutil.copy(self.config_file_path, self.output_folder)
 
     def train(self, loss_file = None):
+        self.visualize.update(current_epoch = self.current_epoch,
+                              epochs = self.num_epochs)
         if loss_file is not None:
             self.loss_file = loss_file
         for epoch in self.visualize.mb:
             if self.update_ds is not None:
                 self.data.update_train_ds(**self.update_ds)
-                self.visualize.update_train_ds(self.data)
+                self.visualize.update(data = self.data)
             self.current_epoch = epoch
             self.train_one_epoch()
             self.save_checkpoint()                
@@ -221,8 +223,10 @@ class Trainer:
         self.net.load_state_dict(state_dict["net"])
         self.optimizer.load_state_dict(state_dict["optimizer"])
         self.current_epoch = state_dict["current_epoch"]
-        self.visualize.train_loss = state_dict["train_loss_list"]
-        self.visualize.valid_loss = state_dict["val_loss_list"]
+        self.visualize.update(current_epoch = self.current_epoch,
+                              epochs = self.num_epochs,
+                              train_loss = state_dict["train_loss_list"],
+                              valid_loss = state_dict["val_loss_list"])
         if "lr_scheduler" in state_dict.keys():
             try:
                 self.lr_scheduler.load_state_dict(state_dict["lr_scheduler"])
