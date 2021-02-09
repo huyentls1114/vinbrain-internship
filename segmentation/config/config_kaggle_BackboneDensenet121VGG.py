@@ -16,7 +16,7 @@ from loss.loss import DiceLoss
 image_size = 512
 output_folder = "/kaggle/working/model/BackboneDensenet121VGG_comboloss_ROLR_1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/kaggle/input/config/config_kaggle_BackboneDensenet121VGG.py"
+config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle_BackboneDensenet121VGG.py"
 
 from model.unet import Unet
 from model.backbone import BackboneDensenet121VGG
