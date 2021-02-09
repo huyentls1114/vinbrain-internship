@@ -21,6 +21,8 @@ class Visualize:
             train_loss = 0.5 - 0.06 * epoch + random.uniform(0, 0.04)
             valid_loss = 0.5 - 0.03 * epoch + random.uniform(0, 0.04)
             self.plot_loss_update(train_loss, valid_loss)
+    def update_train_ds(self, data):
+        self.progress_train = progress_bar(data.train_loader,parent=self.mb)
 
     def update_image(self, img):
         '''
