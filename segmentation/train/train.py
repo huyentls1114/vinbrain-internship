@@ -223,7 +223,7 @@ class Trainer:
         state_dict = torch.load(file_path, map_location=self.device)
         self.net.load_state_dict(state_dict["net"])
         self.optimizer.load_state_dict(state_dict["optimizer"])
-        self.current_epoch = state_dict["current_epoch"]
+        self.current_epoch = state_dict["current_epoch"]+1
         self.visualize.update(current_epoch = self.current_epoch,
                               epochs = self.num_epochs,
                               train_loss = state_dict["train_loss_list"],

@@ -111,7 +111,7 @@ loss_function = {
 
 
 #optimizer
-lr = 5e-3
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -125,6 +125,7 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
+        "factor":0.3,
         "patience":4,
         "threshold":1e-2,
         "min_lr":1e-6
