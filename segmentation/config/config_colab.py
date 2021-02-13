@@ -84,7 +84,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 4
-num_epochs = 20
+num_epochs = 40
 
 # from pattern_model import 
 from won.loss import DiceMetric
@@ -111,7 +111,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -126,7 +126,7 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.3,
-        "patience":4,
+        "patience":8,
         "threshold":1e-2,
         "min_lr":1e-6
     }
