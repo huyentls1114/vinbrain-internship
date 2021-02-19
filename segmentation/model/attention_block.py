@@ -43,6 +43,7 @@ class CBAM_ChannelBlock(nn.Module):
 
         attention_channel = self.sigmoid(x_max + x_avg)
         return x * attention_channel.view((b, c, 1, 1))
+
 class CBAM_SpatialBlock(nn.Module):
     def __init__(self, channel):
         super(CBAM_SpatialBlock, self).__init__()
@@ -59,6 +60,7 @@ class CBAM_SpatialBlock(nn.Module):
         attention = self.sigmoid(attention)
         # print(x.shape, attention.shape)
         return x*attention
+
 class CBAM(nn.Module):
     def __init__(self, channel, reduction):
         super(CBAM, self).__init__()
@@ -69,4 +71,37 @@ class CBAM(nn.Module):
         x = self.channel_block(x)
         x = self.spatial_block(x)
         return x
+
+
+class Non_localBlock(nn.Module):
+    def __init__(self, input_channel):
+        super(Non_localBlock, self).__init__()
+        self.theta = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
+        self.phi = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
+        self.g = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride=1)
+        self.pool1 = nn.MaxPool2d(2)
+        self.pool2 = nn.MaxPool2d(2)
+        self.conv = nn.Conv2d(input_channel//2, input_channel, kernel_size =1, stride=1)
+
+    def forward(self, x):
         
+        _theta = self.theta(x) 
+        _phi = self.pool1(self.phi(x))
+        c, w, h = _theta.shape[1:]
+        # print(w, h, c)
+        _theta = _theta.permute(0, 2, 3, 1).reshape(-1, w*h, c)
+        _phi = _phi.reshape(-1, c, w*h//4)
+        # print(_theta.shape, _phi.shape)
+        _mul1 = torch.matmul(_theta, _phi)
+        _sofmax = torch.softmax(_mul1, 2)
+        # print(_mul1.shape)
+        _g = self.pool2(self.g(x))
+        _g = _g.permute(0, 2, 3, 1).reshape(-1, w*h//4, c)
+        # print(_g.shape)
+
+        _mult2 = torch.matmul(_mul1, _g)
+        _mult2 = _mult2.reshape(-1, w, h, c).permute(0, 3, 1, 2)
+        _mult2 = self.conv(_mult2)
+        # print((x+_mult2).shape)
+        return x+ _mult2
+        # print(_mult2.shape)
