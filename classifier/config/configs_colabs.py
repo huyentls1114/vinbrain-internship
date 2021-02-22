@@ -47,7 +47,7 @@ net = {
     "class":TransferNet,
     "net_args":{
         "model_base":densenet121,
-        "fc_channels":[1024],
+        "fc_channels":[1024*7*7, 1024],
         "pretrain":True,
         "num_classes":1
     }
