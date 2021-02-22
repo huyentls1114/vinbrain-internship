@@ -49,8 +49,8 @@ dataset = {
 net = {
     "class": TransferNet,
     "net_args":{
-        "model_base": vgg16,
-        "fc_channels":[25088],
+        "model_base": densenet121,
+        "fc_channels":[1024],
         "pretrain": True,
         "num_classes":10
     }
