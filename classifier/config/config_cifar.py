@@ -65,7 +65,7 @@ optimizer ={
     }
 }
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet18_SGD_StepLR"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet18_pretrained_SGD_StepLR"
 
 loss_file = "loss_file.txt"
 metric = {
