@@ -75,7 +75,7 @@ metric = {
         "from_logits":True
     }
 }
-steps_save_loss = 500
+steps_save_loss = 10000
 lr_schedule = {
     "class": StepLR,
     "metric":None,
