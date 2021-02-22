@@ -16,7 +16,7 @@ from utils.metric import Accuracy
 
 config_files = "/content/vinbrain-internship/classifier/config/config_cifar.py"
 #data config
-batch_size = 8
+batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
