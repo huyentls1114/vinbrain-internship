@@ -49,7 +49,7 @@ net = {
         "model_base":densenet121,
         "fc_channels":[1024],
         "pretrain":True,
-        "num_classes":2
+        "num_classes":1
     }
 }
 loss_function = nn.CrossEntropyLoss
