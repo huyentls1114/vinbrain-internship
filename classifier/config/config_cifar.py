@@ -50,7 +50,7 @@ net = {
     "class": TransferNet,
     "net_args":{
         "model_base": resnet50,
-        "fc_channels":[2048, 1000],
+        "fc_channels":[2048, 512, 512],
         "pretrain": True,
         "num_classes":10
     }
