@@ -43,8 +43,7 @@ dataset = {
 #train config
 net = {
     "class":CNN,
-    "net_args":{
-    }
+    "net_args":{}
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
