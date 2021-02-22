@@ -258,6 +258,7 @@ class Trainer:
         if positive_rate is not None:
             self.update_ds["weight_positive"] = positive_rate
         if lr is not None:
-            self.optimizer.param_groups[0]['lr'] = lr 
+            self.optimizer.param_groups[0]['lr'] = lr
+            self.optimizer.param_groups[0]["initial_lr"] = lr
         if lr_scheduler is not None:
             self.initial_lr_scheduler(lr_scheduler)
