@@ -10,7 +10,7 @@ from torch.optim import SGD, Adam, RMSprop
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
-from torchvision.models import resnet18, vgg16
+from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
