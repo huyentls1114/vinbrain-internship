@@ -6,7 +6,7 @@ from dataset.transform import Rescale
 from dataset.dataset import cifar10
 from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
-from torch.optim import SGD, Adam
+from torch.optim import SGD, Adam, RMSprop
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
@@ -46,14 +46,14 @@ dataset = {
 net = {
     "class":TransferNet,
     "net_args":{
-        "model_base":vgg16,
-        "fc_channels":[25088, 4096, 4096],
+        "model_base":densenet121,
+        "fc_channels":[1024],
         "pretrain":True,
         "num_classes":2
     }
 }
 loss_function = nn.CrossEntropyLoss
-lr = 0.01
+lr = 1e-3
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
 #     "class": StepLR,
@@ -64,12 +64,18 @@ steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_v
 #         "gamma":0.1,
 #     }
 # }
-optimizer={
-    "class":Adam,
+# optimizer={
+#     "class":Adam,
+#     "optimizer_args":{
+#     }}
+optimizer = {
+    "class":RMSprop,
     "optimizer_args":{
-    }}
+    }
+}
+
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_vgg16_adam_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_RMSProp_1e-3"
 
 loss_file = "loss_file.txt"
 metric = {

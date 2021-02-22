@@ -50,7 +50,7 @@ net = {
     "class": TransferNet,
     "net_args":{
         "model_base": resnet50,
-        "fc_channels":[2048, 1024],
+        "fc_channels":[1024],
         "pretrain": True,
         "num_classes":10
     }
@@ -65,7 +65,7 @@ optimizer ={
     }
 }
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet50_pretrained_SGD_StepLR"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_densenet121_pretrained_SGD_StepLR"
 
 loss_file = "loss_file.txt"
 metric = {
