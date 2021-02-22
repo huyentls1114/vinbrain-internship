@@ -52,7 +52,7 @@ net = {
         "model_base": resnet18,
         "fc_channels":[512],
         "pretrain": False,
-        "num_classes":2
+        "num_classes":10
     }
 }
 loss_function = nn.CrossEntropyLoss
