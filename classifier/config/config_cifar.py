@@ -49,8 +49,8 @@ dataset = {
 net = {
     "class": TransferNet,
     "net_args":{
-        "model_base": resnet18,
-        "fc_channels":[512],
+        "model_base": vgg16,
+        "fc_channels":[25088, 4096, 4096],
         "pretrain": True,
         "num_classes":10
     }
@@ -65,7 +65,7 @@ optimizer ={
     }
 }
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet18_pretrained_SGD_StepLR"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_VGG16_pretrained_SGD_StepLR"
 
 loss_file = "loss_file.txt"
 metric = {
