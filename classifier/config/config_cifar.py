@@ -64,7 +64,7 @@ optimizer ={
         "momentum":0.9
     }
 }
-num_epochs = 10
+num_epochs = 20
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet18_SGD_StepLR"
 
 loss_file = "loss_file.txt"
@@ -81,7 +81,7 @@ lr_schedule = {
     "metric":None,
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":1,
+        "step_size":5,
         "gamma":0.1,
     }
 }
