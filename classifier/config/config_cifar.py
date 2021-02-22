@@ -15,7 +15,7 @@ from utils.metric import Accuracy
 
 config_files = "/content/vinbrain-internship/classifier/config/config_cifar.py"
 #data config
-batch_size = 64
+batch_size = 8
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
@@ -47,12 +47,14 @@ net = {
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
-optimizer={
-    "class":Adam,
+
+optimizer ={
+    "class": SGD,
     "optimizer_args":{
-    }}
-num_epochs = 20
+        "momentum":0.9
+    }
+}
+num_epochs = 10
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_SGD_StepLR"
 
 loss_file = "loss_file.txt"
@@ -63,14 +65,13 @@ metric = {
         "from_logits":True
     }
 }
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
-steps_save_loss = steps_per_epoch
+steps_save_loss = 500
 lr_schedule = {
     "class": StepLR,
     "metric":None,
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":2,
+        "step_size":1,
         "gamma":0.1,
     }
 }
