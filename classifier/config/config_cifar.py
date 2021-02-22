@@ -13,7 +13,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16
 from utils.metric import Accuracy
 
-config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/config_cifar.py"
+config_files = "/content/vinbrain-internship/classifier/config/config_cifar.py"
 #data config
 batch_size = 64
 split_train_val = 0.7
