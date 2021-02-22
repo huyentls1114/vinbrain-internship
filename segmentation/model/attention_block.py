@@ -20,9 +20,9 @@ class SENet(nn.Module):
         return x * x1.view(x1.shape[:2]+(1, 1))
 
 
-class CBAM_ChannelBlock(nn.Module):
+class CBAMChannelBlock(nn.Module):
     def __init__(self, channel, reduction):
-        super(CBAM_ChannelBlock, self).__init__()
+        super(CBAMChannelBlock, self).__init__()
         self.max_pool = nn.AdaptiveMaxPool2d(1)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.mlp = nn.Sequential(
@@ -44,9 +44,9 @@ class CBAM_ChannelBlock(nn.Module):
         attention_channel = self.sigmoid(x_max + x_avg)
         return x * attention_channel.view((b, c, 1, 1))
 
-class CBAM_SpatialBlock(nn.Module):
+class CBAMSpatialBlock(nn.Module):
     def __init__(self, channel):
-        super(CBAM_SpatialBlock, self).__init__()
+        super(CBAMSpatialBlock, self).__init__()
 
         self.conv = nn.Conv2d(2, 1, kernel_size = 7, stride=1, padding=3)
         self.sigmoid = nn.Sigmoid()
@@ -73,30 +73,37 @@ class CBAM(nn.Module):
         return x
 
 
-class Non_localBlock(nn.Module):
-    def __init__(self, input_channel):
-        super(Non_localBlock, self).__init__()
+class SelfAttentionBlock(nn.Module):
+    def __init__(self, input_channel, pooling = True):
+        super(SelfAttentionBlock, self).__init__()
         self.theta = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
         self.phi = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
         self.g = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride=1)
-        self.pool1 = nn.MaxPool2d(2)
-        self.pool2 = nn.MaxPool2d(2)
+        if pooling:
+            self.pool1 = nn.MaxPool2d(2)
+            self.pool2 = nn.MaxPool2d(2)
+        else:
+            self.pool1 = None
+            self.pool2 = None
         self.conv = nn.Conv2d(input_channel//2, input_channel, kernel_size =1, stride=1)
-
     def forward(self, x):
-        
-        _theta = self.theta(x) 
-        _phi = self.pool1(self.phi(x))
+        _theta = self.theta(x)
+        _phi = self.phi(x)
+        if self.pool1 is not None: 
+            _phi = self.pool1(_phi)
         c, w, h = _theta.shape[1:]
+        c2, w2, h2 = _phi.shape[1:]
         # print(w, h, c)
         _theta = _theta.permute(0, 2, 3, 1).reshape(-1, w*h, c)
-        _phi = _phi.reshape(-1, c, w*h//4)
+        _phi = _phi.reshape(-1, c, w2*h2)
         # print(_theta.shape, _phi.shape)
         _mul1 = torch.matmul(_theta, _phi)
         _sofmax = torch.softmax(_mul1, 2)
         # print(_mul1.shape)
-        _g = self.pool2(self.g(x))
-        _g = _g.permute(0, 2, 3, 1).reshape(-1, w*h//4, c)
+        _g = self.g(x)
+        if self.pool2 is not None: 
+            _g = self.pool2(_g)
+        _g = _g.permute(0, 2, 3, 1).reshape(-1, w2*h2, c)
         # print(_g.shape)
 
         _mult2 = torch.matmul(_mul1, _g)
@@ -105,3 +112,15 @@ class Non_localBlock(nn.Module):
         # print((x+_mult2).shape)
         return x+ _mult2
         # print(_mult2.shape)
+
+class SESelfAttentionBlock(nn.Module):
+    def __init__(self, input_channel):
+        super(SESelfAttentionBlock, self).__init__()
+        self.global_average = nn.AdaptiveAvgPool2d(1)
+        self.self_attention = SelfAttentionBlock(input_channel, pooling= False)
+    
+    def forward(self, x):        
+        x1 = self.global_average(x)
+        x1 = self.self_attention(x1)
+        print(x1.shape)
+        return x * x1.view(x1.shape[:2]+(1, 1))

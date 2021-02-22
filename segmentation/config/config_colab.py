@@ -14,7 +14,7 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 256
+image_size = 512
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB7VGG_ns_comboloss_rate0.8_augment2_RLOP5e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb7.py"
@@ -125,12 +125,8 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-<<<<<<< HEAD
-        "patience":4,
-=======
         "factor":0.3,
         "patience":8,
->>>>>>> d68ac065b3d93036169d7c56beea3869d01c2136
         "threshold":1e-2,
         "min_lr":1e-6
     }
