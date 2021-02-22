@@ -45,6 +45,7 @@ net = {
     "class":CNN,
     "net_args":{
     }
+}
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
