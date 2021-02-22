@@ -2,6 +2,7 @@ import torch.functional as F
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
+from torchvision.models import resnet18, densenet121
 from dataset.transform import Rescale
 from dataset.dataset import cifar10
 from dataset.MenWomanDataset import MenWomanDataset
@@ -41,9 +42,18 @@ dataset = {
 }
 
 #train config
-net = {
-    "class":CNN,
-    "net_args":{}
+# net = {
+#     "class":CNN,
+#     "net_args":{}
+# }
+configs.net = {
+    "class": TransferNet,
+    "net_args":{
+        "model_base": resnet18,
+        "fc_channels":[512],
+        "pretrain": False,
+        "num_classes":2
+    }
 }
 loss_function = nn.CrossEntropyLoss
 lr = 0.01
@@ -55,7 +65,7 @@ optimizer ={
     }
 }
 num_epochs = 10
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_SGD_StepLR"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_resnet18_SGD_StepLR"
 
 loss_file = "loss_file.txt"
 metric = {
