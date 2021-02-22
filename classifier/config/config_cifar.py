@@ -46,7 +46,7 @@ dataset = {
 #     "class":CNN,
 #     "net_args":{}
 # }
-configs.net = {
+net = {
     "class": TransferNet,
     "net_args":{
         "model_base": resnet18,
