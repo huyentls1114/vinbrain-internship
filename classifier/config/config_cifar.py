@@ -11,7 +11,7 @@ from torch.optim import SGD, Adam
 from torch.optim.lr_scheduler import StepLR, MultiStepLR, ReduceLROnPlateau, OneCycleLR
 from utils.utils import len_train_datatset
 from model.optimizer import RAdam
-from torchvision.models import resnet18, vgg16, resnet34
+from torchvision.models import resnet18, vgg16
 from utils.metric import Accuracy
 
 config_files = "/content/vinbrain-internship/classifier/config/config_cifar.py"
@@ -49,8 +49,8 @@ dataset = {
 net = {
     "class": TransferNet,
     "net_args":{
-        "model_base": resnet34,
-        "fc_channels":[512],
+        "model_base": vgg16,
+        "fc_channels":[25088, 4096],
         "pretrain": True,
         "num_classes":10
     }
@@ -65,7 +65,7 @@ optimizer ={
     }
 }
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/resnet34_VGG16_pretrained_SGD_StepLR"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_classify/cifar10_VGG16_pretrained_SGD_StepLR"
 
 loss_file = "loss_file.txt"
 metric = {
