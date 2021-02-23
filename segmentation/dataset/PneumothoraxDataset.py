@@ -108,9 +108,10 @@ class PneumothoraxDataset(Dataset):
         for i in range(batch_size):
             img = conver_numpy_image(list_imgs[i])
             mask = conver_numpy_image(list_masks[i])
+            ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
                mask = np.stack(mask*3, axis=-1)
-            ct = contour(img, mask)
+
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
         plt.imshow(np.vstack(list_combine)[:,:,0])
