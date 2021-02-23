@@ -111,9 +111,9 @@ class PneumothoraxDataset(Dataset):
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
                mask = np.concatenate([mask]*3, axis = 2)
-            combine = np.hstack([img[:,:,0], mask[:,:,0], ct[:,:,0]])
+            combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine), cmap = plt.get_cmap('gray'))
+        plt.imshow(np.vstack(list_combine))
         plt.axis('off')
         plt.show()
 
