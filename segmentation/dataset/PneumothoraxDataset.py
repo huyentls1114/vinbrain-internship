@@ -113,7 +113,7 @@ class PneumothoraxDataset(Dataset):
                mask = np.concatenate([mask]*3, axis = 2)
             combine = np.hstack([img[:,:,0], mask[:,:,0], ct[:,:,0]])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine)[:,:,0])
+        plt.imshow(np.vstack(list_combine))
         plt.axis('off')
         plt.show()
 
