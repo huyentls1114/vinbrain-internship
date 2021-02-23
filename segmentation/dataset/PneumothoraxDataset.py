@@ -106,8 +106,8 @@ class PneumothoraxDataset(Dataset):
         list_combine = []
         fig = plt.figure(figsize=(batch_size, 3), dpi = 512)
         for i in range(batch_size):
-            img = conver_numpy_image(list_imgs[i])
-            mask = conver_numpy_image(list_masks[i])
+            img = conver_numpy_image(list_imgs[i], normalize=True)
+            mask = conver_numpy_image(list_masks[i], normalize=True)
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
                mask = np.concatenate([mask]*3, axis = 2)
