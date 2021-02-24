@@ -34,7 +34,7 @@ class MenWomanDataset(Dataset):
         '''
         self.mode = mode
         self.transform = transform
-        self.data_dir = dataset_args["path"]
+        self.data_dir = path
         self.data_path = os.path.join(self.data_dir, mode +".txt")
         self.list_image_name, self.list_label = self.load_train_img(self.data_path)
 
