@@ -19,7 +19,7 @@ batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
-classes = ["men", "woman"]
+
 
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
@@ -37,8 +37,9 @@ transform_test = transforms.Compose([
 ])
 dataset = {
     "class":MenWomanDataset,
-    "argument":{
-        "path":"/content/data"
+    "dataset_args":{
+        "path":"/content/data",
+        "classes" : ["men", "woman"],
     }
 }
 

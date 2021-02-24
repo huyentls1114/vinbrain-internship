@@ -15,7 +15,7 @@ dataset = {
 
 '''
 class MenWomanDataset(Dataset):
-    def __init__(self, dataset_args, transform = None, mode = "train"):
+    def __init__(self, path, classes = None, transform = None, mode = "train"):
         '''
         target: initialize MenWoman Dataset
         dataset structure:
