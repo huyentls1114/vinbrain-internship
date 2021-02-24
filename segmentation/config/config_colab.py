@@ -14,20 +14,19 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 512
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB7VGG_ns_comboloss_rate0.8_augment2_RLOP5e-3"
+image_size = 256
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_rate0.8_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb7.py"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb0.py"
 
 from model.unet import Unet
-from model.backbone import BackboneRestnext101VGG
+from model.backbone import BackboneEfficientB0VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneEfficientB7VGG,
+        "backbone_class": BackboneEfficientB0VGG,
         "encoder_args":{
-            "type":"ns",
             "pretrained":True,           
         },
         "decoder_args":{
@@ -95,17 +94,13 @@ metric = {
         "threshold": 0.5
     }
 }
-# from pattern_model import MixedLoss
-# from loss.loss import MixedLoss
-from won.loss import ComboLoss
+
+from loss.loss import DiceLoss
 loss_function = {
-    "class":ComboLoss,
+    "class": DiceLoss,
     "loss_args":{
-        "weights": {
-            "bce":3,
-            "dice":1,
-            "focal":4
-        }
+        "mean_type":"pixel",
+        "activation":nn.Sigmoid()
     }
 }
 
@@ -126,7 +121,7 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.3,
-        "patience":8,
+        "patience":4,
         "threshold":1e-2,
         "min_lr":1e-6
     }
