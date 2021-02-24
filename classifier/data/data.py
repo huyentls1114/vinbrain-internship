@@ -135,7 +135,7 @@ class CIFARData:
         self.num_sample = len(train_sampler)
         return train_sampler, valid_sampler
 
-    def caculate_num_per_labels(self, mode):
+    def caculate_num_per_labels(self, mode = "train"):
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.train_dataset,
@@ -143,6 +143,6 @@ class CIFARData:
         }
 
         labels = torch.zeros(10, dtype=torch.long)
-        for _, target in dataset_dict["mode"]:
+        for _, target in dataset_dict[mode]:
             labels += torch.nn.functional.one_hot(torch.tensor(target), num_classes=10)
         return labels
