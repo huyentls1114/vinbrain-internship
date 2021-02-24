@@ -52,7 +52,7 @@ class CIFARData:
         #define list class
         self.classes = configs.dataset["dataset_args"]["classes"]
 
-    def show_batch(self, mode = "train", num_images = None):
+    def show_batch(self, mode = "train", num_images = None, _class = None):
         '''
         target: show image and labels
         input: 
@@ -84,14 +84,28 @@ class CIFARData:
         
         #get image and label from dataset
         dataset = dataset_dict[mode]
+        
         for i in range(num_images):
-            image, label = dataset[list_idx[i]]
-            list_imgs.append(image)
-            list_labels.append(label)
+            if _class is not None:
+                image, label = self.choose_img_class(dataset, _class)
+                list_imgs.append(image)
+                list_labels.append(label)
+            else:
+                image, label = dataset[list_idx[i]]
+                list_imgs.append(image)
+                list_labels.append(label)
 
         print("class", " ".join(self.classes[list_labels[i]] for i in range(num_images)))
         show_img(torchvision.utils.make_grid(list_imgs))
-        
+
+    def choose_img_class(self,dataset, _class):
+        len_dataset = len(dataset) 
+        index = random.rand.int(0, len_dataset-1)
+        image, label = dataset[index]
+        while(label != _class):
+            index = random.rand.int(0, len_dataset-1)
+            image, label = dataset[index]
+        return image, label
 
     def split_sampler(self, split):
         '''
