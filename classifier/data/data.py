@@ -32,7 +32,7 @@ class CIFARData:
         self.num_sample = len(self.train_dataset)
 
         #split train val
-        self.train_sampler, self.valid_sampler = self.split_sampler(split_train_val)
+        self.train_sampler, self.valid_sampler = self.split_sampler(train_dataset, split_train_val)
         self.test_sampler = SubsetRandomSampler(range(len(self.test_dataset)))
 
         #declare data loader
