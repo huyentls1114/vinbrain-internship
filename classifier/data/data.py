@@ -107,7 +107,7 @@ class CIFARData:
             image, label = dataset[index]
         return image, label
 
-    def split_sampler(self, split):
+    def split_sampler(self, dataset, split):
         '''
         target: create SubsetRandomSamplers of train and val
         input:
@@ -118,16 +118,12 @@ class CIFARData:
         '''
         if split == 0:
             return None, None
-        idx_full = np.arange(self.num_sample)
-        np.random.seed(0)
-        np.random.shuffle(idx_full)
+        idx_full = np.arange(len(dataset))
+        y = np.array(list(x[1] for x in dataset))
 
         assert split > 0
         assert split < 1, "split must be from 0 to 1"
-        len_train = int(split*self.num_sample)
-
-        valid_idx = idx_full[len_train:]
-        train_idx = idx_full[:len_train]
+        train_idx, valid_idx, y_train, y_val = train_test_split(idx_full, y, test_size=1-split, stratify=y)
 
         train_sampler = SubsetRandomSampler(train_idx)
         valid_sampler = SubsetRandomSampler(valid_idx)
