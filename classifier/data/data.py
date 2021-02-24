@@ -50,7 +50,7 @@ class CIFARData:
                                         num_workers = 2)
         
         #define list class
-        self.classes = configs.classes
+        self.classes = configs.dataset["classes"]
 
     def show_batch(self, mode = "train"):
         '''

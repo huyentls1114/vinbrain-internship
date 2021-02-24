@@ -20,7 +20,7 @@ batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
-classes = ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
+
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -35,6 +35,7 @@ transform_test = transforms.Compose([
 
 dataset = {
     "class":Cifar10,
+    "classes": ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"],
     "dataset_args":{
         "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10"
     }
