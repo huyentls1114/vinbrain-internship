@@ -53,7 +53,7 @@ def len_train_datatset(dataset_dict, transform, split_train_val):
         - split_train_val: ratio split
     '''
     DatasetClass = dataset_dict["class"]
-    train_dataset = DatasetClass(**dataset["dataset_args"],transform = transform_train, mode = "train")
+    train_dataset = DatasetClass(**dataset_dict["dataset_args"],transform = transform_train, mode = "train")
     return len(train_dataset)*split_train_val
 
 
