@@ -34,9 +34,8 @@ transform_test = transforms.Compose([
                         ])
 
 dataset = {
-    "name":"cifar10",
-    "class":cifar10,
-    "argument":{
+    "class":Cifar10,
+    "dataset_args":{
         "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10"
     }
 }

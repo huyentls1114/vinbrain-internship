@@ -23,8 +23,8 @@ class CIFARData:
         x = 1
         #declare Dataset
         DatasetClass = configs.dataset["class"]
-        self.train_dataset = DatasetClass(configs.dataset["argument"],transform = configs.transform_train, mode = "train")
-        self.test_dataset = DatasetClass(configs.dataset["argument"],transform = configs.transform_test, mode = "test")
+        self.train_dataset = DatasetClass(**configs.dataset["dataset_args"],transform = configs.transform_train, mode = "train")
+        self.test_dataset = DatasetClass(**configs.dataset["dataset_args"],transform = configs.transform_test, mode = "test")
 
         #declare Dataloader
         self.batch_size = configs.batch_size

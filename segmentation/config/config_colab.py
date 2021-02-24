@@ -82,8 +82,8 @@ dataset = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 4
-num_epochs = 40
+batch_size = 16
+num_epochs = 20
 
 # from pattern_model import 
 from won.loss import DiceMetric
