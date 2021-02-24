@@ -4,7 +4,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.models import resnet50, densenet121
 from dataset.transform import Rescale
-from dataset.dataset import cifar10
+from dataset.dataset import Cifar10
 from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD, Adam
