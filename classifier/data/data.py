@@ -53,6 +53,18 @@ class CIFARData:
         #define list class
         self.classes = configs.dataset["dataset_args"]["classes"]
 
+        self.dataset_dict = {
+            "train": self.train_dataset,
+            "val": self.train_dataset,
+            "test":self.test_dataset
+        }
+        self.sampler_dict = {
+            "train": self.train_sampler,
+            "val": self.valid_sampler,
+            "test": self.test_sampler
+        }
+
+
     def show_batch(self, mode = "train", num_images = None, _class = None):
         '''
         target: show image and labels
@@ -63,28 +75,18 @@ class CIFARData:
         '''
         if num_images is None:
             num_images = self.batch_size
-        dataset_dict = {
-            "train": self.train_dataset,
-            "val": self.train_dataset,
-            "test":self.test_dataset
-        }
-        sampler_dict = {
-            "train": self.train_sampler,
-            "val": self.valid_sampler,
-            "test": self.test_sampler
-        }
         # data_iter = iter(data_loader_dict[mode])
         # images, labels = data_iter.next()
         list_imgs = []
         list_labels = []
 
         #random list idx
-        list_idx = list(sampler_dict[mode])
+        list_idx = list(self.sampler_dict[mode])
         np.random.shuffle(list_idx)
         list_idx = list_idx[0:num_images]
         
         #get image and label from dataset
-        dataset = dataset_dict[mode]
+        dataset = self.dataset_dict[mode]
         
         for i in range(num_images):
             if _class is not None:
@@ -133,13 +135,11 @@ class CIFARData:
         return train_sampler, valid_sampler
 
     def caculate_num_per_labels(self, mode = "train"):
-        dataset_dict = {
-            "train": self.train_dataset,
-            "val": self.train_dataset,
-            "test":self.test_dataset
-        }
+        list_idx = list(self.sampler_dict[mode])
+        dataset = self.dataset_dict[mode]
 
         labels = torch.zeros(10, dtype=torch.long)
-        for _, target in dataset_dict[mode]:
+        for index in list_idx:
+            img, target = dataset[index]
             labels += torch.nn.functional.one_hot(torch.tensor(target), num_classes=10)
         return labels
