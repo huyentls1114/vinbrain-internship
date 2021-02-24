@@ -103,7 +103,7 @@ class CIFARData:
         index = random.randint(0, len_dataset-1)
         image, label = dataset[index]
         while(label != _class):
-            index = random.rand.int(0, len_dataset-1)
+            index = random.randint(0, len_dataset-1)
             image, label = dataset[index]
         return image, label
 
