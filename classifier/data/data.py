@@ -7,7 +7,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
-
+import random
 
 class CIFARData:
     def __init__(self, configs):
