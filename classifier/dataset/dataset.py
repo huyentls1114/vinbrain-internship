@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Cifar10(Dataset):
-    def __init__(self, path, transform = None, mode = "train"):
+    def __init__(self, path, classes = None, transform = None, mode = "train"):
         if transform is None:
                 transform = transforms.Compose([
                 transforms.ToTensor(),
@@ -17,6 +17,7 @@ class Cifar10(Dataset):
                                 std=[0.229, 0.224, 0.225])
                 ])
         self.dataset = torchvision.datasets.CIFAR10(root = path, train = (mode == "train"), transform= transform, download = True)
+        self.classes = classes
     def __len__(self):
         return len(self.dataset)
     def __getitem__(self, index):

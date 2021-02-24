@@ -50,9 +50,9 @@ class CIFARData:
                                         num_workers = 2)
         
         #define list class
-        self.classes = configs.dataset["classes"]
+        self.classes = configs.dataset["dataset_args"]["classes"]
 
-    def show_batch(self, mode = "train"):
+    def show_batch(self, mode = "train", num_images = None):
         '''
         target: show image and labels
         input: 
@@ -60,6 +60,8 @@ class CIFARData:
         output:
             - batch images with labels
         '''
+        if num_images is None:
+            num_images = self.batch_size
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.train_dataset,
@@ -78,16 +80,16 @@ class CIFARData:
         #random list idx
         list_idx = list(sampler_dict[mode])
         np.random.shuffle(list_idx)
-        list_idx = list_idx[0:self.batch_size]
+        list_idx = list_idx[0:num_images]
         
         #get image and label from dataset
         dataset = dataset_dict[mode]
-        for i in range(self.batch_size):
+        for i in range(num_images):
             image, label = dataset[list_idx[i]]
             list_imgs.append(image)
             list_labels.append(label)
 
-        print("class", " ".join(self.classes[list_labels[i]] for i in range(self.batch_size)))
+        print("class", " ".join(self.classes[list_labels[i]] for i in range(num_images)))
         show_img(torchvision.utils.make_grid(list_imgs))
         
 

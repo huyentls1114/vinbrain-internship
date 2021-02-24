@@ -35,9 +35,9 @@ transform_test = transforms.Compose([
 
 dataset = {
     "class":Cifar10,
-    "classes": ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"],
     "dataset_args":{
-        "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10"
+        "path":"/content/drive/MyDrive/vinbrain_internship/data/cifar10",
+        "classes": ["plane","car","bird","cat","deer","dog","frog","horse","ship","truck"]
     }
 }
 
