@@ -11,8 +11,8 @@ def show_img(image):
     image = (image/2)+0.5
     image = image.numpy()
     image = np.transpose(image, (1, 2, 0))
-    plt.axis("off")
     plt.imshow(image)
+    plt.axis("off")
     plt.show()
 
 def conver_numpy_image(image):
