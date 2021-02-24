@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
 import random
+from sklearn.model_selection import train_test_split
 
 class CIFARData:
     def __init__(self, configs):
