@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from dataset.transform import Rescale
-from dataset.dataset import cifar10
 from dataset.MenWomanDataset import MenWomanDataset
 from model.CNN import CNN, TransferNet
 from torch.optim import SGD, Adam, RMSprop
