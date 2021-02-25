@@ -63,7 +63,7 @@ class Trainer:
         self.net.to(self.device)
 
         #tensorboard
-        self.summaryWriter = SummaryWriter(self.output_folder)
+        self.sumary_writer = SummaryWriter(self.output_folder)
         self.global_step = 0
 
         #test image
