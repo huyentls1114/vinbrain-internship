@@ -12,7 +12,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_SDM_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_SDM_momentum_1e-3"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
@@ -68,6 +68,7 @@ from torch.optim import SGD
 optimizer = {
     "class":SGD,
     "optimizer_args":{
+        "momentum" = 0.7
     }
 }
 
