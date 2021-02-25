@@ -76,7 +76,7 @@ metric = {
     }
 }
 steps_save_loss = 10000
-lr_schedule = {
+lr_scheduler = {
     "class": StepLR,
     "metric":None,
     "step_type":"epoch",

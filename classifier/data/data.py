@@ -40,6 +40,7 @@ class CIFARData:
         self.train_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
+                                        shuffle = True,
                                         sampler = self.train_sampler)
         self.val_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
@@ -138,8 +139,8 @@ class CIFARData:
         list_idx = list(self.sampler_dict[mode])
         dataset = self.dataset_dict[mode]
 
-        labels = torch.zeros(10, dtype=torch.long)
+        labels = torch.zeros(len(self.classes), dtype=torch.long)
         for index in list_idx:
             img, target = dataset[index]
-            labels += torch.nn.functional.one_hot(torch.tensor(target), num_classes=10)
+            labels += torch.nn.functional.one_hot(torch.tensor(target), num_classes=len(self.classes))
         return labels

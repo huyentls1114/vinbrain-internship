@@ -12,25 +12,26 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_RMSProp_1e-3"
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
 split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
-
+img_size = 224
 
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize(int(img_size*115/100)),
+    transforms.CenterCrop(img_size),
     transforms.ToTensor(),
     transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
 ])
 transform_test = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
+    transforms.Resize(int(img_size*115/100)),
+    transforms.CenterCrop(img_size),
     transforms.ToTensor(),
     transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225))
 ])
@@ -52,7 +53,12 @@ net = {
         "num_classes":2
     }
 }
-loss_function = nn.CrossEntropyLoss
+
+loss = {
+    "class": nn.CrossEntropyLoss,
+    "loss_args":{
+
+    }
 lr = 1e-3
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 # lr_schedule = {
@@ -75,7 +81,6 @@ optimizer = {
 }
 
 num_epochs = 20
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_RMSProp_1e-3"
 
 loss_file = "loss_file.txt"
 metric = {
@@ -85,9 +90,8 @@ metric = {
         "from_logits":True
     }
 }
-steps_save_loss = 100
 
-lr_schedule = {
+lr_scheduler = {
     "class": OneCycleLR,
     "metric":None,
     "step_type":"iteration",
