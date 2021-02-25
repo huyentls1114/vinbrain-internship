@@ -27,7 +27,7 @@ class Trainer:
 
         #data
         self.data = data
-        self.img_size = configs.img_size
+        
 
         #loss, model, optimizer, metric 
         self.crition = configs.loss["class"](**configs.loss["loss_args"])
@@ -48,6 +48,7 @@ class Trainer:
             self.initial_output_folder()
 
         #visualize
+        self.image_size = configs.img_size
         self.visualize = Visualize(self.current_epoch, 
                                     self.num_epochs,
                                     self.data, 
