@@ -96,7 +96,7 @@ lr_scheduler = {
     "step_type":"iteration",
     "schedule_args":{
         "T_0": 1,
-        "T_mul":2
+        "T_mult":2
     }    
 }
 
