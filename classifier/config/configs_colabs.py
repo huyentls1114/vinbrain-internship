@@ -90,7 +90,7 @@ metric = {
 
 #lr scheduler
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-lr_scheduler_crf = {
+lr_scheduler = {
     "class":CosineAnnealingWarmRestarts,
     "metric": None,
     "step_type":"iteration",
@@ -99,6 +99,7 @@ lr_scheduler_crf = {
         "T_mul":2
     }    
 }
+
 
 # lr_scheduler = {
 #     "class": OneCycleLR,
