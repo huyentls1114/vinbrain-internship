@@ -135,6 +135,8 @@ class Trainer:
             if self.lr_scheduler is not None:
                 if self.lr_scheduler_step_type == "iteration":
                     self.schedule_lr(iteration = i)
+                elif self.lr_scheduler_step_type == "batch":
+                    self.schedule_lr()
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
             self.global_step+=1
