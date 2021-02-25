@@ -68,7 +68,7 @@ from torch.optim import SGD
 optimizer = {
     "class":SGD,
     "optimizer_args":{
-        "momentum" = 0.7
+        "momentum" : 0.7
     }
 }
 
