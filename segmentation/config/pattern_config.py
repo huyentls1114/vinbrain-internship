@@ -24,9 +24,9 @@ lr_scheduler = {
     }
 }
 
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import OneCycleLR
 lr_scheduler = {
-    "class":CosineAnnealingWarmRestarts,
+    "class":OneCycleLR,
     "metric": None,
     "step_type":"iteration",
     "schedule_args":{

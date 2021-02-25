@@ -160,6 +160,7 @@ class Trainer:
         assert self.lr_scheduler is not None
         if iteration is not None:
             #for Cosine Anealing Warm Restart
+            print(iteration)
             self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
         elif metric_value is not None:
             #for ReduceLROnPlateau
