@@ -37,13 +37,6 @@ class Trainer:
 
         #scheduler
         self.init_lr_scheduler(configs.lr_scheduler)
-                
-        #visualize
-        self.visualize = Visualize(self.current_epoch, 
-                                    self.num_epochs,
-                                    self.data, 
-                                    img_size = self.image_size)
-        self.loss_file = configs.loss_file
 
         #training process
         self.current_epoch = 0
@@ -53,6 +46,15 @@ class Trainer:
         #config output
         if copy_configs:
             self.initial_output_folder()
+
+        #visualize
+        self.visualize = Visualize(self.current_epoch, 
+                                    self.num_epochs,
+                                    self.data, 
+                                    img_size = self.image_size)
+        self.loss_file = configs.loss_file
+
+
 
         #config cuda
         cuda = configs.device
