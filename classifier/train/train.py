@@ -91,7 +91,8 @@ class Trainer:
             - loss_file: file contain loss of training process
         '''
         self.visualize.update(current_epoch = self.current_epoch,
-                              epochs = self.num_epochs)
+                              epochs = self.num_epochs,
+                              data = self.data)
         if loss_file is not None:
             self.loss_file = loss_file        
         for epoch in self.visualize.mb:
