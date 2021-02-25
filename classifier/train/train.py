@@ -2,6 +2,7 @@ import torch
 import os
 from shutil import copy
 from utils.utils import save_loss_to_file
+import shutil
 from torch.utils.tensorboard import SummaryWriter
 # from dataset.dataset import ListDataset
 from visualize.visualize import Visualize

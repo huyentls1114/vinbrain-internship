@@ -2,4 +2,3 @@ pyyaml==5.3.1
 scikit-image == 0.18.1
 future==0.18.2
 tb-nightly==2.5.0a20201230
-shutil
