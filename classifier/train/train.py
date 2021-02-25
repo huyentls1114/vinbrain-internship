@@ -149,11 +149,11 @@ class Trainer:
             self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
 
         lr = self.optimizer.param_groups[0]['lr']
-        print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, dice valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
+        print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, acc valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
         loss_file_path = os.path.join(self.output_folder, self.loss_file)
         save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr)
         self.sumary_writer.add_scalars('loss', {'val': val_loss_avg}, self.global_step)
-        self.sumary_writer.add_scalars('dice',{'val':val_acc_avg}, self.global_step)
+        self.sumary_writer.add_scalars('acc',{'val':val_acc_avg}, self.global_step)
         self.visualize.plot_loss_update(train_loss_avg, val_loss_avg.cpu().numpy())
 
     def schedule_lr(self, iteration = None, metric_value = None):
