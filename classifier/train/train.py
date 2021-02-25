@@ -132,7 +132,7 @@ class Trainer:
             
             train_loss += loss.item()
             if self.lr_scheduler is not None:
-                if self.lr_scheduler_step_type == "batch":
+                if self.lr_scheduler_step_type == "iteration":
                     self.schedule_lr(iteration = i)
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
@@ -158,7 +158,7 @@ class Trainer:
 
     def schedule_lr(self, iteration = None, metric_value = None):
         assert self.lr_scheduler is not None
-        print("iteration", iteration, "metric_value", metric_value)
+        # print("iteration", iteration, "metric_value", metric_value)
         if iteration is not None:
             #for Cosine Anealing Warm Restart
             self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
