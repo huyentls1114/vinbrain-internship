@@ -6,7 +6,7 @@ from torch.utils.tensorboard import SummaryWriter
 # from dataset.dataset import ListDataset
 from visualize.visualize import Visualize
 class Trainer:
-    def __init__(self, configs, data, copy_configs = False):
+    def __init__(self, configs, data, copy_configs = True):
         '''
         target: initialize trainer for training
         inputs:
