@@ -20,6 +20,7 @@ class Visualize:
         if current_epoch is not None:
             assert epochs is not None
             self.mb = master_bar(range(current_epoch, epochs))
+            self.progress_train.parent = self.mb
             self.mb.imgs_out = None
         if data is not None:
             self.progress_train = progress_bar(data.train_loader,parent=self.mb)
