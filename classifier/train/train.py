@@ -263,7 +263,7 @@ class Trainer:
         state_dict = torch.load(file_path, map_location=self.device)
         file_path = os.path.join(self.output_folder, filename)
 
-                state_dict = torch.load(file_path, map_location=self.device)
+        state_dict = torch.load(file_path, map_location=self.device)
         self.net.load_state_dict(state_dict["net"])
         self.optimizer.load_state_dict(state_dict["optimizer"])
         self.current_epoch = state_dict["current_epoch"]+1
