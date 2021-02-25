@@ -272,5 +272,6 @@ class Trainer:
         self.current_epoch = state_dict["current_epoch"]+1
         self.visualize.update(current_epoch = self.current_epoch,
                               epochs = self.num_epochs,
+                              data = self.data,
                               train_loss = state_dict["train_loss_list"],
                               valid_loss = state_dict["val_loss_list"])
