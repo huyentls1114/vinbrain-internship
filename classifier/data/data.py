@@ -122,8 +122,8 @@ class CIFARData:
         if split == 0:
             return None, None
         idx_full = np.arange(len(dataset))
-        if hasattr(dataset, 'list_labels'):
-            y = dataset.list_labels
+        if hasattr(dataset, 'list_label'):
+            y = dataset.list_label
         else:
             y = np.array(list(x[1] for x in dataset))
 
