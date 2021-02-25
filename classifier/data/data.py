@@ -24,6 +24,7 @@ class CIFARData:
         x = 1
         #declare Dataset
         DatasetClass = configs.dataset["class"]
+        args = configs.dataset["dataset_args"]
         self.train_dataset = DatasetClass(**configs.dataset["dataset_args"],transform = configs.transform_train, mode = "train")
         self.test_dataset = DatasetClass(**configs.dataset["dataset_args"],transform = configs.transform_test, mode = "test")
 

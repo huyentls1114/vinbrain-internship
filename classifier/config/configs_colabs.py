@@ -63,7 +63,7 @@ loss = {
     }
 }
 #optimizer
-lr = 1e-3
+lr = 1e-4
 from torch.optim import RMSprop
 optimizer = {
     "class":RMSprop,
@@ -95,7 +95,7 @@ lr_scheduler = {
     "metric":None,
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":5,
+        "step_size":10,
         "gamma":0.1,
     }
 }
