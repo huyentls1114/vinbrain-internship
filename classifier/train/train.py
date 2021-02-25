@@ -154,7 +154,7 @@ class Trainer:
         save_loss_to_file(loss_file_path, self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr)
         self.sumary_writer.add_scalars('loss', {'val': val_loss_avg}, self.global_step)
         self.sumary_writer.add_scalars('dice',{'val':val_acc_avg}, self.global_step)
-        self.visualize.plot_loss_update(train_loss_avg, val_loss_avg)
+        self.visualize.plot_loss_update(train_loss_avg, val_loss_avg.cpu().numpy())
 
     def schedule_lr(self, iteration = None, metric_value = None):
         assert self.lr_scheduler is not None
