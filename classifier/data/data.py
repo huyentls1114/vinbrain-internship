@@ -122,7 +122,10 @@ class CIFARData:
         if split == 0:
             return None, None
         idx_full = np.arange(len(dataset))
-        y = np.array(list(x[1] for x in dataset))
+        if hasattr(dataset, 'list_labels'):
+            y = dataset.list_labels
+        else:
+            y = np.array(list(x[1] for x in dataset))
 
         assert split > 0
         assert split < 1, "split must be from 0 to 1"
