@@ -12,7 +12,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_RMSProp_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_SDM_1e-3"
 config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
@@ -20,6 +20,7 @@ split_train_val = 0.7
 device = "gpu"
 gpu_id = 0
 img_size = 224
+
 
 transform_train = transforms.Compose([
     transforms.ToPILImage(),
@@ -44,6 +45,7 @@ dataset = {
 }
 
 #train config
+num_epochs = 20
 net = {
     "class":TransferNet,
     "net_args":{
@@ -54,35 +56,30 @@ net = {
     }
 }
 
+#loss
 loss = {
     "class": nn.CrossEntropyLoss,
     "loss_args":{
-
     }
+}
+#optimizer
 lr = 1e-3
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
-# lr_schedule = {
-#     "class": StepLR,
-#     "metric":None,
-#     "step_type":"epoch",
-#     "schedule_args":{
-#         "step_size":1,
-#         "gamma":0.1,
-#     }
-# }
-# optimizer={
-#     "class":Adam,
-#     "optimizer_args":{
-#     }}
+from torch.optim import SGD
 optimizer = {
-    "class":RMSprop,
+    "class":SGD,
     "optimizer_args":{
     }
 }
 
-num_epochs = 20
 
+# optimizer={
+#     "class":Adam,
+#     "optimizer_args":{
+#     }}
+
+# metric
 loss_file = "loss_file.txt"
+steps_per_epoch = int(len_train_datatset(dataset, transform_train, split_train_val)/batch_size)
 metric = {
     "class":Accuracy,
     "metric_args":{
@@ -91,13 +88,25 @@ metric = {
     }
 }
 
+#lr scheduler
+from torch.optim.lr_scheduler import StepLR
 lr_scheduler = {
-    "class": OneCycleLR,
+    "class": StepLR,
     "metric":None,
-    "step_type":"iteration",
+    "step_type":"epoch",
     "schedule_args":{
-        "max_lr":.0001,
-        "epochs": num_epochs,
-        "steps_per_epoch":steps_per_epoch+1
+        "step_size":5,
+        "gamma":0.1,
     }
 }
+
+# lr_scheduler = {
+#     "class": OneCycleLR,
+#     "metric":None,
+#     "step_type":"iteration",
+#     "schedule_args":{
+#         "max_lr":.0001,
+#         "epochs": num_epochs,
+#         "steps_per_epoch":steps_per_epoch+1
+#     }
+# }
