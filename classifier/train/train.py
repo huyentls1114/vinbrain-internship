@@ -69,7 +69,7 @@ class Trainer:
         #test image
         self.transform_test = configs.transform_test
 
-
+        self.steps_per_epoch = configs.steps_per_epoch
     def initial_output_folder(self):
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
@@ -83,6 +83,7 @@ class Trainer:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])
             self.lr_scheduler_metric = lr_scheduler["metric"]
             self.lr_scheduler_step_type = lr_scheduler["step_type"]
+            
 
     def train(self, loss_file = None):
         '''
