@@ -13,7 +13,7 @@ from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_SDM_1e-3"
-config_files = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
 split_train_val = 0.7
