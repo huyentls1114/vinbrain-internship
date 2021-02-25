@@ -30,8 +30,9 @@ lr_scheduler = {
     "metric": None,
     "step_type":"iteration",
     "schedule_args":{
-        "T_0": 1,
-        "T_mult":2
+        "max_lr": lr,
+        "epochs":num_epochs,
+        "steps_per_epoch":steps_per_epoch+1,
     }    
 }
 
