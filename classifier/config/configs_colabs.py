@@ -91,12 +91,14 @@ metric = {
 #lr scheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
-    "class": StepLR,
-    "metric":None,
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss_avg",
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":5,
-        "gamma":0.1,
+        "mode":"min",
+        "factor":0.1,
+        "patience":3,
+        "min_lr":1e-6
     }
 }
 
