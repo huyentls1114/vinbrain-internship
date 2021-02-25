@@ -27,6 +27,7 @@ class Trainer:
 
         #data
         self.data = data
+        self.img_size = configs.img_size
 
         #loss, model, optimizer, metric 
         self.crition = configs.loss["class"](**configs.loss["loss_args"])
