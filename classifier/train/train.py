@@ -81,8 +81,8 @@ class Trainer:
             self.lr_scheduler = None
         else:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])
-            self.lr_shedule_metric = lr_scheduler["metric"]
-            self.lr_schedule_step_type = lr_scheduler["step_type"]
+            self.lr_scheduler_metric = lr_scheduler["metric"]
+            self.lr_scheduler_step_type = lr_scheduler["step_type"]
 
     def train(self, loss_file = None):
         '''
@@ -100,7 +100,7 @@ class Trainer:
             self.train_one_epoch()
             self.save_checkpoint()
             if self.lr_scheduler is not None:
-                if (self.lr_schedule_step_type == "epoch") and (self.lr_shedule_metric is None):
+                if (self.lr_scheduler_step_type == "epoch") and (self.lr_scheduler_metric is None):
                     self.schedule_lr()
 
     def test(self):
@@ -132,7 +132,7 @@ class Trainer:
             
             train_loss += loss.item()
             if self.lr_scheduler is not None:
-                if self.lr_schedule_step_type == "batch":
+                if self.lr_scheduler_step_type == "batch":
                     self.schedule_lr(iteration = i)
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
@@ -145,7 +145,7 @@ class Trainer:
         train_loss_avg = train_loss/num_batches
         val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
         
-        if (self.lr_schedule_step_type == "epoch") and (self.lr_schedule_step_type is not None):
+        if (self.lr_scheduler_step_type == "epoch") and (self.lr_scheduler_metric is not None):
             self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
 
         lr = self.optimizer.param_groups[0]['lr']
@@ -248,7 +248,7 @@ class Trainer:
             "optimizer":self.optimizer.state_dict(),
             "lr_scheduler": self.lr_scheduler.state_dict(),
             "lr_scheduler_metric": self.lr_scheduler_metric,
-            "lr_scheduler_step_type":self.lr_schedule_step_type,
+            "lr_scheduler_step_type":self.lr_scheduler_step_type,
         }
         filepath = os.path.join(self.output_folder, filename)
         torch.save(state_dict, filepath)
