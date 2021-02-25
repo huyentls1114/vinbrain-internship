@@ -12,7 +12,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_OneCycleLR_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_OneCycleLR_1e-4"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
@@ -63,7 +63,7 @@ loss = {
     }
 }
 #optimizer
-lr = 1e-3
+lr = 1e-4
 from torch.optim import Adam
 optimizer = {
     "class":Adam,
