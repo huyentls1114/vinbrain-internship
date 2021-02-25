@@ -46,7 +46,7 @@ class Visualize:
             self.mb.imgs_out.update(img)
 
     def plot_loss_update(self, train_loss, valid_loss):
-        print(type(train_loss), type(valid_loss))
+        # print(type(train_loss), type(valid_loss))
         x = range(len(self.train_loss)+1)
         self.train_loss.append(train_loss)
         self.valid_loss.append(valid_loss)
