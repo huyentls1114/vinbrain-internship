@@ -12,7 +12,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_ReduceLROnPlateau_1e-4"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
@@ -89,14 +89,16 @@ metric = {
 }
 
 #lr scheduler
-from torch.optim.lr_scheduler import StepLR
 lr_scheduler = {
-    "class": StepLR,
-    "metric":None,
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss_avg",
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":5,
-        "gamma":0.1,
+        "mode":"min",
+        "factor":0.5,
+        "patience":6,
+        "threshold":1e-2,
+        "min_lr":1e-6
     }
 }
 
