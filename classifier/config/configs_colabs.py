@@ -12,7 +12,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_OneCycleLR_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_CosineAnnealingWarmRestarts_1e-4"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
 #data config
 batch_size = 64
@@ -89,15 +89,14 @@ metric = {
 }
 
 #lr scheduler
-from torch.optim.lr_scheduler import OneCycleLR
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_scheduler = {
-    "class":OneCycleLR,
+    "class":CosineAnnealingWarmRestarts,
     "metric": None,
-    "step_type":"batch",
+    "step_type":"iteration",
     "schedule_args":{
-        "max_lr": lr,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1,
+        "T_0": 1,
+        "T_mult":2
     }    
 }
 
