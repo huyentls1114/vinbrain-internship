@@ -39,12 +39,10 @@ class Trainer:
         self.init_lr_scheduler(configs.lr_scheduler)
                 
         #visualize
-        self.visualize = Visualize(current_epoch = 0,
-                                    epochs = self.num_epochs,
-                                    data = self.data,
-                                    img_size=self.img_size,
-                                    train_loss=self.train_loss,
-                                    valid_loss=self.valid_loss)
+        self.visualize = Visualize(self.current_epoch, 
+                                    self.num_epochs,
+                                    self.data, 
+                                    img_size = self.image_size)
         self.loss_file = configs.loss_file
 
         #training process
