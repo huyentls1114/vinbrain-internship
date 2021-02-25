@@ -47,8 +47,8 @@ class Visualize:
 
     def plot_loss_update(self, train_loss, valid_loss):
         x = range(len(self.train_loss)+1)
-        self.train_loss.append(train_loss.cpu().numpy())
-        self.valid_loss.append(valid_loss.cpu().numpy())
+        self.train_loss.append(train_loss)
+        self.valid_loss.append(valid_loss)
         y = np.concatenate((self.train_loss, self.valid_loss))
         graphs = [[x, self.train_loss], [x, self.valid_loss]]
         x_margin = 0.1
