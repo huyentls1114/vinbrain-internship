@@ -44,7 +44,7 @@ class BCE(nn.Module):
         # outputs = outputs.view(-1)
         # targets = targets.float()
         # return F.binary_cross_entropy_with_logits(outputs, targets).mean()
-        targets = targets[:, None]
+        targets = targets[:, None].float()
         return self.BCE(outputs, targets)
 
 class CE(nn.Module):
