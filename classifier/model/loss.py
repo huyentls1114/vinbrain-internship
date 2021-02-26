@@ -39,7 +39,7 @@ class FocalLoss2d(nn.Module):
 class BCE(nn.Module):
     def __init__(self):
         super().__init__()
-        self.BCE = torch.nn.BCELoss()
+        self.BCE = torch.nn.BCEWithLogitsLoss()
     def forward(self, outputs, targets):
         # outputs = outputs.view(-1)
         # targets = targets.float()
