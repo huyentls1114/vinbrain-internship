@@ -41,6 +41,8 @@ class Trainer:
 
         #training process
         self.current_epoch = 0
+        self.best_epoch = 0
+        self.best_val_metric =0
         self.list_loss = []
         self.output_folder = configs.output_folder
         self.config_file_path = configs.config_file_path
@@ -151,7 +153,9 @@ class Trainer:
         i = step
         train_loss_avg = train_loss/num_batches
         val_loss_avg, val_acc_avg = self.evaluate(mode = "val")
-        
+        if val_acc_avg > self.best_val_metric:
+            self.best_val_metric = val_acc_avg
+            self.best_epoch = self.current_epoch
         if (self.lr_scheduler_step_type == "epoch") and (self.lr_scheduler_metric is not None):
             self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
 
@@ -254,6 +258,7 @@ class Trainer:
             lr_scheduler_state_dict = self.lr_scheduler.state_dict()
         state_dict = {
             "current_epoch": self.current_epoch,
+            "best_epoch":self.best_epoch,
             "train_loss_list":self.visualize.train_loss,
             "val_loss_list":self.visualize.valid_loss,
             "net":self.net.state_dict(),
@@ -294,3 +299,5 @@ class Trainer:
                 self.lr_scheduler = state_dict["lr_scheduler"]
             self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
             self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
+        if "best_epoch" in state_dict.keys():
+            self.best_epoch = state_dict["best_epoch"]
