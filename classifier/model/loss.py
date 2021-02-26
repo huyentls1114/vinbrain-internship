@@ -45,7 +45,9 @@ class BCE(nn.Module):
         # targets = targets.float()
         # return F.binary_cross_entropy_with_logits(outputs, targets).mean()
         # targets = targets[:, None].float()
-        targets = torch.Tensor(targets[:,None]).float()
+        print(targets)
+        targets = targets[:,None].float()
+        print(targets)
         return self.BCE(outputs, targets)
 
 class CE(nn.Module):
