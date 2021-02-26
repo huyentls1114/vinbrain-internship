@@ -52,4 +52,4 @@ class CE(nn.Module):
         # outputs = outputs.view(-1)
         # targets = targets.float()
         outputs = torch.softmax(outputs, 1)
-        return F.binary_cross_entropy(outputs[0], targets.float())
+        return F.binary_cross_entropy(outputs[:,0], targets.float())
