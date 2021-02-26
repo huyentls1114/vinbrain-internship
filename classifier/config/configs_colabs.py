@@ -13,7 +13,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_steptype10_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_SGD_1e-4"
 config_file_path = "/content/vinbrain-internship/classifier/config/configs_colabs.py"
 
 
@@ -68,9 +68,9 @@ loss = {
 }
 #optimizer
 lr = 1e-4
-from torch.optim import Adam
+from torch.optim import SGD
 optimizer = {
-    "class":Adam,
+    "class":SGD,
     "optimizer_args":{
     }
 }
@@ -93,16 +93,16 @@ metric = {
 }
 
 #lr scheduler
-from torch.optim.lr_scheduler import StepLR
-lr_scheduler = {
-    "class": StepLR,
-    "metric":None,
-    "step_type":"epoch",
-    "schedule_args":{
-        "step_size":10,
-        "gamma":0.1
-    }
-}
+# from torch.optim.lr_scheduler import StepLR
+# lr_scheduler = {
+#     "class": StepLR,
+#     "metric":None,
+#     "step_type":"epoch",
+#     "schedule_args":{
+#         "step_size":10,
+#         "gamma":0.1
+#     }
+# }
 
 
 
