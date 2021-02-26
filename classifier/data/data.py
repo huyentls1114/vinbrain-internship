@@ -43,7 +43,7 @@ class CIFARData:
         if self.num_fold is None:
             self.train_sampler, self.valid_sampler = self.split_sampler(self.train_dataset, split_train_val)
         else:
-            self.list_fold = self.get_list_fold(self.num_fold)
+            self.list_fold = self.get_list_fold(self.num_fold, self.train_dataset)
             self.train_sampler, self.valid_sampler = self.get_fold_sampler(fold =0)
         self.init_loaders()
         #define list class
@@ -145,7 +145,7 @@ class CIFARData:
         self.num_sample = len(train_sampler)
         return train_sampler, valid_sampler
 
-    def get_list_fold(self, num_fold):
+    def get_list_fold(self, dataset, num_fold):
         idx_full = np.arange(len(dataset))
         if hasattr(dataset, 'list_label'):
             y = dataset.list_label
