@@ -47,8 +47,8 @@ class BCE(nn.Module):
 class CE(nn.Module):
     def __init__(self):
         super().__init__()
-        self.crossentropy = torch.nn.CrossEntropyLoss()
+        # self.crossentropy = torch.nn.CrossEntropyLoss()
     def forward(self, outputs, targets):
         # outputs = outputs.view(-1)
         # targets = targets.float()
-        return self.crossentropy(outputs, targets)
+        return F.cross_entropy(outputs, targets)
