@@ -153,7 +153,7 @@ class CIFARData:
             y = np.array(list(x[1] for x in dataset))
 
         kfold = StratifiedKFold(n_splits = num_fold, random_state = 1996,shuffle = True)
-        list_fold = list(kfold.split(X, y))
+        list_fold = list(kfold.split(idx_full, y))
         return list_fold
 
     def get_fold_sampler(self, fold = 0): 
