@@ -43,7 +43,7 @@ class CIFARData:
         if self.num_fold is None:
             self.train_sampler, self.valid_sampler = self.split_sampler(self.train_dataset, split_train_val)
         else:
-            self.list_fold = self.get_list_fold()
+            self.list_fold = self.get_list_fold(self.num_fold)
             self.train_sampler, self.valid_sampler = self.get_fold_sampler(fold =0)
         self.init_loaders()
         #define list class
@@ -146,14 +146,13 @@ class CIFARData:
         return train_sampler, valid_sampler
 
     def get_list_fold(self, num_fold):
-        assert self.num_fold is not None
         idx_full = np.arange(len(dataset))
         if hasattr(dataset, 'list_label'):
             y = dataset.list_label
         else:
             y = np.array(list(x[1] for x in dataset))
 
-        kfold = StratifiedKFold(n_splits=self.num_fold, random_state = 1996,shuffle = True)
+        kfold = StratifiedKFold(n_splits = num_fold, random_state = 1996,shuffle = True)
         list_fold = list(kfold.split(X, y))
         return list_fold
 
