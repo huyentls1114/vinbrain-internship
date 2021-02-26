@@ -1,4 +1,5 @@
 import torch.functional as F
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
@@ -62,7 +63,7 @@ net = {
 loss = {
     "class": nn.CrossEntropyLoss,
     "loss_args":{
-        "weight": [0.42, 0.57]
+        "weight": torch.Tensor([0.42, 0.57])
     }
 }
 #optimizer
