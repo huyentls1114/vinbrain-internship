@@ -24,6 +24,7 @@ class FocalLoss2d(nn.Module):
         self.ignore_index = ignore_index
 
     def forward(self, outputs, targets):
+        outputs = torch.sigmoid(outputs)
         outputs = outputs.contiguous()
         targets = targets.contiguous()
         eps = 1e-8
