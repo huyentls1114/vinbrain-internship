@@ -13,4 +13,4 @@ class FocalLoss(nn.Module):
         # print(type(inputs), inputs.dtype, type(targets), targets.dtype)
         inputs = inputs[:, 0]
 
-        return sigmoid_focal_loss(inputs.astype(torch.long), targets.astype(torch.long), self.alpha, self.gamma, reduction="mean")
+        return sigmoid_focal_loss(inputs, targets, self.alpha, self.gamma, reduction="mean")
