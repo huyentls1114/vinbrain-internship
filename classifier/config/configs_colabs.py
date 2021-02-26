@@ -13,7 +13,7 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_steptype10_1e-4"
 config_file_path = "/content/vinbrain-internship/classifier/config/configs_colabs.py"
 
 
@@ -98,7 +98,7 @@ lr_scheduler = {
     "metric":None,
     "step_type":"epoch",
     "schedule_args":{
-        "step_size":5,
+        "step_size":10,
         "gamma":0.1
     }
 }
