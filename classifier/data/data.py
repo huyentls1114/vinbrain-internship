@@ -56,7 +56,7 @@ class CIFARData:
         self.train_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
-                                             = self.train_sampler)
+                                        sampler = self.train_sampler)
         self.val_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
