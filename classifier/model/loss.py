@@ -54,4 +54,4 @@ class CE(nn.Module):
     def forward(self, outputs, targets):
         # outputs = outputs.view(-1)
         # targets = targets.float()
-        return self.crossentropy(outputs, targets)
+        return self.crossentropy(outputs, targets.long())
