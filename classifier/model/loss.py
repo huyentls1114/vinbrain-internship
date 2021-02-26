@@ -51,4 +51,5 @@ class CE(nn.Module):
     def forward(self, outputs, targets):
         # outputs = outputs.view(-1)
         # targets = targets.float()
-        return F.cross_entropy(outputs, targets)
+        outputs = torch.softmax(outputs, 1)
+        return F.binary_cross_entropy(outputs[0], targets.float())
