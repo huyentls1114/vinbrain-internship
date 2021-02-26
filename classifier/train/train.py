@@ -141,8 +141,8 @@ class Trainer:
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
             self.global_step+=1
-
-        self.visualize_loss(train_loss, i+1)
+            if i%100 == 0:
+                self.visualize_loss(train_loss, i+1)
 
     def visualize_loss(self, train_loss, num_batches, step = 0):
         i = step
