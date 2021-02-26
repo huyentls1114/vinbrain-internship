@@ -64,6 +64,18 @@ lr_scheduler = {
     }    
 }
 
+# lr_scheduler per batch
+from torch.optim.lr_scheduler import StepLR
+lr_scheduler = {
+    "class": StepLR,
+    "metric":None,
+    "step_type":"batch",
+    "schedule_args":{
+        "step_size":33,
+        "gamma":0.1
+    }
+}
+
 # net
 num_classes = 1
 net = {
