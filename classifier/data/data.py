@@ -178,8 +178,8 @@ class CIFARData:
 
 
     def caculate_num_per_labels(self, mode = "train"):
-        list_idx = list(self.sampler_dict[mode])
-        dataset = self.dataset_dict[mode]
+        list_idx = list(self.loader_dict[mode].sampler)
+        dataset = self.loader_dict[mode].dataset
 
         labels = torch.zeros(len(self.classes), dtype=torch.long)
         for index in list_idx:
