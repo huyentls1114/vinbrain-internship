@@ -167,7 +167,7 @@ class CIFARData:
         '''
         assert self.list_fold is not None
         
-        train_idx, valid_idx, y_train, y_val = self.list_fold[fold]
+        train_idx, valid_idx = self.list_fold[fold]
 
         train_sampler = SubsetRandomSampler(train_idx)
         valid_sampler = SubsetRandomSampler(valid_idx)
