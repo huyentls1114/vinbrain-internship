@@ -63,7 +63,6 @@ net = {
 loss = {
     "class": nn.CrossEntropyLoss,
     "loss_args":{
-        "weight": torch.Tensor([0.42, 0.57])
     }
 }
 #optimizer
