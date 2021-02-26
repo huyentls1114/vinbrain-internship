@@ -12,6 +12,6 @@ class FocalLoss(nn.Module):
         assert inputs.shape[1] <= 1
         # print(type(inputs), inputs.dtype, type(targets), targets.dtype)
         inputs = inputs[:, 0]
-        print(inputs.shape, targets.shape)
+        # print(inputs.shape, targets.shape)
 
         return sigmoid_focal_loss(inputs, targets.float(), self.alpha, self.gamma, reduction="mean")
