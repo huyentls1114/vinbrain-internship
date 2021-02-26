@@ -37,8 +37,10 @@ class Trainer:
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
 
         #scheduler
-        self.init_lr_scheduler(configs.lr_scheduler)
-
+        if hasattr(configs, "lr_scheduler"):
+            self.init_lr_scheduler(configs.lr_scheduler)
+        else:
+            self.lr_scheduler = None
         #training process
         self.current_epoch = 0
         self.list_loss = []
