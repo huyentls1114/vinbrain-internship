@@ -91,7 +91,7 @@ metric = {
         "from_logits":True
     }
 }
-
+lr_scheduler = None
 #lr scheduler
 # from torch.optim.lr_scheduler import StepLR
 # lr_scheduler = {

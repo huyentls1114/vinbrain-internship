@@ -37,10 +37,8 @@ class Trainer:
         self.metric = configs.metric["class"](**configs.metric["metric_args"])
 
         #scheduler
-        if hasattr(configs, "lr_scheduler"):
-            self.init_lr_scheduler(configs.lr_scheduler)
-        else:
-            self.lr_scheduler = None
+        self.init_lr_scheduler(configs.lr_scheduler)
+
         #training process
         self.current_epoch = 0
         self.list_loss = []
@@ -82,6 +80,8 @@ class Trainer:
         #schedule learning rate
         if lr_scheduler is None:
             self.lr_scheduler = None
+            self.lr_scheduler_metric = None
+            self.lr_scheduler_step_type = None
         else:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])
             self.lr_scheduler_metric = lr_scheduler["metric"]
