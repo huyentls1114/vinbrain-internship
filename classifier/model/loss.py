@@ -39,17 +39,18 @@ class FocalLoss2d(nn.Module):
 class BCE(nn.Module):
     def __init__(self):
         super().__init__()
+        self.BCE = torch.nn.BCELoss()
     def forward(self, outputs, targets):
-        outputs = outputs.view(-1)
-        targets = targets.float()
-        return F.binary_cross_entropy_with_logits(outputs, targets).mean()
+        # outputs = outputs.view(-1)
+        # targets = targets.float()
+        # return F.binary_cross_entropy_with_logits(outputs, targets).mean()
+        return self.BCE(outputs, targets)
 
 class CE(nn.Module):
     def __init__(self):
         super().__init__()
-        # self.crossentropy = torch.nn.CrossEntropyLoss()
+        self.crossentropy = torch.nn.CrossEntropyLoss()
     def forward(self, outputs, targets):
         # outputs = outputs.view(-1)
         # targets = targets.float()
-        outputs = torch.softmax(outputs, 1)
-        return F.binary_cross_entropy(outputs[:,0], targets.float())
+        return self.crossentropy(outputs, targets)

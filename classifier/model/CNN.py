@@ -44,4 +44,4 @@ class TransferNet(nn.Module):
             nn.Linear(fc_channels[-1], num_classes)
         )        
     def forward(self, x):
-        return self.net(x)
+        return nn.Sigmoid()(self.net(x))
