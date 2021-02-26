@@ -13,8 +13,8 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_WCE_1e-4"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_menWoman_densenet121_Adam_StepLR_WCE.py"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_1e-4"
+config_file_path = "/content/vinbrain_internship/classifier/config/configs_colabs.py"
 
 
 #data config
