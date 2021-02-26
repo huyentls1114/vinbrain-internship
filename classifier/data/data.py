@@ -44,7 +44,7 @@ class CIFARData:
             self.train_sampler, self.valid_sampler = self.split_sampler(self.train_dataset, split_train_val)
         else:
             self.list_fold = self.get_list_fold
-            self.train_sampler, self.valid_sampler = self.get_fold(fold =0)
+            self.train_sampler, self.valid_sampler = self.get_fold_sampler(fold =0)
         self.init_loaders()
         #define list class
         self.classes = configs.dataset["dataset_args"]["classes"]
