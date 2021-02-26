@@ -12,8 +12,10 @@ from model.optimizer import RAdam
 from torchvision.models import resnet18, vgg16, densenet121
 from utils.metric import Accuracy
 
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_CosineAnnealingWarmRestarts_1e-4"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/vinbrain-internship/classifier/config/configs_colabs.py"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model/menWoman_densenet121_Adam_StepLR_WCE_1e-4"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_menWoman_densenet121_Adam_StepLR_WCE.py"
+
+
 #data config
 batch_size = 64
 split_train_val = 0.7
@@ -60,6 +62,7 @@ net = {
 loss = {
     "class": nn.CrossEntropyLoss,
     "loss_args":{
+        "weight": [0.42, 0.57]
     }
 }
 #optimizer
@@ -89,15 +92,15 @@ metric = {
 }
 
 #lr scheduler
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import StepLR
 lr_scheduler = {
-    "class":CosineAnnealingWarmRestarts,
-    "metric": None,
-    "step_type":"iteration",
+    "class": StepLR,
+    "metric":None,
+    "step_type":"epoch",
     "schedule_args":{
-        "T_0": 1,
-        "T_mult":2
-    }    
+        "step_size":5,
+        "gamma":0.1
+    }
 }
 
 
