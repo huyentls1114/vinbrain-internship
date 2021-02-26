@@ -94,7 +94,7 @@ class CIFARData:
         list_idx = list_idx[0:num_images]
         
         #get image and label from dataset
-        dataset = loader.datatset
+        dataset = loader.dataset
         
         for i in range(num_images):
             if _class is not None:
