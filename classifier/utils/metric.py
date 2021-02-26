@@ -12,6 +12,7 @@ class Accuracy:
         return torch.mean((y_pred == y_true).float())
     
     def _conversion(self, y_pred, y_true, threshold):
+        import pdb; pdb.set_trace()
         if len(y_pred.shape) == len(y_true.shape) + 1:
             y_pred = torch.argmax(y_pred, dim = 1)
         if len(y_pred.shape) == len(y_true.shape) and y_pred.dtype == torch.float:
