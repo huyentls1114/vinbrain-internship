@@ -38,6 +38,6 @@ class FocalLoss2d(nn.Module):
 
 class BCE(nn.Module):
     def __init__(self):
-        super(self, BCE).__init__()
+        super().__init__()
     def forward(self, outputs, targets):
         return F.binary_cross_entropy_with_logits(outputs, targets)
