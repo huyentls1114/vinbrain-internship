@@ -10,7 +10,7 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
     def forward(self, inputs, targets):
         assert inputs.shape[1] <= 1
-        print(type(inputs), type(targets))
+        print(type(inputs), inputs.dtype, type(targets), targets.dtype)
         inputs = inputs[:, 0]
 
         return sigmoid_focal_loss(inputs, targets, self.alpha, self.gamma, reduction="mean")
