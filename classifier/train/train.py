@@ -132,7 +132,8 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
             
-            train_loss += loss.item()
+            train_loss_batch = loss.item()
+            train_loss += train_loss_batch
             if self.lr_scheduler is not None:
                 if self.lr_scheduler_step_type == "iteration":
                     self.schedule_lr(iteration = i)
@@ -142,7 +143,7 @@ class Trainer:
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
             self.global_step+=1
             # if i%100 == 0:
-            self.visualize_loss(train_loss, i+1)
+            self.visualize_loss(train_loss_batch, 1)
 
     def visualize_loss(self, train_loss, num_batches, step = 0):
         i = step
