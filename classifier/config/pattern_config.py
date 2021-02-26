@@ -1,4 +1,5 @@
 #lr schedule
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
     "class": ReduceLROnPlateau,
     "metric":"val_loss_avg",
