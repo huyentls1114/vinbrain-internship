@@ -88,21 +88,18 @@ class CIFARData:
         list_labels = []
 
         #random list idx
-        loader = self.loader_dict[mode]
-        list_idx = list(loader.sampler)
+        list_idx = list(self.loader_dict[mode].sampler)
         np.random.shuffle(list_idx)
         list_idx = list_idx[0:num_images]
         
-        #get image and label from dataset
-        dataset = loader.dataset
-        
+        #get image and label from dataset        
         for i in range(num_images):
             if _class is not None:
-                image, label = self.choose_img_class(dataset, _class)
+                image, label = self.choose_img_class(self.loader_dict[mode].dataset, _class)
                 list_imgs.append(image)
                 list_labels.append(label)
             else:
-                image, label = dataset[list_idx[i]]
+                image, label = self.loader_dict[mode].dataset[list_idx[i]]
                 list_imgs.append(image)
                 list_labels.append(label)
 
