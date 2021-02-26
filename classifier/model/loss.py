@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.functional as F
+import torch
 
 from torchvision.ops import sigmoid_focal_loss
 class FocalLoss(nn.Module):
@@ -8,5 +9,7 @@ class FocalLoss(nn.Module):
         self.alpha = alpha
         self.gamma = gamma
     def forward(self, inputs, targets):
-        inputs = inputs[:,0]
+        assert inputs.shape[1] <= 1
+        inputs = inputs[:, 0]
+
         return sigmoid_focal_loss(inputs, targets, self.alpha, self.gamma, reduction="mean")

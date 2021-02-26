@@ -130,7 +130,6 @@ class Trainer:
             self.net.train()
             images, labels = sample[0].to(self.device), sample[1].to(self.device)
             outputs = self.net(images)
-            print(outputs.shape, labels.shape)
             loss = self.crition(outputs, labels)
             
             self.optimizer.zero_grad()
