@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
 import random
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 
 class CIFARData:
     def __init__(self, configs):
@@ -33,15 +33,30 @@ class CIFARData:
         split_train_val = configs.split_train_val
         self.num_sample = len(self.train_dataset)
 
+        #define fold
+        if hasattr(configs, "num_fold"):
+            self.num_fold = configs.num_fold
+        else:
+            self.num_fold = None
+        
         #split train val
-        self.train_sampler, self.valid_sampler = self.split_sampler(self.train_dataset, split_train_val)
+        if self.num_fold is None:
+            self.train_sampler, self.valid_sampler = self.split_sampler(self.train_dataset, split_train_val)
+        else:
+            self.list_fold = self.get_list_fold
+            self.train_sampler, self.valid_sampler = self.get_fold(fold =0)
+        self.init_loaders()
+        #define list class
+        self.classes = configs.dataset["dataset_args"]["classes"]
+
+    def init_loaders(self):
         self.test_sampler = SubsetRandomSampler(range(len(self.test_dataset)))
 
         #declare data loader
         self.train_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
-                                        sampler = self.train_sampler)
+                                             = self.train_sampler)
         self.val_loader = DataLoader(self.train_dataset, 
                                         batch_size = self.batch_size,
                                         num_workers = 2,
@@ -50,19 +65,10 @@ class CIFARData:
                                         batch_size = self.batch_size,
                                         shuffle = False,
                                         num_workers = 2)
-        
-        #define list class
-        self.classes = configs.dataset["dataset_args"]["classes"]
-
-        self.dataset_dict = {
-            "train": self.train_dataset,
-            "val": self.train_dataset,
-            "test":self.test_dataset
-        }
-        self.sampler_dict = {
-            "train": self.train_sampler,
-            "val": self.valid_sampler,
-            "test": self.test_sampler
+        self.loader_dict = {
+            "train": self.train_loader,
+            "val": self.val_loader,
+            "test": self.test_loader
         }
 
 
@@ -82,12 +88,13 @@ class CIFARData:
         list_labels = []
 
         #random list idx
-        list_idx = list(self.sampler_dict[mode])
+        loader = self.loader_dict[mode]
+        list_idx = list(loader.sampler)
         np.random.shuffle(list_idx)
         list_idx = list_idx[0:num_images]
         
         #get image and label from dataset
-        dataset = self.dataset_dict[mode]
+        dataset = loader.datatset
         
         for i in range(num_images):
             if _class is not None:
@@ -137,6 +144,42 @@ class CIFARData:
 
         self.num_sample = len(train_sampler)
         return train_sampler, valid_sampler
+
+    def get_list_fold(self, num_fold):
+        assert self.num_fold is not None
+        idx_full = np.arange(len(dataset))
+        if hasattr(dataset, 'list_label'):
+            y = dataset.list_label
+        else:
+            y = np.array(list(x[1] for x in dataset))
+
+        kfold = StratifiedKFold(n_splits=self.num_fold, random_state = 1996,shuffle = True)
+        list_fold = list(kfold.split(X, y))
+        return list_fold
+
+    def get_fold_sampler(self, fold = 0): 
+        '''
+        target: create SubsetRandomSamplers of train and val
+        input:
+            - split: float 0-1
+        output:
+            - train_sampler: SubsetRandomSamplers of train
+            - valid_sampler: SubsetRandomSamplers of valid
+        '''
+        assert self.list_fold is not None
+        
+        train_idx, valid_idx, y_train, y_val = self.list_fold[fold]
+
+        train_sampler = SubsetRandomSampler(train_idx)
+        valid_sampler = SubsetRandomSampler(valid_idx)
+
+        self.num_sample = len(train_sampler)
+        return train_sampler, valid_sampler
+
+    def update_fold(self, fold = 0):
+        self.train_sampler, self.valid_sampler = self.get_fold_sampler(fold)
+        self.init_loaders()
+
 
     def caculate_num_per_labels(self, mode = "train"):
         list_idx = list(self.sampler_dict[mode])
