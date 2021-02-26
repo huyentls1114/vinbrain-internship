@@ -93,9 +93,9 @@ from torch.optim.lr_scheduler import StepLR
 lr_scheduler = {
     "class": StepLR,
     "metric":None,
-    "step_type":"epoch",
+    "step_type":"batch",
     "schedule_args":{
-        "step_size":5,
+        "step_size":33,
         "gamma":0.1
     }
 }
