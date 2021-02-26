@@ -35,3 +35,9 @@ class FocalLoss2d(nn.Module):
         targets = torch.clamp(targets, eps, 1. - eps)
         pt = (1 - targets) * (1 - outputs) + targets * outputs
         return (-(1. - pt) ** self.gamma * torch.log(pt)).mean()
+
+class BCE(nn.Module):
+    def __init__(self):
+        super(self, BCE).__init__()
+    def forward(self, outputs, targets):
+        return F.binary_cross_entropy_with_logits(outputs, targets)
