@@ -7,9 +7,9 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.1,
-        "patience":3,
+        "patience":33*2,
         "threshold":1e-2,
-        "min_lr":1-5
+        "min_lr":1e-6
     }
 }
 
