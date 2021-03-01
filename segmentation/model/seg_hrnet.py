@@ -261,6 +261,8 @@ blocks_dict = {
 class HighResolutionNet(nn.Module):
 
     def __init__(self, config, **kwargs):
+        import pdb; pdb.set_trace()
+
         extra = config.MODEL.EXTRA
         super(HighResolutionNet, self).__init__()
 
@@ -484,8 +486,6 @@ class HighResolutionNet(nn.Module):
 from dotmap import DotMap
 def get_seg_model(cfg, **kwargs):
     cfg = DotMap(cfg)
-    import pdb; pdb.set_trace()
-    print(cfg)
     model = HighResolutionNet(cfg, **kwargs)
     model.init_weights(cfg.MODEL.PRETRAINED)
 
