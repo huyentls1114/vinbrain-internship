@@ -3,3 +3,13 @@ albumentations
 crfseg
 pydicom
 segmentation_models_pytorch
+EasyDict==1.7
+opencv-python==3.4.1.15
+shapely==1.6.4
+Cython
+scipy
+pandas
+scikit-image
+yacs>=0.1.5
+tqdm
+ninja
