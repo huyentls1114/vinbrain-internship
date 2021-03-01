@@ -14,7 +14,7 @@ class CrossEntropy(nn.Module):
         if ph != h or pw != w:
             score = F.upsample(
                     input=score, size=(h, w), mode='bilinear')
-
+        score = score/255.0
         loss = self.criterion(score, target)
 
         return loss
