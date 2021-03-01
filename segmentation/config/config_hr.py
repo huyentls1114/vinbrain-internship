@@ -121,7 +121,7 @@ batch_size = 16
 num_epochs = 20
 
 # from pattern_model import 
-from won.loss import DiceMetric
+from metric.metric_hr import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{
