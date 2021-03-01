@@ -10,13 +10,13 @@ class CrossEntropy(nn.Module):
     def forward(self, score, target):
         ph, pw = score.size(2), score.size(3)
         h, w = target.size(2), target.size(3)
-        print(score.shape, target.shape, ph, pw, h, w)
+        # print(score.shape, target.shape, ph, pw, h, w)
         if ph != h or pw != w:
             score = F.upsample(
                     input=score, size=(h, w), mode='bilinear')
         # score = score/255.0
         # print(score.dtype, target.dtype)
-        print(score.shape, target.shape)
+        # print(score.shape, target.shape)
         loss = self.criterion(score, target)
 
         return loss
