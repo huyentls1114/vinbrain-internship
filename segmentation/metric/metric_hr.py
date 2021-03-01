@@ -44,7 +44,7 @@ class DiceMetric(nn.Module):
         self.num_classes = num_classes
     def forward(self, outputs, labels):
         ph, pw = outputs.size(2), outputs.size(3)
-        h, w = target.size(2), target.size(3)
+        h, w = labels.size(2), labels.size(3)
         # print(score.shape, target.shape, ph, pw, h, w)
         if ph != h or pw != w:
             outputs = F.upsample(
