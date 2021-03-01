@@ -484,6 +484,7 @@ class HighResolutionNet(nn.Module):
 from dotmap import DotMap
 def get_seg_model(cfg, **kwargs):
     cfg = DotMap(cfg)
+    print(cfg)
     model = HighResolutionNet(cfg, **kwargs)
     model.init_weights(cfg.MODEL.PRETRAINED)
 
