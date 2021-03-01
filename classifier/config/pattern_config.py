@@ -1,38 +1,54 @@
 #lr schedule
-lr_scheduler = {
-    "class": ReduceLROnPlateau,
-    "metric":"val_loss",
-    "step_type":"epoch",
-    "schedule_args":{
-        "mode":"min",
-        "factor":0.5,
-        "patience":4,
-        "threshold":1e-2,
-        "min_lr":1-5
-    }
-}
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
     "class": ReduceLROnPlateau,
     "metric":"val_loss_avg",
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-        "factor":0.5,
-        "patience":8,
+        "factor":0.1,
+        "patience":33*2,
         "threshold":1e-2,
         "min_lr":1e-6
     }
 }
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-lr_scheduler_crf = {
+
+
+from torch.optim.lr_scheduler import OneCycleLR
+lr_scheduler = {
     "class":OneCycleLR,
+    "metric": None,
+    "step_type":"batch",
+    "schedule_args":{
+        "max_lr": lr,
+        "epochs":num_epochs,
+        "steps_per_epoch":steps_per_epoch+1,
+    }    
+}
+
+
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+lr_scheduler = {
+    "class":CosineAnnealingWarmRestarts,
     "metric": None,
     "step_type":"iteration",
     "schedule_args":{
-        "T0": 1,
-        "Tmul":2
+        "T_0": 1,
+        "T_mult":2
     }    
 }
+
+from torch.optim.lr_scheduler import StepLR
+lr_scheduler = {
+    "class": StepLR,
+    "metric":None,
+    "step_type":"epoch",
+    "schedule_args":{
+        "step_size":5,
+        "gamma":0.1
+    }
+}
+
 #OneCycleLR
 from torch.optim.lr_scheduler import OneCycleLR
 steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
@@ -47,6 +63,18 @@ lr_scheduler = {
         "steps_per_epoch":steps_per_epoch+1,
         "final_div_factor":10,
     }    
+}
+
+# lr_scheduler per batch
+from torch.optim.lr_scheduler import StepLR
+lr_scheduler = {
+    "class": StepLR,
+    "metric":None,
+    "step_type":"batch",
+    "schedule_args":{
+        "step_size":33,
+        "gamma":0.1
+    }
 }
 
 # net

@@ -69,7 +69,7 @@ class BackboneResnet18VGG(Backbone):
         )
 class BackboneResnet34VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
-        super(BackboneResnet34VGG, self).__init__(encoder_args, decoder_args)        
+        super(BackboneResnet34VGG, self).__init__(encoder_args, decoder_args)
         self.base_model = resnet34(**encoder_args)
         self.features_name = ["layer3", "layer2", "layer1","relu"]
         self.last_layer = "layer4"
@@ -83,6 +83,24 @@ class BackboneResnet34VGG(Backbone):
             PixelShuffle_ICNR(64),
             nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
+
+class BackboneResnet101VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneResnet101VGG, self).__init__(encoder_args, decoder_args)
+        self.base_model = resnet101(**encoder_args)
+        self.features_name = ["layer3", "layer2", "layer1","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.encoder_output = 2048
+        self.list_encoder_channel = [1024, 512, 256, 64]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
+
 class BackboneDensenet161VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneDensenet161VGG, self).__init__(encoder_args, decoder_args)        
@@ -115,7 +133,27 @@ class BackboneDensenet121VGG(Backbone):
             PixelShuffle_ICNR(64),
             nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
         )
-
+from torchvision.models import resnext101_32x8d
+import torch
+class BackboneResnext101VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneResnext101VGG, self).__init__(encoder_args, decoder_args)
+        if encoder_args["pretrained"] == "Instagram":   
+            self.base_model = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x8d_wsl')
+        else:
+            self.base_model = resnext101_32x8d(pretrained=True)
+        self.features_name = ["layer3","layer2","layer1","relu"]
+        self.last_layer = "layer4"
+        self.input_channel = 3
+        self.encoder_output = 2048
+        self.list_encoder_channel = [1024, 512, 256, 64]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
 class BackboneEfficientB0VGG(Backbone):
     def __init__(self, encoder_args, decoder_args):
         super(BackboneEfficientB0VGG, self).__init__(encoder_args, decoder_args)        
@@ -134,6 +172,39 @@ class BackboneEfficientB0VGG(Backbone):
         )
     def create_model(self, **encoder_args):
         m = timm.create_model("efficientnet_b0", **encoder_args)
+        list_layers = {}
+        for name, child in m.named_children():
+            i = 0
+            for name_, child_ in child.named_children():
+                list_layers[name+"_"+name_]=child_
+                i+=1
+            if i==0:
+                list_layers[name]=child
+        self.base_model = nn.ModuleDict(list_layers)
+
+class BackboneEfficientB7VGG(Backbone):
+    def __init__(self, encoder_args, decoder_args):
+        super(BackboneEfficientB7VGG, self).__init__(encoder_args, decoder_args)        
+        self.create_model(**encoder_args)
+        self.features_name = ["blocks_4","blocks_2","blocks_1","act1"]
+        self.last_layer = "act2"
+        self.input_channel = 3
+        self.encoder_output = 2560
+        self.list_encoder_channel = [224, 80, 48, 64]
+        self.up_class = UpBlock
+        self.out_conv_class = Out
+        self.initial_decoder()
+        self.out_conv = nn.Sequential(
+            PixelShuffle_ICNR(64),
+            nn.Conv2d(64, 1, kernel_size = 1, stride = 1)
+        )
+    def create_model(self, **encoder_args):
+        type_ = encoder_args["type"]
+        encoder_args.pop("type")
+        if type_ == "ns":
+            m = timm.create_model("tf_efficientnet_b7_ns", **encoder_args)
+        else:
+            m = timm.create_model("tf_efficientnet_b7", **encoder_args)
         list_layers = {}
         for name, child in m.named_children():
             i = 0

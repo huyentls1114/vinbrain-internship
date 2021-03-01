@@ -34,9 +34,11 @@ def compose_images(image, mask, predict):
     inputs:
         - image, masks, predict: torch tensor shape (C, H, W)
     '''
-    image = conver_numpy_image(image)
-    mask = conver_numpy_image(mask)
-    predict = conver_numpy_image(predict)
+    image = conver_numpy_image(image, normalize = True)
+    mask = conver_numpy_image(mask, normalize = False)
+    predict = conver_numpy_image(predict, normalize = False)
+    if image.shape[2] == 3:
+        image = image[:,:,0:1]
     return np.hstack([image, mask, predict])
 
 def contour(image, mask):
@@ -90,3 +92,6 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
     file_.writelines("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, metric valid: %5f, learning rate: %5f"%(epoch, step, loss_train, loss_val, metric_val, lr))
     file_.writelines("\n")
     file_.close()
+
+def caculate_num_parameter(net):
+    return (p.numel() for p in net.parameters() if p.requires_grad)

@@ -2,7 +2,6 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-import os
 
 from dataset.BrainTumorDataset import BrainTumorDataset
 from model.metric import Dice_Score
@@ -10,14 +9,32 @@ from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
 from utils.utils import len_train_datatset
-from loss.loss import DiceLoss
+from torch.optim.lr_scheduler import OneCycleLR
+import albumentations as A
+import segmentation_models_pytorch as smp
 
 #data config
-image_size = 512
-output_folder = "/kaggle/working/model/Pneumothorax_BackboneResnet101VGG_comboloss_ROLR_1e-4"
+image_size = 256
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneDensenet121VGG_BCE_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
-config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle.py"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_braintumor.py"
 
+from model.unet import Unet
+from model.backbone import BackboneDensenet121VGG
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneDensenet121VGG,
+        "encoder_args":{
+            "pretrained":True,           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -37,74 +54,43 @@ transform_label = transforms.Compose([
 
 import albumentations as A
 from dataset.transform import *
-from dataset.PneumothoraxDataset import *
+from dataset.BrainTumorDataset import *
 dataset = {
-    "class": PneumothoraxDataset,
+    "class": BrainTumorDataset,
     "dataset_args":{
-        "input_folder":"/kaggle/input/pneumothorax-512/Pneumothorax",
+        "input_folder":"/content/data/BrainTumor",
         "augmentation": A.Compose([
-            A.Resize(576, 576),
-            RandomRotate((-30, 30), p = 0.5),
-            A.OneOf([
-                # RandomVerticalFlip(p=0.5),
-                RandomHorizontalFlip(p=0.5),
-                # RandomTranspose(p = 0.5),
-            ]),
-            RandomBlur(blur_limit = 3.1, p = 0.1),
-            # CLAHE(p = 0.1),
-            RandomBrightnessContrast(p = 0.1),
-            RandomCrop(512, 512, p = 0.5)
-        ]),
-        "update_ds": {
-            "weight_positive": 0.8
-        }
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
+        ])
     }
 }
 
-from model.unet import Unet
-from model.backbone import BackboneResnet101VGG
-num_classes = 1
-net = {
-    "class":Unet,
-    "net_args":{
-        "backbone_class": BackboneResnet101VGG,
-        "encoder_args":{
-            "pretrained":True           
-        },
-        "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
-        }
-    }
-}
+
 device = "gpu"
 gpu_id = 0
 
-batch_size = 8
-num_epochs = 20
+batch_size = 16
+num_epochs = 40
 
 # from pattern_model import 
 from won.loss import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{
+        "num_classes": num_classes,
         "threshold": 0.5
     }
 }
-# from pattern_model import MixedLoss
-# from loss.loss import MixedLoss
-from won.loss import ComboLoss
+
+#loss function
 loss_function = {
-    "class":ComboLoss,
+    "class": nn.BCEWithLogitsLoss,
     "loss_args":{
-        "weights": {
-            "bce":3,
-            "dice":1,
-            "focal":4
-        }
     }
 }
-
 
 #optimizer
 lr = 1e-4
@@ -121,7 +107,7 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-        "factor":0.5,
+        "factor":0.3,
         "patience":8,
         "threshold":1e-2,
         "min_lr":1e-6

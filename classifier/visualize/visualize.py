@@ -16,15 +16,12 @@ class Visualize:
         self.valid_loss = valid_loss
         self.mb.imgs_out = None
 
-    def example(self, num_epochs):
-        for epoch in range(num_epochs):
-            train_loss = 0.5 - 0.06 * epoch + random.uniform(0, 0.04)
-            valid_loss = 0.5 - 0.03 * epoch + random.uniform(0, 0.04)
-            self.plot_loss_update(train_loss, valid_loss)
     def update(self, current_epoch = None, epochs = None, data = None, img_size = None, train_loss = None, valid_loss = None):
         if current_epoch is not None:
             assert epochs is not None
+            assert data is not None
             self.mb = master_bar(range(current_epoch, epochs))
+            self.progress_train = progress_bar(data.train_loader,parent=self.mb)
             self.mb.imgs_out = None
         if data is not None:
             self.progress_train = progress_bar(data.train_loader,parent=self.mb)
@@ -49,6 +46,7 @@ class Visualize:
             self.mb.imgs_out.update(img)
 
     def plot_loss_update(self, train_loss, valid_loss):
+        # print(type(train_loss), type(valid_loss))
         x = range(len(self.train_loss)+1)
         self.train_loss.append(train_loss)
         self.valid_loss.append(valid_loss)

@@ -14,10 +14,26 @@ from loss.loss import DiceLoss
 
 #data config
 image_size = 512
-output_folder = "/kaggle/working/model/Pneumothorax_BackboneResnet101VGG_comboloss_ROLR_1e-4"
+output_folder = "/kaggle/working/model/BackboneDensenet121VGG_comboloss_ROLR_1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle.py"
+config_file_path = "/kaggle/working/vinbrain-internship/segmentation/config/config_kaggle_BackboneDensenet121VGG.py"
 
+from model.unet import Unet
+from model.backbone import BackboneDensenet121VGG
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneDensenet121VGG,
+        "encoder_args":{
+            "pretrained":True,           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
@@ -61,26 +77,11 @@ dataset = {
     }
 }
 
-from model.unet import Unet
-from model.backbone import BackboneResnet101VGG
-num_classes = 1
-net = {
-    "class":Unet,
-    "net_args":{
-        "backbone_class": BackboneResnet101VGG,
-        "encoder_args":{
-            "pretrained":True           
-        },
-        "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
-        }
-    }
-}
+
 device = "gpu"
 gpu_id = 0
 
-batch_size = 8
+batch_size = 4
 num_epochs = 20
 
 # from pattern_model import 
@@ -88,6 +89,7 @@ from won.loss import DiceMetric
 metric = {
     "class":DiceMetric,
     "metric_args":{
+        "num_classes": num_classes,
         "threshold": 0.5
     }
 }
@@ -107,7 +109,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-4
+lr = 5e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -121,8 +123,7 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-        "factor":0.5,
-        "patience":8,
+        "patience":4,
         "threshold":1e-2,
         "min_lr":1e-6
     }

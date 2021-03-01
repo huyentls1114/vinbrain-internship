@@ -3,20 +3,31 @@ import torch
 import torch.nn.functional as F
 
 class DiceLoss(nn.Module):
-    def __init__(self, activation = nn.Sigmoid(), epsilon = 1e-4):
+    def __init__(self, activation = nn.Sigmoid(), epsilon = 1e-4, mean_type = "image"):
+        '''
+        mean_type is one of ["pixel", "image"]
+        '''
         super(DiceLoss, self).__init__()
         self.epsilon = epsilon
         self.activation = activation
+        self.mean_type = mean_type
 
     def forward(self, predict, ground_truth):
         if self.activation is not None:
             predict = self.activation(predict)
         predict = predict.view(predict.shape[0], -1)
         ground_truth = ground_truth.view(ground_truth.shape[0], -1)
-        intersection = torch.sum(predict*ground_truth, 1)
-        union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
-        dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
-        return torch.mean(dice)    
+
+        if self.mean_type == "pixel":
+            intersection = torch.sum(predict*ground_truth)
+            union = torch.sum(predict) + torch.sum(ground_truth)
+            dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
+            return dice
+        else:
+            intersection = torch.sum(predict*ground_truth, 1)
+            union = torch.sum(predict, 1) + torch.sum(ground_truth,1 )
+            dice = 1 - (2*intersection + self.epsilon)/( union + self.epsilon)
+            return torch.mean(dice)
 
 from torchvision.ops import sigmoid_focal_loss
 class FocalLoss(nn.Module):
@@ -42,6 +53,19 @@ class FocalLossWithLogits(nn.Module):
         loss = alpha*loss
         return loss.mean()
 
+class CombineLoss(nn.Module):
+    def __init__(self, weights, **args):
+        super(CombineLoss, self).__init__()
+        self.weight_dice = weights["dice"]
+        self.weight_focal = weights["focal"]
+        alpha = args["alpha"]
+        gamma = args["gamma"]
+
+        self.dice = DiceLoss()
+        self.focal = FocalLoss(alpha, gamma)
+    def forward(self, logits, ground_truth):
+        return self.dice(logits, ground_truth)*self.weight_dice + self.focal(logits, ground_truth)*self.weight_focal
+
 # class FocalLoss(nn.Module):
 #     def __init__(self, alpha = 0.25, gamma = 2):
 #         super(FocalLoss, self).__init__()
@@ -57,4 +81,4 @@ class FocalLossWithLogits(nn.Module):
 #         ce_loss = F.binary_cross_entropy_with_logits(logits, ground_truth, reduction="none")
 #         loss = self.alpha*torch.pow(1-pt, self.gamma)*ce_loss
 #         return loss.mean()
-        
+

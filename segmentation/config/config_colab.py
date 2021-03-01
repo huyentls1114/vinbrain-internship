@@ -11,114 +11,121 @@ from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneE
 from utils.utils import len_train_datatset
 from torch.optim.lr_scheduler import OneCycleLR
 import albumentations as A
+import segmentation_models_pytorch as smp
+
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/BackboneEfficientB0VGG_diceloss_noaugment_CRF"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/BackboneEfficientB0VGG_diceloss_rate0.8_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
+config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab_efficientb0.py"
 
+from model.unet import Unet
+from model.backbone import BackboneEfficientB0VGG
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneEfficientB0VGG,
+        "encoder_args":{
+            "pretrained":True,           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 transform_label = transforms.Compose([
     transforms.ToTensor(),
+    # transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize(image_size)
 ])
 
 import albumentations as A
 from dataset.transform import *
+from dataset.PneumothoraxDataset import *
 dataset = {
-    "class": BrainTumorDataset,
+    "class": PneumothoraxDataset,
     "dataset_args":{
-        "input_folder":"/content/data/BrainTumor",
+        "input_folder":"/content/data/Pneumothorax",
         "augmentation": A.Compose([
-            A.Resize(512, 512),
-            RandomCrop(450, 450, p = 0.5),
+            A.Resize(576, 576),
+            RandomRotate((-30, 30), p = 0.5),
             A.OneOf([
-                RandomVerticalFlip(p=0.5),
+                # RandomVerticalFlip(p=0.5),
                 RandomHorizontalFlip(p=0.5),
-                RandomTranspose(p = 0.5),
+                # RandomTranspose(p = 0.5),
             ]),
-            RandomRotate((0, 270), p = 0.5),
-            RandomBlur(blur_limit = 10, p = 0.1),
-            CLAHE(p = 0.1),
-            RandomBrightnessContrast(p = 0.1)
-        ])
-    }
-}
-
-#train config
-import os
-from model.unet import UnetCRF
-from model.backbone import BackboneEfficientB0VGG
-num_classes = 1
-current_epoch = 99
-net = {
-    "class":UnetCRF,
-    "net_args":{
-        "checkpoint_path": os.path.join(output_folder.replace("_CRF", ""), "checkpoint_"+str(current_epoch)),
-        "backbone_class": BackboneEfficientB0VGG,
-        "encoder_args":{
-            "pretrained":True           
-        },
-        "decoder_args":{
-            "pixel_shuffle":True,
-            "bilinear":False
+            RandomBlur(blur_limit = 3.1, p = 0.1),
+            # CLAHE(p = 0.1),
+            RandomBrightnessContrast(p = 0.1),
+            RandomCrop(512, 512, p = 0.5)
+        ]),
+        "update_ds": {
+            "weight_positive": 0.8
         }
     }
 }
+
 
 device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 200
+num_epochs = 20
 
+# from pattern_model import 
+from won.loss import DiceMetric
 metric = {
-    "class":Dice_Score,
+    "class":DiceMetric,
     "metric_args":{
-        "threshold":0.5,
-        "epsilon":1e-4
+        "num_classes": num_classes,
+        "threshold": 0.5
     }
 }
-num_classes = 1
+
 from loss.loss import DiceLoss
 loss_function = {
     "class": DiceLoss,
     "loss_args":{
+        "mean_type":"pixel",
+        "activation":nn.Sigmoid()
     }
 }
 
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
     }
 }
 
-from torch.optim.lr_scheduler import OneCycleLR
-steps_per_epoch = int(len_train_datatset(dataset, transform_train, transform_label, 1)/batch_size)
-num_epochs = 100
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 lr_scheduler = {
-    "class":OneCycleLR,
-    "metric": None,
-    "step_type":"batch",
+    "class": ReduceLROnPlateau,
+    "metric":"val_loss_avg",
+    "step_type":"epoch",
     "schedule_args":{
-        "max_lr": 1e-3,
-        "epochs":num_epochs,
-        "steps_per_epoch":steps_per_epoch+1,
-        "final_div_factor":10,
-    }    
+        "mode":"min",
+        "factor":0.3,
+        "patience":4,
+        "threshold":1e-2,
+        "min_lr":1e-6
+    }
 }
-
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 lr_scheduler_crf = {
     "class":CosineAnnealingWarmRestarts,

@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 
 class Dice_Score:
     def __init__(self, epsilon = 1e-4, threshold = 0.5):
