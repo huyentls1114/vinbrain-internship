@@ -39,7 +39,9 @@ def compose_images(image, mask, predict):
     predict = conver_numpy_image(predict, normalize = False)
     if image.shape[2] == 3:
         image = image[:,:,0:1]
-    import pdb; pdb.set_trace()
+    if predict.shape[2] == 3:
+        predict = predict[:,:,0:1]
+    # import pdb; pdb.set_trace()
     if image.shape != predict.shape:
         image = cv2.resize(image, predict.shape[:2])
         mask = cv2.resize(mask, predict.shape[:2])
