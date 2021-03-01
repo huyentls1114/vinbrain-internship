@@ -15,7 +15,7 @@ dataset = {
 
 '''
 class MenWomanDataset(Dataset):
-    def __init__(self, path, classes = None, transform = None, mode = "train"):
+    def __init__(self, path, classes = None, transform = None, mode = "train", augmentation = None):
         '''
         target: initialize MenWoman Dataset
         dataset structure:
@@ -63,6 +63,10 @@ class MenWomanDataset(Dataset):
         img_path = os.path.join(self.data_dir, img_name)
         image = io.imread(img_path)
         image = image[:,:,:3]
+        if (self.mode == "train") and (self.augmentation is not None):
+            # print(self.mode)
+            augmented = self.augmentation(image = image)
+            image = augmented['image']
         return self.transform(image), label
 
     def load_train_img(self, file_path):
