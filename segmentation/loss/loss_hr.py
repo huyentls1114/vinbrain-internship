@@ -5,7 +5,7 @@ class CrossEntropy(nn.Module):
     def __init__(self, ignore_label=-1, weight=None):
         super(CrossEntropy, self).__init__()
         self.ignore_label = ignore_label
-        self.criterion = nn.CrossEntropyLoss(weight=weight, 
+        self.criterion = nn.BCEWithLogitsLoss(weight=weight, 
                                              ignore_index=ignore_label)
 
     def forward(self, score, target):
@@ -14,8 +14,8 @@ class CrossEntropy(nn.Module):
         if ph != h or pw != w:
             score = F.upsample(
                     input=score, size=(h, w), mode='bilinear')
-        score = score/255.0
-        print(score.dtype, target.dtype)
+        # score = score/255.0
+        # print(score.dtype, target.dtype)
         loss = self.criterion(score, target)
 
         return loss
