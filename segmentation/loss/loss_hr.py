@@ -15,6 +15,7 @@ class CrossEntropy(nn.Module):
             score = F.upsample(
                     input=score, size=(h, w), mode='bilinear')
         score = score/255.0
+        print(type(score), type(target))
         loss = self.criterion(score, target)
 
         return loss
