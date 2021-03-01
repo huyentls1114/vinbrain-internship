@@ -136,7 +136,6 @@ loss_function = {
     "loss_args":{
         "ignore_label": 255
         }
-    }
 }
 
 
