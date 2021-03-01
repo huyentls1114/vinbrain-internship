@@ -128,7 +128,7 @@ metric = {
     }
 }
 
-from won.loss import FocalLoss
+from won.loss import ComboLoss
 loss_function = {
     "class":ComboLoss,
     "loss_args":{
