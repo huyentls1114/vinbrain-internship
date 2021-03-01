@@ -482,7 +482,9 @@ class HighResolutionNet(nn.Module):
             model_dict.update(pretrained_dict)
             self.load_state_dict(model_dict)
 
+from utils import dotdict
 def get_seg_model(cfg, **kwargs):
+    cfg = dotdict(cfg)
     model = HighResolutionNet(cfg, **kwargs)
     model.init_weights(cfg.MODEL.PRETRAINED)
 
