@@ -130,14 +130,11 @@ metric = {
     }
 }
 
-from won.loss import ComboLoss
+from loss.loss_hr import CrossEntropy
 loss_function = {
-    "class":ComboLoss,
+    "class":CrossEntropy,
     "loss_args":{
-        "weights": {
-            "bce":3,
-            "dice":1,
-            "focal":4
+        "ignore_label": 255
         }
     }
 }
