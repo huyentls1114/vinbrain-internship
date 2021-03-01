@@ -49,7 +49,26 @@ lr_scheduler = {
     }    
 }
 
-# net
+#net
+
+from model.unet import Unet
+from model.backbone import BackboneEfficientB0VGG
+num_classes = 1
+net = {
+    "class":Unet,
+    "net_args":{
+        "backbone_class": BackboneEfficientB0VGG,
+        "encoder_args":{
+            "pretrained":True,           
+        },
+        "decoder_args":{
+            "bilinear": False,
+            "pixel_shuffle":True
+        }
+    }
+}
+
+
 num_classes = 1
 net = {
     "class":AlbuNet,
