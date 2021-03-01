@@ -24,7 +24,9 @@ net = {
     "class": get_seg_model,
     "net_args":{
         "cfg" :{
-            "NUM_CLASSES":1,
+            "DATASET"{
+                "NUM_CLASSES":1,
+            },
             "MODEL":{
                 "PRETRAINED":'/content/vinbrain-internship/segmentation/pretrained_models/hrnet_w18_small_model_v1.pth',
                 "EXTRA":{

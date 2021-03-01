@@ -261,8 +261,6 @@ blocks_dict = {
 class HighResolutionNet(nn.Module):
 
     def __init__(self, config, **kwargs):
-        
-
         extra = config.MODEL.EXTRA
         super(HighResolutionNet, self).__init__()
 
@@ -313,9 +311,6 @@ class HighResolutionNet(nn.Module):
             self.stage4_cfg, num_channels, multi_scale_output=True)
         
         last_inp_channels = np.int(np.sum(pre_stage_channels))
-        import pdb; pdb.set_trace()
-        ks = extra.FINAL_CONV_KERNEL
-        pd = extra.FINAL_CONV_KERNEL
 
         self.last_layer = nn.Sequential(
             nn.Conv2d(
@@ -329,9 +324,9 @@ class HighResolutionNet(nn.Module):
             nn.Conv2d(
                 in_channels=last_inp_channels,
                 out_channels=config.DATASET.NUM_CLASSES,
-                kernel_size=ks,
+                kernel_size=extra.FINAL_CONV_KERNEL,
                 stride=1,
-                padding=1 if pd == 3 else 0)
+                padding=1 if extra.FINAL_CONV_KERNEL == 3 else 0)
         )
 
     def _make_transition_layer(
