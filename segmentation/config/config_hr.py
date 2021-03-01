@@ -24,7 +24,7 @@ net = {
     "class": get_seg_model,
     "net_args":{
         "cfg" :{
-            "DATASET"{
+            "DATASET":{
                 "NUM_CLASSES":1,
             },
             "MODEL":{
