@@ -43,9 +43,10 @@ def compose_images(image, mask, predict):
     if predict.shape[2] == 3:
         predict = predict[:,:,0:1]
     
-    if image.shape != predict.shape:
-        image = cv2.resize(image, predict.shape)
-        mask = cv2.resize(mask, predict.shape)
+    if image.shape[0] != predict.shape[0]:
+        image = cv2.resize(image, predict.shape[:2])
+        mask = cv2.resize(mask, predict.shape[:2])
+        predict = cv2.resize(predict, predict.shape[:2])
     
     return np.hstack([image, mask, predict])
 
