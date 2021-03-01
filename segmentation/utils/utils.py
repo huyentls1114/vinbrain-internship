@@ -37,15 +37,15 @@ def compose_images(image, mask, predict):
     image = conver_numpy_image(image, normalize = True)
     mask = conver_numpy_image(mask, normalize = False)
     predict = conver_numpy_image(predict, normalize = False)
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     if image.shape[2] == 3:
         image = image[:,:,0:1]
     if predict.shape[2] == 3:
         predict = predict[:,:,0:1]
     
     if image.shape != predict.shape:
-        image = cv2.resize(image, predict.shape[:2])
-        mask = cv2.resize(mask, predict.shape[:2])
+        image = cv2.resize(image, predict.shape)
+        mask = cv2.resize(mask, predict.shape)
     
     return np.hstack([image, mask, predict])
 
