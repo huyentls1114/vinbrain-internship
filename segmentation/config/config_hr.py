@@ -18,7 +18,7 @@ image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/HRnet_comboloss_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_hr.py"
-
+num_classes = 1
 from model.seg_hrnet import get_seg_model
 net = {
     "class": get_seg_model,
