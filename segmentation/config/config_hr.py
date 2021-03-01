@@ -134,7 +134,7 @@ from loss.loss_hr import CrossEntropy
 loss_function = {
     "class":CrossEntropy,
     "loss_args":{
-        "ignore_label": 255
+        # "ignore_label": 255
         }
 }
 
