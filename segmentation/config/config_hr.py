@@ -25,7 +25,7 @@ net = {
     "net_args":{
         "cfg" :{
             "NUM_CLASSES":1,
-            MODEL:{
+            "MODEL":{
                 "PRETRAINED":'/content/vinbrain-internship/segmentation/pretrained_models/hrnet_w18_small_model_v1.pth',
                 "EXTRA":{
                     "FINAL_CONV_KERNEL":1,
