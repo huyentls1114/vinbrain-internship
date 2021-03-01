@@ -23,25 +23,41 @@ class CNN(nn.Module):
         return x
     
 class TransferNet(nn.Module):
-    def __init__(self, model_base,fc_channels, num_classes, pretrain = False, requires_grad = True):
-        super(TransferNet, self).__init__()
+  def __init__(self, model_base,
+                      fc_channels, 
+                      num_classes, 
+                      pretrain = False):
+    super(TransferNet, self).__init__()
+    
+    self.model_extractor = 
+      self.create_extractor(model_base, pretrained)
+    self.classify_layers = 
+      self.create_fully_layers()
+    
+    self.net = nn.Sequential(
+      self.model_extractor,
+      nn.Flatten(),
+      self.classify_layers,
+      nn.Linear(fc_channels[-1], num_classes)
+    )        
+  def forward(self, x):
+      return self.net(x)
+
+
+    def create_model_extractor(model_base):
         model_base = model_base(pretrain)
         model_base_list = list(model_base.children())[:-1]
         
         for model in model_base_list:
             for param in model.parameters():
                 param.requires_grad = requires_grad
+        return nn.Sequential(*model_base_list)
 
+    def create_fully_layers(fc_channels):
         classify_layers = []
         for i in range(len(fc_channels)-1):
             classify_layers.append(nn.Linear(fc_channels[i], fc_channels[i+1])),
             classify_layers.append(nn.ReLU()),
             classify_layers.append(nn.Dropout(0.5))
-        self.net = nn.Sequential(
-            *model_base_list,
-            nn.Flatten(),
-            *classify_layers,
-            nn.Linear(fc_channels[-1], num_classes)
-        )        
-    def forward(self, x):
-        return self.net(x)
+        return nn.Sequential(*classify_layers)
+        
