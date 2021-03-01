@@ -160,8 +160,8 @@ class Trainer:
         self.sumary_writer.add_images("val/images", val_imgs, self.global_step)
         self.sumary_writer.add_images("val/mask", val_labels, self.global_step)
         self.sumary_writer.add_images("val/outputs", val_predicts, self.global_step)
-        
-        print(images[0].shape, labels[0].shape, predicts[0].shape)
+                    
+        # print(images[0].shape, labels[0].shape, predicts[0].shape)
         train_compose_images = compose_images(images[0], labels[0], predicts[0])
         val_compose_images = compose_images(val_imgs[0], val_labels[0], val_predicts[0])
         # import pdb; pdb.set_trace()

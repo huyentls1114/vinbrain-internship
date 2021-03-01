@@ -39,6 +39,9 @@ def compose_images(image, mask, predict):
     predict = conver_numpy_image(predict, normalize = False)
     if image.shape[2] == 3:
         image = image[:,:,0:1]
+    if image.shape != predict.shape:
+        image = cv2.resize(image, predict.shape[:2])
+        mask = cv2.resize(mask, predict.shape[:2])
     return np.hstack([image, mask, predict])
 
 def contour(image, mask):
