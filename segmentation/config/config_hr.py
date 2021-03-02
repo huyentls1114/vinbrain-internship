@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/HRnet_comboloss_augment_RLOP1e-2"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/HRnet_comboloss_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_hr.py"
 num_classes = 1
@@ -140,7 +140,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-2
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
