@@ -28,7 +28,7 @@ net = {
                 "NUM_CLASSES":1,
             },
             "MODEL":{
-                "PRETRAINED":'/content/vinbrain-internship/segmentation/pretrained_models/hrnet_w18_small_model_v1.pth',
+                "PRETRAINED":'/content/drive/MyDrive/vinbrain_internship/pretrained_model/HRNet/hrnetv2_w48_imagenet_pretrained.pth',
                 "EXTRA":{
                     "FINAL_CONV_KERNEL":1,
                     "STAGE1":{
