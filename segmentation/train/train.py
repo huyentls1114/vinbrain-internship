@@ -91,6 +91,7 @@ class Trainer:
         shutil.copy(self.config_file_path, self.output_folder)
 
     def train(self, loss_file = None):
+        self.epoch_count = 0
         self.visualize.update(current_epoch = self.current_epoch,
                               epochs = self.num_epochs)
         if loss_file is not None:
@@ -100,6 +101,7 @@ class Trainer:
                 self.data.update_train_ds(**self.update_ds)
                 self.visualize.update(data = self.data)
             self.current_epoch = epoch
+            self.epoch_count += 1
             self.train_one_epoch()
             self.save_checkpoint()                
 
@@ -121,7 +123,7 @@ class Trainer:
                 if self.lr_schedule_step_type == "batch":
                     self.schedule_lr()
                 elif self.lr_schedule_step_type == "iteration":
-                    self.schedule_lr(i)
+                    self.schedule_lr(iteration = self.epoch_count+i/self.steps_per_epoch)
             
             self.sumary_writer.add_scalar('learning_rate', self.optimizer.param_groups[0]['lr'], self.global_step)
             self.sumary_writer.add_scalars('loss',{'train': loss.item()}, self.global_step)
@@ -138,7 +140,10 @@ class Trainer:
             self.best_val_metric = val_acc_avg
             self.best_epoch = self.current_epoch
         if self.lr_schedule_step_type == "epoch":
-            self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
+            if (self.lr_scheduler_metric is not None):
+                self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
+            else:
+                self.schedule_lr()
         lr = self.optimizer.param_groups[0]['lr']
         print("Epoch %3d step%3d: loss train: %5f, loss valid: %5f, dice valid: %5f, learning rate: %5f"%(self.current_epoch, i, train_loss_avg, val_loss_avg, val_acc_avg, lr))
         loss_file_path = os.path.join(self.output_folder, self.loss_file)
@@ -244,16 +249,15 @@ class Trainer:
         if "best_epoch" in state_dict.keys():
             self.best_epoch = state_dict["best_epoch"]
 
-    def schedule_lr(self, iteration = 0, metric_value = 0):
+    def schedule_lr(self, iteration = None, metric_value = None):
         assert self.lr_scheduler is not None
-        if self.lr_scheduler_metric is not None:
-            if self.lr_schedule_step_type == "iteration":
+        if iteration is not None:
                 #for Cosine Anealing Warm Restart
-                self.lr_scheduler.step(self.current_epoch+iteration/self.steps_per_epoch)
-            else:
-                #for ReduceLROnPlateau
-                # val_loss, val_acc = self.evaluate(mode = "val")
-                self.lr_scheduler.step(metric_value)
+            self.lr_scheduler.step(iteration)
+        elif metric_value is not None:
+            #for ReduceLROnPlateau
+            # val_loss, val_acc = self.evaluate(mode = "val")
+            self.lr_scheduler.step(metric_value)
         else:
             self.lr_scheduler.step()
 
