@@ -94,6 +94,8 @@ class Trainer:
         if epoch_count is None:
             if not hasattr(self, "epoch_count"):
                 self.epoch_count = 0
+        else:
+            self.epoch_count = epoch_count
         
 
         self.visualize.update(current_epoch = self.current_epoch,
