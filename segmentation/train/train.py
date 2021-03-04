@@ -90,8 +90,12 @@ class Trainer:
             os.makedirs(self.output_folder)
         shutil.copy(self.config_file_path, self.output_folder)
 
-    def train(self, loss_file = None):
-        self.epoch_count = 0
+    def train(self, loss_file = None, epoch_count = None):
+        if epoch_count is None:
+            if not hasattr(self, "epoch_count"):
+                self.epoch_count = 0
+        
+
         self.visualize.update(current_epoch = self.current_epoch,
                               epochs = self.num_epochs)
         if loss_file is not None:
@@ -222,6 +226,7 @@ class Trainer:
             "lr_scheduler": self.lr_scheduler.state_dict(),
             "lr_scheduler_metric": self.lr_scheduler_metric,
             "lr_scheduler_step_type":self.lr_schedule_step_type,
+            "epoch_count": self.epoch_count
         }
         filepath = os.path.join(self.output_folder, filename)
         torch.save(state_dict, filepath)
@@ -248,6 +253,8 @@ class Trainer:
             self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
         if "best_epoch" in state_dict.keys():
             self.best_epoch = state_dict["best_epoch"]
+        if "epoch_count" in state_dict.keys():
+            self.epoch_count = state_dict["epoch_count"]
 
     def schedule_lr(self, iteration = None, metric_value = None):
         assert self.lr_scheduler is not None
