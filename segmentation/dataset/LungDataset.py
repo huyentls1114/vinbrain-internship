@@ -3,7 +3,7 @@ import os
 
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
-        super(self, LungDataset).__init__()
+        super(LungDataset, self).__init__()
         if "augmentation" in dataset_args.keys():
             self.augmentation = dataset_args["augmentation"]
         else:
