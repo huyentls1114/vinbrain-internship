@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 import os
+import numpy as np
 
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
