@@ -19,12 +19,13 @@ output_folder = "/content/drive/MyDrive/vinbrain_internship/model_LungSegment/En
 loss_file = "loss_file.txt"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_lungsegment.py"
 
+num_classes = 2
 #net
 from model.enet import ENet
 net = {
     "class":ENet,
     "net_args":{
-        "num_classes":2
+        "num_classes":num_classes
     }
 }
 
