@@ -64,3 +64,18 @@ class LungDataset(Dataset):
             list_img_name.append(img_name)
         file_.close()
         return list_img_name
+
+    def show_sample(self, batch_size = 4):
+        list_imgs = []
+        list_masks = []
+
+        #random list idx
+        list_idx = np.arange(self.__len__())
+        np.random.shuffle(list_idx)
+        list_idx = list_idx[0:batch_size]
+
+        for i in range(batch_size):
+            image, mask = self.__getitem__(list_idx[i])
+            list_imgs.append(image)
+            list_masks.append(mask)
+        self.show_img(list_imgs, list_masks, batch_size)
