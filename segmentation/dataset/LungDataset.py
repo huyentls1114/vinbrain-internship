@@ -92,6 +92,20 @@ class LungDataset(Dataset):
             list_imgs.append(image)
             list_masks.append(mask)
         self.show_img(list_imgs, list_masks, batch_size)
+    def show_img(self, list_imgs, list_masks, batch_size):
+        list_combine = []
+        fig = plt.figure(figsize=(batch_size, 3), dpi = 512)
+        for i in range(batch_size):
+            img = conver_numpy_image(list_imgs[i])
+            mask = conver_numpy_image(list_masks[i])
+            ct = contour(img, mask)
+            if img.shape[2]!=mask.shape[2]:
+               mask = np.concatenate([mask]*3, axis = 2)
+            combine = np.hstack([img, mask, ct])
+            list_combine.append(combine)
+        plt.imshow(np.vstack(list_combine)[:,:,0]/255.0, cmap = "gray")
+        plt.axis('off')
+        plt.show()
 def process_img(image, channel = 3):
     "return image with shape [w, h, channel]"
     print(image.shape)
@@ -106,4 +120,3 @@ def process_img(image, channel = 3):
         return image
     if image.shape[2] > channel:
         return image[:,:,:channel]
-    
