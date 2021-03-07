@@ -30,8 +30,6 @@ class LungDataset(Dataset):
         img_name = self.covid_chesxray_names[idx]
         img_path = os.path.join(self.covid_chesxray_image_folder, img_name)
         image = plt.imread(img_path)
-        if image.shape ==3:
-            image = image[:, :, 0:1]
         # import pdb; pdb.set_trace()
         mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
         mask = plt.imread(mask_path)
@@ -85,6 +83,8 @@ class LungDataset(Dataset):
 
         for i in range(batch_size):
             image, mask = self.__getitem__(list_idx[i])
+            if image.shape == 3:
+                image = image[:,:,0]
             list_imgs.append(image)
             list_masks.append(mask)
         self.show_img(list_imgs, list_masks, batch_size)
