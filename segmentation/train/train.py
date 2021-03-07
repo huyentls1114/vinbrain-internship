@@ -221,6 +221,7 @@ class Trainer:
         state_dict = {
             "current_epoch": self.current_epoch,
             "best_epoch":self.best_epoch,
+            "best_val_metric":self.best_val_metric,
             "train_loss_list":self.visualize.train_loss,
             "val_loss_list":self.visualize.valid_loss,
             "net":self.net.state_dict(),
@@ -255,6 +256,8 @@ class Trainer:
             self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
         if "best_epoch" in state_dict.keys():
             self.best_epoch = state_dict["best_epoch"]
+            if "best_val_metric" in state_dict.keys():
+                self.best_val_metric = state_dict["best_val_metric"]
         if "epoch_count" in state_dict.keys():
             self.epoch_count = state_dict["epoch_count"]
 
