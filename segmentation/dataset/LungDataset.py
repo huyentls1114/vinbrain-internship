@@ -31,11 +31,11 @@ class LungDataset(Dataset):
         img_path = os.path.join(self.covid_chesxray_image_folder, img_name)
         image = plt.imread(img_path)
         # image = image[:, :, 0]
-
+        import pdb; pdb.set_trace()
         mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
         mask = plt.imread(mask_path)
 
-        # import pdb; pdb.set_trace()
+        
         if mask.shape ==3:
             mask = mask[:, :, 0]
 
