@@ -2,6 +2,8 @@ from torch.utils.data import Dataset
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from utils.utils import conver_numpy_image, contour
+
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         super(LungDataset, self).__init__()
