@@ -54,7 +54,7 @@ class LungDataset(Dataset):
 
     def read_txt(self, input_folder, mode):
         if mode == "test":
-            mode = "valid"
+            mode = "val"
         train_txt_file = os.path.join(input_folder, "%s.txt"%(mode))
         file_ = open(train_txt_file)
         list_ = file_.readlines()
