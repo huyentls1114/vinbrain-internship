@@ -42,7 +42,9 @@ class LungDataset(Dataset):
             augmented = self.augmentation(image = image, mask = mask)
             image, mask = augmented['image'], augmented['mask']
         
-        import pdb; pdb.set_trace()
+        
+        if image.shape[2] == 1:
+            import pdb; pdb.set_trace()
         return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
         
     def load_sample(self, batch_size = 4):
