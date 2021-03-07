@@ -1,12 +1,8 @@
 from torch.utils.data import Dataset
 import os
-import sys
-
-sys.path.append(".")
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
-from utils import process_img
 
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
@@ -96,3 +92,13 @@ class LungDataset(Dataset):
             list_imgs.append(image)
             list_masks.append(mask)
         self.show_img(list_imgs, list_masks, batch_size)
+def process_img(image, channel = 3):
+    "return image with shape [w, h, channel]"
+
+    if image.shape == 2:
+        image = np.expand_dims(image, axis=-1)
+        return np.dstack((image, )*channel)
+    if (channel >1) and (image.shape[2] == 1):
+        return np.dstack((image, )*channel)
+    if (chanel == 1) and (image.shape[2] == 3):
+        return image[:,:, 0:1]
