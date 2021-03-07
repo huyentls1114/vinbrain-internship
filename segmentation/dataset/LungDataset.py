@@ -101,4 +101,6 @@ def process_img(image, channel = 3):
         return np.dstack((image, )*channel)
     if (channel == 1) and (image.shape[2] == 3):
         return image[:,:, 0:1]
-    print(image.shape)
+    if image.shape[:2] == channel:
+        return image
+    # print(image.shape)
