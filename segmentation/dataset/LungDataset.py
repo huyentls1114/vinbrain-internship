@@ -30,7 +30,6 @@ class LungDataset(Dataset):
         img_name = self.covid_chesxray_names[idx]
         img_path = os.path.join(self.covid_chesxray_image_folder, img_name)
         image = plt.imread(img_path)
-        # import pdb; pdb.set_trace()
         mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
         mask = plt.imread(mask_path)
 
@@ -42,6 +41,8 @@ class LungDataset(Dataset):
             # print(self.mode)
             augmented = self.augmentation(image = image, mask = mask)
             image, mask = augmented['image'], augmented['mask']
+        
+        import pdb; pdb.set_trace()
         return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
         
     def load_sample(self, batch_size = 4):
