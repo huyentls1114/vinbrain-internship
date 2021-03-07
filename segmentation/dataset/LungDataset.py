@@ -21,6 +21,8 @@ class LungDataset(Dataset):
         self.transform_image = transform_image
         self.transform_label = transform_label
 
+        self.mode = mode
+
     def __len__(self):
         return len(self.covid_chesxray_names)
     
