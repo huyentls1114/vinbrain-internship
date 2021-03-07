@@ -34,7 +34,7 @@ class LungDataset(Dataset):
         mask = plt.imread(mask_path)
 
         # import pdb; pdb.set_trace()
-        if mask.shape !=3:
+        if mask.shape ==3:
             mask = mask[:, :, 0]
 
         if (self.mode == "train") and (self.augmentation is not None):
