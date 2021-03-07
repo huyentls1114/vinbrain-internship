@@ -32,6 +32,8 @@ class LungDataset(Dataset):
 
         mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
         mask = plt.imread(mask_path)
+
+        import pdb; pdb.set_trace()
         mask = mask[:, :, 0]
 
         if (self.mode == "train") and (self.augmentation is not None):
