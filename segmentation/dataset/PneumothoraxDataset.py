@@ -62,6 +62,8 @@ class PneumothoraxDataset(Dataset):
 
         mask_path = os.path.join(self.mask_folder, img_name)
         mask = plt.imread(mask_path)
+        import pdb; pdb.set_trace()
+
         mask = mask[:, :, 0]
 
         if (self.mode == "train") and (self.augmentation is not None):
