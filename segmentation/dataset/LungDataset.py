@@ -3,6 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
+from utils import *
 
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
@@ -42,7 +43,7 @@ class LungDataset(Dataset):
             augmented = self.augmentation(image = image, mask = mask)
             image, mask = augmented['image'], augmented['mask']
         
-        image = image[:,:,:3]
+        image = process_img(image, channel = 3)
         # if image.shape == 3:
             # import pdb; pdb.set_trace()
         print(image.shape)
