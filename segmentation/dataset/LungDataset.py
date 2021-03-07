@@ -103,4 +103,4 @@ def process_img(image, channel = 3):
         return image[:,:, 0:1]
     if image.shape[2] == channel:
         return image
-    # print(image.shape)
+    print(image.shape)
