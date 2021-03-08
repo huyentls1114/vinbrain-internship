@@ -19,7 +19,7 @@ output_folder = "/content/drive/MyDrive/vinbrain_internship/model_LungSegment/En
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_lungsegment.py"
 
-num_classes = 2
+num_classes = 1
 #net
 from model.enet import ENet
 net = {
@@ -87,7 +87,7 @@ metric = {
 }
 
 loss_function = {
-    "class": nn.CrossEntropyLoss,
+    "class": nn.BCEWithLogitsLoss,
     "loss_args":{
     }
 }
