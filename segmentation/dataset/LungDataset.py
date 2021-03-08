@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
 from utils.data import process_img, center_crop
+import random
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         super(LungDataset, self).__init__()
