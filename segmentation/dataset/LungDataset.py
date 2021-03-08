@@ -70,7 +70,7 @@ class LungDataset(Dataset):
             mask = mask[:, :, 0]
         mask = mask.astype(np.long)
         # import pdb; pdb.set_trace()
-        print(image.shape, mask.shape)
+        print(image.shape, mask.shape, img_path)
         if (self.mode == "train") and (self.augmentation is not None):
             # print(self.mode)
             augmented = self.augmentation(image = image, mask = mask)
