@@ -75,7 +75,7 @@ class CBAM(nn.Module):
 
 
 class SelfAttentionBlock(nn.Module):
-    def __init__(self, input_channel, pooling = True):
+    def __init__(self, input_channel, pooling = True, reduction = None):
         super(SelfAttentionBlock, self).__init__()
         self.theta = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
         self.phi = nn.Conv2d(input_channel, input_channel//2, kernel_size = 1, stride= 1)
@@ -115,13 +115,13 @@ class SelfAttentionBlock(nn.Module):
         # print(_mult2.shape)
 
 class SESelfAttentionBlock(nn.Module):
-    def __init__(self, input_channel):
+    def __init__(self, input_channel, reduction = None):
         super(SESelfAttentionBlock, self).__init__()
-        self.global_average = nn.AdaptiveAvgPool2d(1)
+        self.se = SENet(input_channel, reduction)
         self.self_attention = SelfAttentionBlock(input_channel, pooling= False)
     
     def forward(self, x):        
         x1 = self.global_average(x)
         x1 = self.self_attention(x1)
-        print(x1.shape)
-        return x * x1.view(x1.shape[:2]+(1, 1))
+        # print(x1.shape)
+        return x * x1[...,None,None]
