@@ -69,7 +69,7 @@ class LungDataset(Dataset):
         if len(mask.shape)==3:
             mask = mask[:, :, 0]
         mask = mask.astype(np.uint8)
-        if np.sum(mask) == 0
+        if np.sum(mask) == 0:
             print(mask_path)
         # import pdb; pdb.set_trace()
         if (self.mode == "train") and (self.augmentation is not None):
