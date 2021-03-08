@@ -64,10 +64,7 @@ dataset = {
             # CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1),
             RandomCrop(512, 512, p = 0.5)
-        ]),
-        "update_ds": {
-            "weight_positive": 1
-        }
+        ])
     }
 }
 
