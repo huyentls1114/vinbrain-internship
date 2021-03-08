@@ -61,7 +61,7 @@ class LungDataset(Dataset):
         image = plt.imread(img_path)
 
         #if image has large width, center crop it
-        if image.shape[1] > image.shape[0]:
+        if image.shape[1] != image.shape[0]:
             image = center_crop(image)
             
         mask = plt.imread(mask_path)
