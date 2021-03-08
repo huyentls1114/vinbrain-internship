@@ -54,7 +54,7 @@ dataset = {
         "covid_chesxray_folder":"/content/data/covid_chesxray",
         "cxr_folder":"/content/data/cxr",
         "augmentation": A.Compose([
-            A.Resize(576, 576),
+            A.Resize(int(image_size/0.9), int(image_size/0.9)),
             RandomRotate((-30, 30), p = 0.5),
             A.OneOf([
                 # RandomVerticalFlip(p=0.5),
@@ -64,7 +64,7 @@ dataset = {
             RandomBlur(blur_limit = 3.1, p = 0.1),
             # CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1),
-            RandomCrop(512, 512, p = 0.5)
+            RandomCrop(image_size, image_size, p = 0.5)
         ])
     }
 }
