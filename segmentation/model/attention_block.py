@@ -117,7 +117,7 @@ class SelfAttentionBlock(nn.Module):
 class SESelfAttentionBlock(nn.Module):
     def __init__(self, input_channel, reduction = None):
         super(SESelfAttentionBlock, self).__init__()
-        self.se = SENet(input_channel, reduction)
+        self.global_average = nn.AdaptiveAvgPool2d(1)
         self.self_attention = SelfAttentionBlock(input_channel, pooling= False)
     
     def forward(self, x):        
