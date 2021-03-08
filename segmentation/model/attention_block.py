@@ -124,5 +124,5 @@ class SESelfAttentionBlock(nn.Module):
         x1 = self.global_average(x)
         x1 = self.self_attention(x1)
         # print(x1.shape)
-        import pdb; pdb.set_trace()
-        return x * x1[...,None,None]
+        # import pdb; pdb.set_trace()
+        return x * x1
