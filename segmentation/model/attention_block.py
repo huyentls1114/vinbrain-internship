@@ -63,10 +63,10 @@ class CBAMSpatialBlock(nn.Module):
         return x*attention
 
 class CBAM(nn.Module):
-    def __init__(self, channel, reduction):
+    def __init__(self, input_channel, reduction):
         super(CBAM, self).__init__()
-        self.channel_block = CBAM_ChannelBlock(channel, reduction)
-        self.spatial_block = CBAM_SpatialBlock(channel)
+        self.channel_block = CBAM_ChannelBlock(input_channel, reduction)
+        self.spatial_block = CBAM_SpatialBlock(input_channel)
     
     def forward(self, x):
         x = self.channel_block(x)
