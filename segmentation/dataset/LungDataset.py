@@ -3,7 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
-
+import utils.process_img
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         super(LungDataset, self).__init__()
@@ -106,17 +106,3 @@ class LungDataset(Dataset):
         plt.imshow(np.vstack(list_combine)[:,:,0]/255.0, cmap = "gray")
         plt.axis('off')
         plt.show()
-def process_img(image, channel = 3):
-    "return image with shape [w, h, channel]"
-    print(image.shape)
-    if len(image.shape) == 2:
-        image = np.expand_dims(image, axis=-1)
-        return np.dstack((image, )*channel)
-    if (channel >1) and (image.shape[2] == 1):
-        return np.dstack((image, )*channel)
-    if (channel == 1) and (image.shape[2] == 3):
-        return image[:,:, 0:1]
-    if image.shape[2] == channel:
-        return image
-    if image.shape[2] > channel:
-        return image[:,:,:channel]
