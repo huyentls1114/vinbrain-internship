@@ -52,6 +52,7 @@ dataset = {
     "class": LungDataset,
     "dataset_args":{
         "covid_chesxray_folder":"/content/data/covid_chesxray",
+        "cxr_folder":"/content/data/cxr",
         "augmentation": A.Compose([
             A.Resize(576, 576),
             RandomRotate((-30, 30), p = 0.5),

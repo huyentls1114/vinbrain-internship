@@ -13,3 +13,39 @@ def process_img(image, channel = 3):
         return image
     if image.shape[2] > channel:
         return image[:,:,:channel]
+
+import cv2
+def resize(image, w = None, h = None, scale = None):
+    h_origin, w_origin = image.shape[:2]
+    print(h_origin, w_origin)
+    if w is not None:
+        if h is None:
+            h = int(w/w_origin*h_origin)
+            return cv2.resize(image, (w, h))
+        else:
+            return cv2.resize(image, w, h)
+    if h is not None:
+        if w is None:
+            w = int(h/h_origin*w_origin)
+            return cv2.resize(image, (w, h))
+    if scale is not None:
+        w = int(w_origin*scale)
+        h = int(h_origin*scale)
+        return cv2.resize(image, (w, h))
+    return image
+
+def center_crop(image):
+    #assum w>>h
+    h_origin, w_origin = image.shape[:2]
+
+    if w_origin > h_origin:
+        w_1 = int(w_origin//2 - h_origin//2)
+        w_2 = int(w_origin//2 + h_origin//2)
+        return image[:, w_1: w_2] 
+    else:
+        h_1 = int(h_origin//2 - w_origin//2)
+        h_2 = int(h_origin//2 + w_origin//2)
+        return image[h_1: h_2, :] 
+
+
+    

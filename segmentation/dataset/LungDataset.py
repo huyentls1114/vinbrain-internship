@@ -4,7 +4,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
-from utils.data import process_img
+from utils.data import process_img, center_crop
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         super(LungDataset, self).__init__()
@@ -13,25 +13,56 @@ class LungDataset(Dataset):
         else:
             self.augmentation = None
 
-
         self.covid_chesxray_folder = dataset_args["covid_chesxray_folder"]
         self.covid_chesxray_image_folder = os.path.join(self.covid_chesxray_folder, "images")
         self.covid_chesxray_mask_folder = os.path.join(self.covid_chesxray_folder, "masks")
         self.covid_chesxray_names = self.read_txt(self.covid_chesxray_folder, mode)
+
+        self.cxr_folder = dataset_args["cxr_folder"]
+        self.cxr_image_folder = os.path.join(self.cxr_folder, "images")
+        self.cxr_mask_folder = os.path.join(self.cxr_folder, "masks")
+        self.cxr_names = self.read_txt(self.cxr_folder, mode)
 
         self.transform_image = transform_image
         self.transform_label = transform_label
 
         self.mode = mode
 
+        self.create_paths()
+    def create_paths(self):
+        list_img_path = []
+        list_mask_path = []
+        for name in self.covid_chesxray_names:
+            mask_path = os.path.join(self.covid_chesxray_mask_folder, name)
+            img_path = os.path.join(self.covid_chesxray_image_folder, name)
+            list_img_path.append(img_path)
+            list_mask_path.append(mask_path)
+        for name in self.cxr_names:
+            mask_path = os.path.join(self.cxr_mask_folder, name)
+            img_path = os.path.join(self.cxr_image_folder, name)
+            list_img_path.append(img_path)
+            list_mask_path.append(mask_path)
+        list_img_path = np.array(list_img_path)
+        list_mask_path = np.array(list_mask_path)
+        list_index = np.array(range(len(list_mask_path)))
+        random.shuffle(list_index)
+        
+        self.list_img_path = list_img_path[list_index]
+        self.list_mask_path = list_mask_path[list_index]
+
+
     def __len__(self):
-        return len(self.covid_chesxray_names)
+        return len(self.list_img_path)
     
     def __getitem__(self, idx):
-        img_name = self.covid_chesxray_names[idx]
-        img_path = os.path.join(self.covid_chesxray_image_folder, img_name)
+        img_path = self.list_img_path[idx]
+        mask_path = self.list_mask_path[idx]
         image = plt.imread(img_path)
-        mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
+
+        #if image has large width, center crop it
+        if image.shape[1] > image.shape[0]:
+            image = center_crop(image)
+            
         mask = plt.imread(mask_path)
 
         if mask.shape ==3:
