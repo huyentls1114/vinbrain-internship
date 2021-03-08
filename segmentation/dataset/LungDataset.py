@@ -68,7 +68,7 @@ class LungDataset(Dataset):
 
         if len(mask.shape)==3:
             mask = mask[:, :, 0]
-        mask = mask.astype(np.uint8)
+        # mask = mask.astype(np.uint8)
         
         if (self.mode == "train") and (self.augmentation is not None):
             augmented = self.augmentation(image = image, mask = mask)
