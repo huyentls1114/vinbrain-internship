@@ -78,7 +78,7 @@ class LungDataset(Dataset):
             # import pdb; pdb.set_trace()
         # print(image.shape)
         # import pdb; pdb.set_trace()
-        return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
+        return self.transform_image(np.array(image)), self.transform_label(np.array(mask)).long()
         
     def load_sample(self, batch_size = 4):
         list_imgs = []
