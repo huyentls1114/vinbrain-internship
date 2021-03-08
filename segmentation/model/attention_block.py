@@ -17,7 +17,7 @@ class SENet(nn.Module):
         x1 = self.flatten(x1)
         x1 = self.relu(self.fc1(x1))
         x1 = self.sigmoid(self.fc2(x1))
-        return x * x1.view(x1.shape[:2]+(1, 1))
+        return x * x1[...,None,None]
 
 
 class CBAMChannelBlock(nn.Module):

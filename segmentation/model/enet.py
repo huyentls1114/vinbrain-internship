@@ -478,12 +478,12 @@ class ENet(nn.Module):
 
     """
 
-    def __init__(self, num_classes, encoder_relu=False, decoder_relu=True):
+    def __init__(self, num_classes, encoder_relu=False, decoder_relu=True, attention_block = None):
         super().__init__()
 
         self.initial_block = InitialBlock(3, 16, relu=encoder_relu)
 
-        # Stage 1 - Encoder
+        # Stage 1 - Encoder            
         self.downsample1_0 = DownsamplingBottleneck(
             16,
             64,
@@ -581,6 +581,14 @@ class ENet(nn.Module):
             stride=2,
             padding=1,
             bias=False)
+        self.attention_block = attention_block
+        if attention_block is not None:
+            self.attention1 = attention_block(input_channel = 16, reduction = 0.25)
+            self.attention2 = attention_block(input_channel = 64, reduction = 0.25)
+            self.attention3 = attention_block(input_channel = 128, reduction = 0.25)
+            self.attention4 = attention_block(input_channel = 128, reduction = 0.25)
+            self.attention5 = attention_block(input_channel = 64, reduction = 0.25)
+            self.attention6 = attention_block(input_channel = 16, reduction = 0.25)
 
     def forward(self, x):
         # Initial block
@@ -588,6 +596,8 @@ class ENet(nn.Module):
         x = self.initial_block(x)
 
         # Stage 1 - Encoder
+        if self.attention_block is not None:
+            x = self.attention1(x)
         stage1_input_size = x.size()
         x, max_indices1_0 = self.downsample1_0(x)
         x = self.regular1_1(x)
@@ -596,6 +606,8 @@ class ENet(nn.Module):
         x = self.regular1_4(x)
 
         # Stage 2 - Encoder
+        if self.attention_block is not None:
+            x = self.attention2(x)
         stage2_input_size = x.size()
         x, max_indices2_0 = self.downsample2_0(x)
         x = self.regular2_1(x)
@@ -608,6 +620,8 @@ class ENet(nn.Module):
         x = self.dilated2_8(x)
 
         # Stage 3 - Encoder
+        if self.attention_block is not None:
+            x = self.attention3(x)
         x = self.regular3_0(x)
         x = self.dilated3_1(x)
         x = self.asymmetric3_2(x)
@@ -618,13 +632,19 @@ class ENet(nn.Module):
         x = self.dilated3_7(x)
 
         # Stage 4 - Decoder
+        if self.attention_block is not None:
+            x = self.attention4(x)
         x = self.upsample4_0(x, max_indices2_0, output_size=stage2_input_size)
         x = self.regular4_1(x)
         x = self.regular4_2(x)
 
         # Stage 5 - Decoder
+        if self.attention_block is not None:
+            x = self.attention5(x)
         x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)
         x = self.regular5_1(x)
+        if self.attention_block is not None:
+            x = self.attention6(x)
         x = self.transposed_conv(x, output_size=input_size)
 
         return x
