@@ -57,7 +57,7 @@ class Trainer:
         self.crition = configs.loss_function["class"](**configs.loss_function["loss_args"])
 
         #files
-        self.input_folder = configs.dataset["dataset_args"]["input_folder"]
+        # self.input_folder = configs.dataset["dataset_args"]["input_folder"]
         self.output_folder = configs.output_folder
         self.loss_file = configs.loss_file
         self.config_file_path = configs.config_file_path
