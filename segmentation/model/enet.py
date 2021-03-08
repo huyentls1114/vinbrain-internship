@@ -583,12 +583,12 @@ class ENet(nn.Module):
             bias=False)
         self.attention_block = attention_block
         if attention_block is not None:
-            self.attention1 = attention_block(input_channel = 16, reduction = 0.25)
-            self.attention2 = attention_block(input_channel = 64, reduction = 0.25)
-            self.attention3 = attention_block(input_channel = 128, reduction = 0.25)
-            self.attention4 = attention_block(input_channel = 128, reduction = 0.25)
-            self.attention5 = attention_block(input_channel = 64, reduction = 0.25)
-            self.attention6 = attention_block(input_channel = 16, reduction = 0.25)
+            self.attention1 = attention_block(input_channel = 16, reduction = 4)
+            self.attention2 = attention_block(input_channel = 64, reduction = 4)
+            self.attention3 = attention_block(input_channel = 128, reduction = 4)
+            self.attention4 = attention_block(input_channel = 128, reduction = 4)
+            self.attention5 = attention_block(input_channel = 64, reduction = 4)
+            self.attention6 = attention_block(input_channel = 16, reduction = 4)
 
     def forward(self, x):
         # Initial block
