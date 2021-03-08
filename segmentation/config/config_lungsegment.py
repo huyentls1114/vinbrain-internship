@@ -17,7 +17,7 @@ import segmentation_models_pytorch as smp
 image_size = 320
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_LungSegment/Enet_BCE_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_lungsegment.py"
+config_file_path = "/content/vinbrain-internship/segmentation/config/config_lungsegment.py"
 
 num_classes = 2
 #net
