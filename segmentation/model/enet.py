@@ -598,7 +598,7 @@ class ENet(nn.Module):
         # Stage 1 - Encoder
         if self.attention_block is not None:
             x = self.attention1(x)
-        import pdb; pdb.set_trace()
+        
         stage1_input_size = x.size()
         x, max_indices1_0 = self.downsample1_0(x)
         x = self.regular1_1(x)
