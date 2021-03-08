@@ -130,6 +130,7 @@ class LungDataset(Dataset):
         for i in range(batch_size):
             img = conver_numpy_image(list_imgs[i])
             mask = conver_numpy_image(list_masks[i])
+            import pdb; pdb.set_trace()
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
                mask = np.concatenate([mask]*3, axis = 2)
