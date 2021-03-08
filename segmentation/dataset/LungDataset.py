@@ -3,7 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.utils import conver_numpy_image, contour
-import utils.process_img
+import process_img
 class LungDataset(Dataset):
     def __init__(self, dataset_args, transform_image, transform_label, mode = "train"):
         super(LungDataset, self).__init__()
