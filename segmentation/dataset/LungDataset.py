@@ -69,9 +69,7 @@ class LungDataset(Dataset):
         if len(mask.shape)==3:
             mask = mask[:, :, 0]
         mask = mask.astype(np.uint8)
-        if np.sum(mask) == 0:
-            print(mask_path)
-        # import pdb; pdb.set_trace()
+        
         if (self.mode == "train") and (self.augmentation is not None):
             augmented = self.augmentation(image = image, mask = mask)
             image, mask = augmented['image'], augmented['mask']
@@ -79,6 +77,7 @@ class LungDataset(Dataset):
         # if image.shape == 3:
             # import pdb; pdb.set_trace()
         # print(image.shape)
+        import pdb; pdb.set_trace()
         return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
         
     def load_sample(self, batch_size = 4):
