@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import Dataset
 import os
 import numpy as np
@@ -33,7 +34,6 @@ class LungDataset(Dataset):
         mask_path = os.path.join(self.covid_chesxray_mask_folder, img_name)
         mask = plt.imread(mask_path)
 
-        
         if mask.shape ==3:
             mask = mask[:, :, 0]
 
