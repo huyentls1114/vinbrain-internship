@@ -7,6 +7,7 @@ class SENet(nn.Module):
 
         self.global_average = nn.AdaptiveAvgPool2d(1)
         self.flatten = nn.Flatten()
+        import pdb; pdb.set_trace()
         self.fc1 = nn.Linear(input_channel, input_channel//reduction)
         self.relu = nn.ReLU(inplace=True)
         self.fc2 = nn.Linear(input_channel//reduction, input_channel)
