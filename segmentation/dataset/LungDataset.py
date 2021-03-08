@@ -45,7 +45,7 @@ class LungDataset(Dataset):
         image = process_img(image, channel = 3)
         # if image.shape == 3:
             # import pdb; pdb.set_trace()
-        print(image.shape)
+        # print(image.shape)
         return self.transform_image(np.array(image)), self.transform_label(np.array(mask))
         
     def load_sample(self, batch_size = 4):
