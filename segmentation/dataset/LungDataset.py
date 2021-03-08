@@ -69,6 +69,7 @@ class LungDataset(Dataset):
         if len(mask.shape)==3:
             mask = mask[:, :, 0]
             mask = mask.astype(np.long)
+        import pdb; pdb.set_trace()
 
         if (self.mode == "train") and (self.augmentation is not None):
             # print(self.mode)
