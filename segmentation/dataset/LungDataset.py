@@ -70,12 +70,13 @@ class LungDataset(Dataset):
             mask = mask[:, :, 0]
         mask = mask.astype(np.long)
         # import pdb; pdb.set_trace()
-        print(image.shape, mask.shape, img_path)
         if (self.mode == "train") and (self.augmentation is not None):
             # print(self.mode)
-            augmented = self.augmentation(image = image, mask = mask)
-            image, mask = augmented['image'], augmented['mask']
-        
+            try:
+                augmented = self.augmentation(image = image, mask = mask)
+                image, mask = augmented['image'], augmented['mask']
+            except Exception as e:
+                print(img_path, mask_path)            
         image = process_img(image, channel = 3)
         # if image.shape == 3:
             # import pdb; pdb.set_trace()
