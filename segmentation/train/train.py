@@ -96,10 +96,9 @@ class Trainer:
                 self.epoch_count = 0
         else:
             self.epoch_count = epoch_count
-        
-
         self.visualize.update(current_epoch = self.current_epoch,
-                              epochs = self.num_epochs)
+                              epochs = self.num_epochs,
+                              data = self.data)
         if loss_file is not None:
             self.loss_file = loss_file
         for epoch in self.visualize.mb:
