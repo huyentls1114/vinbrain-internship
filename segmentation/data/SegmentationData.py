@@ -28,7 +28,8 @@ class SegmentationData:
         self.train_dataset.update_train_ds(**update_ds_args)
         self.train_loader = DataLoader(self.train_dataset, 
                                 shuffle = True, 
-                                batch_size= self.batch_size)
+                                batch_size= self.batch_size,
+                                drop_last=True)
 
     def show_batch(self, mode = "train"):
         dataset_dict = {
