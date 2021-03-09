@@ -599,8 +599,8 @@ class ENet(nn.Module):
         x = self.initial_block(x)
 
         # Stage 1 - Encoder
-        if self.attention_dict["attention1"] is not None:
-            x = self.attention_dict["attention1"](x)
+        if self.attention1 is not None:
+            x = self.attention1(x)
         
         stage1_input_size = x.size()
         x, max_indices1_0 = self.downsample1_0(x)
@@ -610,8 +610,8 @@ class ENet(nn.Module):
         x = self.regular1_4(x)
 
         # Stage 2 - Encoder
-        if self.attention_dict["attention2"] is not None:
-            x = self.attention_dict["attention2"](x)
+        if self.attention2 is not None:
+            x = self.attention2(x)
         stage2_input_size = x.size()
         x, max_indices2_0 = self.downsample2_0(x)
         x = self.regular2_1(x)
@@ -624,8 +624,8 @@ class ENet(nn.Module):
         x = self.dilated2_8(x)
 
         # Stage 3 - Encoder
-        if self.attention_dict["attention3"] is not None:
-            x = self.attention_dict["attention3"](x)
+        if self.attention3 is not None:
+            x = self.attention3(x)
         x = self.regular3_0(x)
         x = self.dilated3_1(x)
         x = self.asymmetric3_2(x)
@@ -636,19 +636,19 @@ class ENet(nn.Module):
         x = self.dilated3_7(x)
 
         # Stage 4 - Decoder
-        if self.attention_dict["attention4"] is not None:
-            x = self.attention_dict["attention4"](x)
+        if self.attention4 is not None:
+            x = self.attention4(x)
         x = self.upsample4_0(x, max_indices2_0, output_size=stage2_input_size)
         x = self.regular4_1(x)
         x = self.regular4_2(x)
 
         # Stage 5 - Decoder
-        if self.attention_dict["attention5"] is not None:
-            x = self.attention_dict["attention5"](x)
+        if self.attention5 is not None:
+            x = self.attention5(x)
         x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)
         x = self.regular5_1(x)
-        if self.attention_dict["attention6"] is not None:
-            x = self.attention_dict["attention6"](x)
+        if self.attention6 is not None:
+            x = self.attention6(x)
         x = self.transposed_conv(x, output_size=input_size)
 
         return x
