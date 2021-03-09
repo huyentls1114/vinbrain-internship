@@ -95,8 +95,8 @@ class SelfAttentionBlock(nn.Module):
         c, w, h = _theta.shape[1:]
         c2, w2, h2 = _phi.shape[1:]
         # print(w, h, c)
-        _theta = _theta.permute(0, 2, 3, 1).reshape(-1, w*h, c)
-        _phi = _phi.reshape(-1, c, w2*h2)
+        _theta = _theta.permute(0, 2, 3, 1).flatten(start_dim=1, end_dim=2)
+        _phi = _phi.flatten(start_dim=2, end_dim=3)
         # print(_theta.shape, _phi.shape)
         _mul1 = torch.matmul(_theta, _phi)
         _sofmax = torch.softmax(_mul1, 2)
@@ -104,10 +104,10 @@ class SelfAttentionBlock(nn.Module):
         _g = self.g(x)
         if self.pool2 is not None: 
             _g = self.pool2(_g)
-        _g = _g.permute(0, 2, 3, 1).reshape(-1, w2*h2, c)
+        _g = _g.permute(0, 2, 3, 1).flatten(start_dim=1, end_dim=2)
         # print(_g.shape)
 
-        _mult2 = torch.matmul(_mul1, _g)
+        _mult2 = torch.matmul(_sofmax, _g)
         _mult2 = _mult2.reshape(-1, w, h, c).permute(0, 3, 1, 2)
         _mult2 = self.conv(_mult2)
         # print((x+_mult2).shape)

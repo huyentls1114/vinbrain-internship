@@ -583,12 +583,16 @@ class ENet(nn.Module):
             bias=False)
         self.attention_block = attention_block
         if attention_block is not None:
-            self.attention1 = attention_block(input_channel = 16, reduction = 4)
-            self.attention2 = attention_block(input_channel = 64, reduction = 4)
+            # self.attention1 = attention_block(input_channel = 16, reduction = 4)
+            # self.attention2 = attention_block(input_channel = 64, reduction = 4)
+            self.attention1 = None
+            self.attention2 = None
             self.attention3 = attention_block(input_channel = 128, reduction = 4)
             self.attention4 = attention_block(input_channel = 128, reduction = 4)
-            self.attention5 = attention_block(input_channel = 64, reduction = 4)
-            self.attention6 = attention_block(input_channel = 16, reduction = 4)
+            self.attention5 = None
+            self.attention6 = None
+            # self.attention5 = attention_block(input_channel = 64, reduction = 4)
+            # self.attention6 = attention_block(input_channel = 16, reduction = 4)
 
     def forward(self, x):
         # Initial block
@@ -596,7 +600,7 @@ class ENet(nn.Module):
         x = self.initial_block(x)
 
         # Stage 1 - Encoder
-        if self.attention_block is not None:
+        if self.attention1 is not None:
             x = self.attention1(x)
         
         stage1_input_size = x.size()
@@ -607,7 +611,7 @@ class ENet(nn.Module):
         x = self.regular1_4(x)
 
         # Stage 2 - Encoder
-        if self.attention_block is not None:
+        if self.attention2 is not None:
             x = self.attention2(x)
         stage2_input_size = x.size()
         x, max_indices2_0 = self.downsample2_0(x)
@@ -621,7 +625,7 @@ class ENet(nn.Module):
         x = self.dilated2_8(x)
 
         # Stage 3 - Encoder
-        if self.attention_block is not None:
+        if self.attention3 is not None:
             x = self.attention3(x)
         x = self.regular3_0(x)
         x = self.dilated3_1(x)
@@ -633,18 +637,18 @@ class ENet(nn.Module):
         x = self.dilated3_7(x)
 
         # Stage 4 - Decoder
-        if self.attention_block is not None:
+        if self.attention4 is not None:
             x = self.attention4(x)
         x = self.upsample4_0(x, max_indices2_0, output_size=stage2_input_size)
         x = self.regular4_1(x)
         x = self.regular4_2(x)
 
         # Stage 5 - Decoder
-        if self.attention_block is not None:
+        if self.attention5 is not None:
             x = self.attention5(x)
         x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)
         x = self.regular5_1(x)
-        if self.attention_block is not None:
+        if self.attention6 is not None:
             x = self.attention6(x)
         x = self.transposed_conv(x, output_size=input_size)
 
