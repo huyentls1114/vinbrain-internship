@@ -23,7 +23,7 @@ class CrossEntropy(nn.Module):
 
 class CrossEntropyOCR(nn.Module):
     def __init__(self, ignore_label=-1, weight=None, align_corners = None, num_outputs = None, balance_weights = None):
-        super(CrossEntropy, self).__init__()
+        super(CrossEntropyOCR, self).__init__()
         self.ignore_label = ignore_label
         self.criterion = nn.CrossEntropyLoss(
             weight=weight,
