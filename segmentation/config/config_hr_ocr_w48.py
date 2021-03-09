@@ -144,8 +144,8 @@ loss_function = {
     "loss_args":{
         # "ignore_label": 255
         "align_corners" : net["net_args"]["cfg"]["MODEL"]["ALIGN_CORNERS"], 
-        num_outputs = net["net_args"]["cfg"]["MODEL"]["NUM_OUTPUTS"], 
-        balance_weights = [0.4, 1]
+        "num_outputs" : net["net_args"]["cfg"]["MODEL"]["NUM_OUTPUTS"], 
+        "balance_weights" : [0.4, 1]
         }
 }
 
