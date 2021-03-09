@@ -50,7 +50,7 @@ class BCEOCR(nn.Module):
         if self.num_outputs == 1:
             score = [score]
 
-        weights = config.LOSS.BALANCE_WEIGHTS
+        # weights = config.LOSS.BALANCE_WEIGHTS
         weights = self.balance_weights
         assert len(weights) == len(score)
 
