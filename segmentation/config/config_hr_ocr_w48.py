@@ -28,6 +28,13 @@ net = {
                 "NUM_CLASSES":1,
             },
             "MODEL":{
+                "OCR":{
+                    "MID_CHANNELS":512,
+                    "KEY_CHANNELS":0.05,
+                    "DROPOUT":0.05,
+                    "SCALE":1,
+                },
+                "ALIGN_CORNERS":True,
                 "PRETRAINED":'/content/drive/MyDrive/vinbrain_internship/pretrained_model/HRNet/hrnetv2_w48_imagenet_pretrained.pth',
                 "EXTRA":{
                     "FINAL_CONV_KERNEL":1,
