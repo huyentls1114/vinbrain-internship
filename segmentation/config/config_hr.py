@@ -14,7 +14,7 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 256
+image_size = 512
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/HRnet_comboloss_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_hr.py"
@@ -95,7 +95,7 @@ dataset = {
     "dataset_args":{
         "input_folder":"/content/data/Pneumothorax",
         "augmentation": A.Compose([
-            A.Resize(576, 576),
+            A.Resize(int(image_size/0.9), int(image_size/0.9)),
             RandomRotate((-30, 30), p = 0.5),
             A.OneOf([
                 # RandomVerticalFlip(p=0.5),
@@ -105,13 +105,14 @@ dataset = {
             RandomBlur(blur_limit = 3.1, p = 0.1),
             # CLAHE(p = 0.1),
             RandomBrightnessContrast(p = 0.1),
-            RandomCrop(512, 512, p = 0.5)
+            RandomCrop(image_size, image_size, p = 0.5)
         ]),
         "update_ds": {
             "weight_positive": 0.8
         }
     }
 }
+
 
 
 device = "gpu"
