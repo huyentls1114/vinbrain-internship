@@ -15,7 +15,8 @@ class SegmentationData:
 
         self.train_loader = DataLoader(self.train_dataset, 
                                         shuffle = True, 
-                                        batch_size= self.batch_size)
+                                        batch_size= self.batch_size,
+                                        drop_last=True)
         self.val_loader = DataLoader(self.val_dataset, 
                                         shuffle = False, 
                                         batch_size= self.batch_size)
