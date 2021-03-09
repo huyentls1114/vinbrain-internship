@@ -202,17 +202,26 @@ class Trainer:
             metrict_list = torch.cat(metrict_list)
             return loss/(i+1), metrict_list.mean()
             
-    def predict(self, img):
-        self.net.eval()
+    def predict(self, img_path = None, img=None, show = None):
+        if img_path is not None:
+            img = plt.imread(img_path)
+        assert img is not None
+        trainer.net.eval()
         with torch.no_grad():
-            img = img[:, :, 0]
-            img_tensor = self.transform_test(img)
-            img_tensor = img_tensor.to(self.device)
+            # img = img[:, :, 0]
+            img_tensor = trainer.transform_test(img)
+            img_tensor = img_tensor.to(trainer.device)
             img_tensor = img_tensor[None, :, :, :]
-            output = self.net(img_tensor)
+            output = trainer.net(img_tensor)
             predicts = torch.sigmoid(output)
             predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
-            return predicts
+        # print(img.shape, predicts.shape)
+        
+        img = cv2.resize(img[:,:,0],(self.image_size, self.image_size))/255.0
+        if show is not None:
+            plt.imshow(np.hstack((img, predicts)), cmap = "gray")
+            plt.show()
+        return predicts
 
     def save_checkpoint(self, filename = None):
         if filename is None:
