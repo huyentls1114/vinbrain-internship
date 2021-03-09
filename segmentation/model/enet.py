@@ -591,7 +591,7 @@ class ENet(nn.Module):
             self.attention6 = attention_block(input_channel = 16, reduction = 4)
             if ignore_attention is not None:
                 for index in ignore_attention:
-                    setattr(trainer, "attention"+str(index), None)
+                    setattr(self, "attention"+str(index), None)
 
     def forward(self, x):
         # Initial block
