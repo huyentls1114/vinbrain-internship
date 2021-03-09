@@ -30,7 +30,7 @@ net = {
             "MODEL":{
                 "OCR":{
                     "MID_CHANNELS":512,
-                    "KEY_CHANNELS":0.05,
+                    "KEY_CHANNELS":256,
                     "DROPOUT":0.05,
                     "SCALE":1,
                 },
