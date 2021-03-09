@@ -165,8 +165,11 @@ class Trainer:
         with torch.no_grad():
             outputs = self.net(images)
             val_outputs = self.net(val_imgs)
-
+        if isinstance(outputs, list):
+            outputs = outputs[-1]
+            val_outputs = val_outputs[-1]
         predicts = torch.sigmoid(outputs)
+        
         self.sumary_writer.add_images("train/images", images, self.global_step)
         self.sumary_writer.add_images("train/mask", labels, self.global_step)
         self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
@@ -197,6 +200,8 @@ class Trainer:
             for i, samples in enumerate(progress[mode]):
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
+                if isinstance(outputs, list):
+                    outputs = outputs[-1]
                 loss += self.crition(outputs, labels).item()
                 metrict_list.append(metric(outputs, labels))
             metrict_list = torch.cat(metrict_list)
@@ -213,6 +218,8 @@ class Trainer:
             img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
             output = self.net(img_tensor)
+            if isinstance(outputs, list):
+                outputs = outputs[-1]
             predicts = torch.sigmoid(output)
             predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
         # print(img.shape, predicts.shape)
