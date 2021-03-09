@@ -583,23 +583,15 @@ class ENet(nn.Module):
             bias=False)
         self.attention_block = attention_block
         if attention_block is not None:
-            attention1 = attention_block(input_channel = 16, reduction = 4)
-            attention2 = attention_block(input_channel = 64, reduction = 4)
-            attention3 = attention_block(input_channel = 128, reduction = 4)
-            attention4 = attention_block(input_channel = 128, reduction = 4)
-            attention5 = attention_block(input_channel = 64, reduction = 4)
-            attention6 = attention_block(input_channel = 16, reduction = 4)
-            self.attention_dict = {
-                "attention1": attention1,
-                "attention2": attention2,
-                "attention3": attention3,
-                "attention4": attention4,
-                "attention5": attention5,
-                "attention6": attention6,
-            }
+            self.attention1 = attention_block(input_channel = 16, reduction = 4)
+            self.attention2 = attention_block(input_channel = 64, reduction = 4)
+            self.attention3 = attention_block(input_channel = 128, reduction = 4)
+            self.attention4 = attention_block(input_channel = 128, reduction = 4)
+            self.attention5 = attention_block(input_channel = 64, reduction = 4)
+            self.attention6 = attention_block(input_channel = 16, reduction = 4)
             if ignore_attention is not None:
                 for index in ignore_attention:
-                    self.attention_dict["attention"+str(index)] = None
+                    setattr(trainer, "attention"+str(index), None)
 
     def forward(self, x):
         # Initial block
