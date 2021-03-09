@@ -200,8 +200,6 @@ class Trainer:
             for i, samples in enumerate(progress[mode]):
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
-                if isinstance(outputs, list):
-                    outputs = outputs[-1]
                 loss += self.crition(outputs, labels).item()
                 metrict_list.append(metric(outputs, labels))
             metrict_list = torch.cat(metrict_list)
