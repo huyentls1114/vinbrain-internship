@@ -206,13 +206,13 @@ class Trainer:
         if img_path is not None:
             img = plt.imread(img_path)
         assert img is not None
-        trainer.net.eval()
+        self.net.eval()
         with torch.no_grad():
             # img = img[:, :, 0]
-            img_tensor = trainer.transform_test(img)
-            img_tensor = img_tensor.to(trainer.device)
+            img_tensor = self.transform_test(img)
+            img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
-            output = trainer.net(img_tensor)
+            output = self.net(img_tensor)
             predicts = torch.sigmoid(output)
             predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
         # print(img.shape, predicts.shape)
