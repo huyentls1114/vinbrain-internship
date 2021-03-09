@@ -138,9 +138,9 @@ metric = {
     }
 }
 
-from loss.loss_hr import CrossEntropyOCR
+from loss.loss_hr import BCEOCR
 loss_function = {
-    "class":CrossEntropyOCR,
+    "class":BCEOCR,
     "loss_args":{
         # "ignore_label": 255
         "align_corners" : net["net_args"]["cfg"]["MODEL"]["ALIGN_CORNERS"], 
