@@ -19,7 +19,7 @@ output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/H
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_hr_ocr_w48.py"
 num_classes = 1
-from model.seg_hrnet import get_seg_model
+from model.seg_hrnet_ocr import get_seg_model
 net = {
     "class": get_seg_model,
     "net_args":{
