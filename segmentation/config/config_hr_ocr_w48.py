@@ -28,6 +28,7 @@ net = {
                 "NUM_CLASSES":1,
             },
             "MODEL":{
+                "NUM_OUTPUTS":2,
                 "OCR":{
                     "MID_CHANNELS":512,
                     "KEY_CHANNELS":256,
@@ -137,11 +138,14 @@ metric = {
     }
 }
 
-from loss.loss_hr import CrossEntropy
+from loss.loss_hr import CrossEntropyOCR
 loss_function = {
-    "class":CrossEntropy,
+    "class":CrossEntropyOCR,
     "loss_args":{
         # "ignore_label": 255
+        "align_corners" : net["net_args"]["cfg"]["MODEL"]["ALIGN_CORNERS"], 
+        num_outputs = net["net_args"]["cfg"]["MODEL"]["NUM_OUTPUTS"], 
+        balance_weights = [0.4, 1]
         }
 }
 
