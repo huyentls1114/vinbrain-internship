@@ -21,14 +21,11 @@ class CrossEntropy(nn.Module):
 
         return loss
 
-class CrossEntropyOCR(nn.Module):
+class BCEOCR(nn.Module):
     def __init__(self, ignore_label=-1, weight=None, align_corners = None, num_outputs = None, balance_weights = None):
-        super(CrossEntropyOCR, self).__init__()
+        super(BCEOCR, self).__init__()
         self.ignore_label = ignore_label
-        self.criterion = nn.CrossEntropyLoss(
-            weight=weight,
-            ignore_index=ignore_label
-        )
+        self.criterion = nn.BCEWithLogitsLoss(weight=weight)
 
         self.align_corners = align_corners
         self.num_outputs = num_outputs

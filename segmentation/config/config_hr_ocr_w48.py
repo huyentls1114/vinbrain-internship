@@ -28,7 +28,7 @@ net = {
                 "NUM_CLASSES":1,
             },
             "MODEL":{
-                "NUM_OUTPUTS":2,
+                "NUM_OUTPUTS":1,
                 "OCR":{
                     "MID_CHANNELS":512,
                     "KEY_CHANNELS":256,
