@@ -640,6 +640,7 @@ class HighResolutionNet(nn.Module):
         feats = self.conv3x3_ocr(feats)
 
         context = self.ocr_gather_head(feats, out_aux)
+        print(feats.shape, context.shape)
         feats = self.ocr_distri_head(feats, context)
 
         out = self.cls_head(feats)

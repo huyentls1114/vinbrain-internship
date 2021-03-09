@@ -14,7 +14,7 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 512
+image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/HRnet_comboloss_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_hr.py"
@@ -68,8 +68,6 @@ net = {
         }
     }
 }
-
-
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
