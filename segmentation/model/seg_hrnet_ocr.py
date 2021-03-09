@@ -126,7 +126,7 @@ class _ObjectAttentionBlock(nn.Module):
 
         query = self.f_pixel(x).view(batch_size, self.key_channels, -1)
         query = query.permute(0, 2, 1)
-        print(proxy.shape)
+        # print(proxy.shape)
         key = self.f_object(proxy).view(batch_size, self.key_channels, -1)
         value = self.f_down(proxy).view(batch_size, self.key_channels, -1)
         value = value.permute(0, 2, 1)
