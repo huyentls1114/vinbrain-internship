@@ -11,7 +11,7 @@ class BCEWithLogits_Compose(nn.Module):
         self.aux_criterion = nn.BCEWithLogitsLoss(weight=weight)
         
     def forward(self, output, target):
-        if isinstance(output, list):
+        if isinstance(output, tuple):
             output[0] = torch.sigmoid(output[0])
             output[1] = torch.sigmoid(output[1])
             main_loss = self.main_criterion(output[0], target)
