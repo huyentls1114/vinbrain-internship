@@ -165,10 +165,7 @@ class Trainer:
         with torch.no_grad():
             outputs = self.net(images)
             val_outputs = self.net(val_imgs)
-        if isinstance(outputs, list):
-            outputs = outputs[-1]
-            val_outputs = val_outputs[-1]
-        if isinstance(output, tuple):
+        if (isinstance(outputs, list)) or (isinstance(outputs, tuple)):
             outputs = outputs[-1]
             val_outputs = val_outputs[-1]
         predicts = torch.sigmoid(outputs)
