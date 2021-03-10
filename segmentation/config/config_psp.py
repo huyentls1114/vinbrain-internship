@@ -15,7 +15,7 @@ import segmentation_models_pytorch as smp
 image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_psp.py"
+config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
 num_classes = 1
 from model.pspnet import PSPNet
