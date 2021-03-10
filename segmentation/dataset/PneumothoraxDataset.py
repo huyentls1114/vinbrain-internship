@@ -27,7 +27,7 @@ class PneumothoraxDataset(Dataset):
         #data process
         self.df_img_all = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
         if dataset_args["type"] == "small_test":
-            self.df_img_all = self.df_img_all.iloc[0:int(len(self.df_img_all)*0.1)]
+            self.df_img_all = self.df_img_all.iloc[0:int(len(self.df_img_all)*0.03)]
         if mode == "train":
             self.df_img = self.downsample_data(self.df_img_all, dataset_args["update_ds"]["weight_positive"])
             self.df_img = self.df_img.sample(frac=1)
