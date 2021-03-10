@@ -217,10 +217,10 @@ class Trainer:
             img_tensor = self.transform_test(img)
             img_tensor = img_tensor.to(self.device)
             img_tensor = img_tensor[None, :, :, :]
-            output = self.net(img_tensor)
+            outputs = self.net(img_tensor)
             if isinstance(outputs, list):
                 outputs = outputs[-1]
-            predicts = torch.sigmoid(output)
+            predicts = torch.sigmoid(outputs)
             predicts = predicts[0].cpu().numpy().transpose(1, 2, 0)[:,:,0]
         # print(img.shape, predicts.shape)
         

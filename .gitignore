@@ -7,3 +7,5 @@ SDM
 huytd
 HRNet-Semantic-Segmentation
 PyTorch-ENet
+LungSegment
+PSPNet

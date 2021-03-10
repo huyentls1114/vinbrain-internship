@@ -1,0 +1,14 @@
+-20 ph
+2D
+- MRI
+- Pneumothorax
+- Lung Segmentation
+
+-MRI:
+- Loss, augment, attention, architecture,
+Challenge:
+- Imbalance data: solution
+
+
+Pneumothorax - no baseline
+densenet121
