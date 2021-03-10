@@ -592,6 +592,14 @@ class ENet(nn.Module):
             if ignore_attention is not None:
                 for index in ignore_attention:
                     setattr(self, "attention"+str(index), None)
+        else:
+            self.attention1 = None
+            self.attention2 = None
+            self.attention3 = None
+            self.attention4 = None
+            self.attention5 = None
+            self.attention6 = None
+
 
     def forward(self, x):
         # Initial block
