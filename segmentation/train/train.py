@@ -168,6 +168,9 @@ class Trainer:
         if isinstance(outputs, list):
             outputs = outputs[-1]
             val_outputs = val_outputs[-1]
+        if isinstance(output, tuple):
+            outputs = outputs[-1]
+            val_outputs = val_outputs[-1]
         predicts = torch.sigmoid(outputs)
         
         self.sumary_writer.add_images("train/images", images, self.global_step)
@@ -201,8 +204,9 @@ class Trainer:
                 images, labels = samples[0].to(self.device), samples[1].to(self.device)
                 outputs = self.net(images)
                 loss += self.crition(outputs, labels).item()
-                if isinstance(outputs, list):
+                if (isinstance(outputs, list)) or (isinstance(outputs, tuple)):
                     outputs = outputs[-1]
+                
                 metrict_list.append(metric(outputs, labels))
             metrict_list = torch.cat(metrict_list)
             return loss/(i+1), metrict_list.mean()
