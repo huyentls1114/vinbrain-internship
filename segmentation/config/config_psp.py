@@ -13,7 +13,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_psp.py"
 
@@ -97,7 +97,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-4
+lr = 1e-2
 optimizer = {
     "class":Adam,
     "optimizer_args":{
