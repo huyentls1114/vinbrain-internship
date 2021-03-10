@@ -12,7 +12,7 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 256
+image_size = 257
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
