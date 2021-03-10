@@ -22,7 +22,7 @@ from model.pspnet import PSPNet
 net = {
     "class":PSPNet,
     "net_args":{
-        "layers":50,
+        "layers":101,
         "classes": num_classes,
         "zoom_factor": 8
     }
