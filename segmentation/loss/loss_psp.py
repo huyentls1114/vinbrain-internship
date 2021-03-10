@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 class BCEWithLogits_Compose(nn.Module):
     def __init__(self, ignore_label=-1, weight=None, aux_weight = None):
-        super(BCE_Compose, self).__init__()
+        super(BCEWithLogits_Compose, self).__init__()
         self.ignore_label = ignore_label
         self.aux_weight = aux_weight
 
