@@ -12,10 +12,10 @@ class BCEWithLogits_Compose(nn.Module):
         
     def forward(self, output, target):
         if isinstance(output, tuple):
-            output[0] = torch.sigmoid(output[0])
-            output[1] = torch.sigmoid(output[1])
-            main_loss = self.main_criterion(output[0], target)
-            aux_loss = self.aux_criterion(output[1], target)
+            output0 = torch.sigmoid(output[0])
+            output1 = torch.sigmoid(output[1])
+            main_loss = self.main_criterion(output0, target)
+            aux_loss = self.aux_criterion(output1, target)
             loss = main_loss + self.aux_weight*aux_loss
         else:
             output = torch.sigmoid(output)
