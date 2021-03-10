@@ -19,8 +19,7 @@ class SegmentationData:
                                         drop_last=True)
         self.val_loader = DataLoader(self.val_dataset, 
                                         shuffle = False, 
-                                        batch_size= self.batch_size,
-                                        drop_last=True)
+                                        batch_size= self.batch_size)
         self.test_loader = DataLoader(self.test_dataset, 
                                         shuffle = False, 
                                         batch_size= self.batch_size)
