@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-
+import numpy as np
 class WeightedBCEv2(nn.Module):
     def __init__(self):
         super(WeightedBCEv2, self).__init__()
