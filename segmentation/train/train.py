@@ -169,7 +169,7 @@ class Trainer:
             outputs = outputs[-1]
             val_outputs = val_outputs[-1]
         predicts = torch.sigmoid(outputs)
-        import pdb;pdb.set_trace()
+
         self.sumary_writer.add_images("train/images", images, self.global_step)
         self.sumary_writer.add_images("train/mask", labels, self.global_step)
         self.sumary_writer.add_images("train/outputs", predicts, self.global_step)
