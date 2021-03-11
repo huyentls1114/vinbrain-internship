@@ -50,7 +50,7 @@ from dataset.LungDataset import *
 dataset = {
     "class": LungDataset,
     "dataset_args":{
-        "small_test":True,
+        # "small_test":True,
         "covid_chesxray_folder":"/content/data/covid_chesxray",
         "cxr_folder":"/content/data/cxr",
         "augmentation": A.Compose([
