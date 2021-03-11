@@ -20,6 +20,9 @@ class PneumothoraxDataset(Dataset):
             self.augmentation = dataset_args["augmentation"]
         else:
             self.augmentation = None
+        if "small_test" in dataset_args.keys():
+            if dataset_args["small_test"]:
+                mode = "train"
         self.mode = mode
         self.image_folder = os.path.join(self.input_folder, "images")
         self.mask_folder = os.path.join(self.input_folder, "masks")
