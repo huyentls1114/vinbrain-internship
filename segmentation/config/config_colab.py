@@ -17,7 +17,7 @@ import segmentation_models_pytorch as smp
 image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Unet_BCE_rate0.8_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab.py"
+config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 from model.unet import Unet
 from model.backbone import BackboneResnet101VGG
