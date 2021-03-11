@@ -99,7 +99,7 @@ loss_function = {
 
 #optimizer
 from torch.optim import SGD
-lr = 1e-5
+lr = 1e-4
 optimizer = {
     "class":SGD,
     "optimizer_args":{
