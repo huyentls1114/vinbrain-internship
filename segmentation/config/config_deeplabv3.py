@@ -3,8 +3,6 @@ import torchvision.transforms as transforms
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from dataset.BrainTumorDataset import BrainTumorDataset
-from model.metric import Dice_Score
 from model.unet import Unet, UnetDynamic
 from model.backbone_densenet import BackboneDense121
 from model.backbone import BackboneResnet18VGG, BackboneDensenet121VGG,BackboneEfficientB0VGG
@@ -14,36 +12,30 @@ import albumentations as A
 import segmentation_models_pytorch as smp
 
 #data config
-image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Unet_BCE_rate0.8_augment_RLOP1e-4"
+image_size = 257
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Deeplab_BCE_rate0.8_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
-config_file_path = "/content/drive/MyDrive/vinbrain_internship/configs/config_colab.py"
+config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
-from model.unet import Unet
-from model.backbone import BackboneResnet101VGG
 num_classes = 1
+import torch
 net = {
-    "class":Unet,
+    "class":torch.hub.load,
     "net_args":{
-        "backbone_class": BackboneResnet101VGG,
-        "encoder_args":{
-            "pretrained":True,           
-        },
-        "decoder_args":{
-            "bilinear": False,
-            "pixel_shuffle":True
-        }
+        "repo_or_dir":"pytorch/vision:v0.6.0",
+        "model": "deeplabv3_resnet101",
+        "pretrained": True
     }
 }
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.Normalize(mean = (0.485, 0.456, 0.406), std = (0.229, 0.224, 0.225)),
     transforms.Resize((image_size, image_size))
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
+    transforms.Normalize(mean = (0.485, 0.456, 0.406), std = (0.229, 0.224, 0.225)),
     transforms.Resize((image_size, image_size))
 ])
 transform_label = transforms.Compose([
@@ -59,6 +51,7 @@ dataset = {
     "class": PneumothoraxDataset,
     "dataset_args":{
         "input_folder":"/content/data/Pneumothorax",
+        "small_test":True,
         "augmentation": A.Compose([
             A.Resize(int(image_size/0.9), int(image_size/0.9)),
             RandomRotate((-30, 30), p = 0.5),
@@ -83,7 +76,7 @@ device = "gpu"
 gpu_id = 0
 
 batch_size = 16
-num_epochs = 20
+num_epochs = 40
 
 # from pattern_model import 
 from won.loss import DiceMetric
@@ -95,19 +88,23 @@ metric = {
     }
 }
 
-# from loss.loss import B
+from loss.loss_psp import BCEWithLogits_Compose
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class": BCEWithLogits_Compose,
     "loss_args":{
+        "aux_weight": 0.4,
     }
 }
 
 
 #optimizer
+from torch.optim import SGD
 lr = 1e-4
 optimizer = {
-    "class":Adam,
+    "class":SGD,
     "optimizer_args":{
+        "momentum": 0.9,
+        "weight_decay": 0.0001
     }
 }
 
