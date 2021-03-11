@@ -26,7 +26,7 @@ class PneumothoraxDataset(Dataset):
         
         #data process
         self.df_img_all = self.read_txt(os.path.join(self.input_folder, "%s.txt"%(mode)))
-        if if "small_test" in dataset_args.keys()::
+        if "small_test" in dataset_args.keys()::
             if dataset_args["small_test"]:
                 self.df_img_all = self.df_img_all.iloc[0:int(len(self.df_img_all)*0.03)]
         if mode == "train":
