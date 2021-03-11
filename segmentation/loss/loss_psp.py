@@ -7,7 +7,7 @@ class WeightedBCEv2(nn.Module):
         super(WeightedBCEv2, self).__init__()
     #
     def forward(self, y_pred, y_true, reduction='mean'):
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         y_pred = y_pred[:,0].view(-1)
         y_true = y_true.view(-1)
         assert(y_pred.shape==y_true.shape)
