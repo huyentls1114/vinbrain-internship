@@ -98,10 +98,12 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-4
+lr = 1e-2
 optimizer = {
-    "class":Adam,
+    "class":SGD,
     "optimizer_args":{
+        "momentum": 0.9,
+        "weight_decay": 0.0001
     }
 }
 
