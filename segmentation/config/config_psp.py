@@ -98,7 +98,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-3
+lr = 1e-4
 optimizer = {
     "class":Adam,
     "optimizer_args":{
