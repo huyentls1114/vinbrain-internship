@@ -10,7 +10,7 @@ class WeightedBCEv2(nn.Module):
         
         y_pred = y_pred[:,0].view(-1)
         y_true = y_true.view(-1)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         assert(y_pred.shape==y_true.shape)
 
         loss = F.binary_cross_entropy(y_pred, y_true, reduction='none')
