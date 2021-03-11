@@ -13,7 +13,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 257
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_Combo_rate0.8_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
@@ -88,9 +88,10 @@ metric = {
     }
 }
 
-from loss.loss_psp import BCEWithLogits_Compose
+# from loss.loss_psp import BCEWithLogits_Compose
+from loss.loss_psp import PSP_ComboLoss
 loss_function = {
-    "class": BCEWithLogits_Compose,
+    "class": PSP_ComboLoss,
     "loss_args":{
         "aux_weight": 0.4,
     }
@@ -98,13 +99,13 @@ loss_function = {
 
 
 #optimizer
-from torch.optim import SGD
-lr = 1e-2
+from torch.optim import Adam
+lr = 1e-4
 optimizer = {
-    "class":SGD,
+    "class":Adam,
     "optimizer_args":{
-        "momentum": 0.9,
-        "weight_decay": 0.0001
+        # "momentum": 0.9,
+        # "weight_decay": 0.0001
     }
 }
 

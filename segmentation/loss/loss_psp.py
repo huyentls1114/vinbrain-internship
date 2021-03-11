@@ -48,3 +48,30 @@ class BCEWithLogits_Compose(nn.Module):
             output = torch.sigmoid(output)
             loss = self.main_criterion(output, target)
         return loss
+
+from won.loss import ComboLoss
+class PSP_ComboLoss(nn.Module):
+    def __init__(self, ignore_label=-1, weight=None, aux_weight = None):
+        super(PSP_ComboLoss, self).__init__()
+        self.ignore_label = ignore_label
+        self.aux_weight = aux_weight
+
+        weights={
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
+        self.main_criterion = ComboLoss(weights = weights)
+        self.aux_criterion = ComboLoss(weights = weights)
+        
+    def forward(self, output, target):
+        if isinstance(output, tuple):
+            output0 = torch.sigmoid(output[0])
+            output1 = torch.sigmoid(output[1])
+            main_loss = self.main_criterion(output0, target)
+            aux_loss = self.aux_criterion(output1, target)
+            loss = main_loss + self.aux_weight*aux_loss
+        else:
+            output = torch.sigmoid(output)
+            loss = self.main_criterion(output, target)
+        return loss
