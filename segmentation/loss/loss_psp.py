@@ -32,8 +32,8 @@ class BCEWithLogits_Compose(nn.Module):
         self.ignore_label = ignore_label
         self.aux_weight = aux_weight
 
-        self.main_criterion = nn.WeightedBCEv2()
-        self.aux_criterion = nn.WeightedBCEv2()
+        self.main_criterion = WeightedBCEv2()
+        self.aux_criterion = WeightedBCEv2()
         
     def forward(self, output, target):
         if isinstance(output, tuple):
