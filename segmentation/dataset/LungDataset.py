@@ -32,8 +32,10 @@ class LungDataset(Dataset):
         self.create_paths()
         if "small_test" in dataset_args.keys():
             if dataset_args["small_test"]:
-                self.list_img_path = self.list_img_path[0:int(len(self.list_img_path)*0.1)]
-                self.list_mask_path = self.list_mask_path[0:int(len(self.list_img_path)*0.1)]
+                list_img_path = self.list_img_path
+                self.list_img_path = self.list_img_path[0:int(len(list_img_path)*0.1)]
+                self.list_mask_path = self.list_mask_path[0:int(len(list_img_path)*0.1)]
+
     def create_paths(self):
         list_img_path = []
         list_mask_path = []
@@ -55,8 +57,6 @@ class LungDataset(Dataset):
         self.list_img_path = list_img_path[list_index]
         self.list_mask_path = list_mask_path[list_index]
         
-
-
     def __len__(self):
         return len(self.list_img_path)
     
