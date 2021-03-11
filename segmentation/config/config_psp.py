@@ -13,7 +13,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 257
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_LungSegment/PSP_BCE_rate0.8_augment_RLOP1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_BrainTumor/PSP_BCE_rate0.8_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
@@ -46,25 +46,16 @@ transform_label = transforms.Compose([
 
 import albumentations as A
 from dataset.transform import *
-from dataset.LungDataset import *
+from dataset.BrainTumorDataset import *
 dataset = {
-    "class": LungDataset,
+    "class": BrainTumorDataset,
     "dataset_args":{
-        # "small_test":True,
-        "covid_chesxray_folder":"/content/data/covid_chesxray",
-        "cxr_folder":"/content/data/cxr",
+        "input_folder":"/content/data/BrainTumor",
         "augmentation": A.Compose([
-            A.Resize(int(image_size/0.9), int(image_size/0.9)),
-            RandomRotate((-30, 30), p = 0.5),
-            A.OneOf([
-                # RandomVerticalFlip(p=0.5),
-                RandomHorizontalFlip(p=0.5),
-                # RandomTranspose(p = 0.5),
-            ]),
-            RandomBlur(blur_limit = 3.1, p = 0.1),
-            # CLAHE(p = 0.1),
-            RandomBrightnessContrast(p = 0.1),
-            RandomCrop(image_size, image_size, p = 0.5)
+            A.Resize(512, 512),
+            RandomCrop(450, 450),
+            RandomVerticalFlip(p=0.5),
+            RandomHorizontalFlip(p=0.5)
         ])
     }
 }
