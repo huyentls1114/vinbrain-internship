@@ -31,17 +31,17 @@ net = {
 transform_train = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
-    transforms.Resize(image_size)
+    transforms.Resize((image_size, image_size))
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
-    transforms.Resize(image_size)
+    transforms.Resize((image_size, image_size))
 ])
 transform_label = transforms.Compose([
     transforms.ToTensor(),
     # transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
-    transforms.Resize(image_size)
+    transforms.Resize((image_size, image_size))
 ])
 
 import albumentations as A
