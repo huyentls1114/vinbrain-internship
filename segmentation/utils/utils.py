@@ -104,3 +104,7 @@ def save_loss_to_file(file_, epoch, step, loss_train, loss_val, metric_val, lr):
 
 def caculate_num_parameter(net):
     return (p.numel() for p in net.parameters() if p.requires_grad)
+
+from types import FunctionType
+def list_function_name(cls):
+    return [x for x, y in cls.__dict__.items() if type(y) == FunctionType]

@@ -4,7 +4,7 @@ import shutil
 import os
 import numpy as np
 
-from utils.utils import save_loss_to_file, compose_images
+from utils.utils import save_loss_to_file, compose_images, list_function_name
 from visualize.visualize import Visualize
 from model.unet import UnetCRF
 
@@ -44,8 +44,12 @@ class Trainer:
             self.current_epoch = configs.current_epoch
         else:
             self.lr = configs.lr  
-            lr_scheduler = configs.lr_scheduler 
-        self.optimizer = configs.optimizer["class"](self.net.parameters(), self.lr, **configs.optimizer["optimizer_args"])
+            lr_scheduler = configs.lr_scheduler
+        if "create_train_parameters" in list_function_name(configs.net["class"]):
+            parameters = self.net.create_train_parameters(self.lr)
+        else:
+            parameters = self.net.parameters()
+        self.optimizer = configs.optimizer["class"](parameters, self.lr, **configs.optimizer["optimizer_args"])
         self.initial_lr_scheduler(lr_scheduler)
 
         #loss and metric
@@ -77,6 +81,7 @@ class Trainer:
                                     self.data, 
                                     img_size = self.image_size)
         self.transform_test = configs.transform_test
+        
     def initial_lr_scheduler(self, lr_scheduler):
         if lr_scheduler is not None:
             self.lr_scheduler = lr_scheduler["class"](self.optimizer, **lr_scheduler["schedule_args"])

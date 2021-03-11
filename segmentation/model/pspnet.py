@@ -104,7 +104,15 @@ class PSPNet(nn.Module):
             return aux, x
         else:
             return x
-
+    def create_train_parameters(self, base_lr):
+        modules_ori = [self.layer0, self.layer1, self.layer2, self.layer3, self.layer4]
+        modules_new = [self.ppm, self.cls, self.aux]
+        params_list = []
+        for module in modules_ori:
+            params_list.append(dict(params=module.parameters(), lr=base_lr))
+        for module in modules_new:
+            params_list.append(dict(params=module.parameters(), lr=base_lr * 10))
+        return params_list
 
 if __name__ == '__main__':
     import os
