@@ -149,7 +149,7 @@ class Trainer:
         if val_acc_avg > self.best_val_metric:
             self.best_val_metric = val_acc_avg
             self.best_epoch = self.current_epoch
-        if self.lr_schedule_step_type == "epoch":
+        if (self.lr_scheduler is not None) and (self.lr_schedule_step_type == "epoch"):
             if (self.lr_scheduler_metric is not None):
                 self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
             else:
