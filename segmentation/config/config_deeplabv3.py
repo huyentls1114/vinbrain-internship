@@ -24,6 +24,7 @@ net = {
     "net_args":{
         "backbone":"resnet",
         "num_classes": num_classes,
+        "sync_bn":False
     }
 }
 
