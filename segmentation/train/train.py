@@ -247,12 +247,19 @@ class Trainer:
             "val_loss_list":self.visualize.valid_loss,
             "net":self.net.state_dict(),
             "optimizer":self.optimizer.state_dict(),
-            "lr_scheduler":self.lr_scheduler,
-            "lr_scheduler_statedict": self.lr_scheduler.state_dict(),
-            "lr_scheduler_metric": self.lr_scheduler_metric,
-            "lr_scheduler_step_type":self.lr_schedule_step_type,
             "epoch_count": self.epoch_count
         }
+        if self.lr_scheduler is not None:
+            state_dict["lr_scheduler"] = self.lr_scheduler
+            state_dict["lr_scheduler_statedict"] = self.lr_scheduler.state_dict()
+            state_dict["lr_scheduler_metric"] = self.lr_scheduler_metric
+            state_dict["lr_scheduler_step_type"] = self.lr_schedule_step_type
+        else:
+            state_dict["lr_scheduler"] = None
+            state_dict["lr_scheduler_statedict"] = None
+            state_dict["lr_scheduler_metric"] = None
+            state_dict["lr_scheduler_step_type"] = None
+        
         filepath = os.path.join(self.output_folder, filename)
         torch.save(state_dict, filepath)
 
@@ -273,13 +280,17 @@ class Trainer:
             try:
                 if "lr_scheduler_statedict" in state_dict.keys():
                     self.lr_scheduler = state_dict["lr_scheduler"]
-                    self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
                 else:
                     self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
             except:
                 self.lr_scheduler = state_dict["lr_scheduler"]
-            self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
-            self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
+            if self.lr_scheduler is not None:
+                self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
+                self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
+                self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
+            else:
+                self.lr_scheduler_metric = None
+                self.lr_schedule_step_type = None
         if "best_epoch" in state_dict.keys():
             self.best_epoch = state_dict["best_epoch"]
             if "best_val_metric" in state_dict.keys():
