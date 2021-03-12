@@ -316,11 +316,11 @@ class Trainer:
             self.load_checkpoint("checkpoint_%d"%(best_epoch))
         
         if lr is not None:
-            self.optimizer.param_groups[0]['lr'] = lr
-            self.optimizer.param_groups[0]["initial_lr"] = lr
+            for i in range(len(self.optimizer.param_groups)):
+                self.optimizer.param_groups[i]['lr'] = lr
+                self.optimizer.param_groups[i]["initial_lr"] = lr
         if lr_scheduler is not None:
             self.initial_lr_scheduler(lr_scheduler)
-        
         if num_epochs is not None:
             self.num_epochs = num_epochs
         if positive_rate is not None:
