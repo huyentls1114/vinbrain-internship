@@ -247,7 +247,8 @@ class Trainer:
             "val_loss_list":self.visualize.valid_loss,
             "net":self.net.state_dict(),
             "optimizer":self.optimizer.state_dict(),
-            "lr_scheduler": self.lr_scheduler.state_dict(),
+            "lr_scheduler":self.lr_scheduler,
+            "lr_scheduler_statedict": self.lr_scheduler.state_dict(),
             "lr_scheduler_metric": self.lr_scheduler_metric,
             "lr_scheduler_step_type":self.lr_schedule_step_type,
             "epoch_count": self.epoch_count
@@ -270,7 +271,11 @@ class Trainer:
                               valid_loss = state_dict["val_loss_list"])
         if "lr_scheduler" in state_dict.keys():
             try:
-                self.lr_scheduler.load_state_dict(state_dict["lr_scheduler"])
+                if "lr_scheduler_statedict" in state_dict.keys():
+                    self.lr_scheduler = state_dict["lr_scheduler"]
+                    self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
+                else:
+                    self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
             except:
                 self.lr_scheduler = state_dict["lr_scheduler"]
             self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
@@ -295,17 +300,18 @@ class Trainer:
             self.lr_scheduler.step()
 
     def update(self, best_epoch = None, num_epochs = None, positive_rate = None, lr = None, lr_scheduler = None):
-        if lr is not None:
-            self.optimizer.param_groups[0]['lr'] = lr
-            self.optimizer.param_groups[0]["initial_lr"] = lr
-        if lr_scheduler is not None:
-            self.initial_lr_scheduler(lr_scheduler)
         if best_epoch is not None:
             # best_epoch = self.num_epochs - 1
             self.load_checkpoint("checkpoint_%d"%(best_epoch))
+        if lr_scheduler is not None:
+            self.initial_lr_scheduler(lr_scheduler)
+        if lr is not None:
+            self.optimizer.param_groups[0]['lr'] = lr
+            self.optimizer.param_groups[0]["initial_lr"] = lr
         if num_epochs is not None:
             self.num_epochs = num_epochs
         if positive_rate is not None:
             self.update_ds["weight_positive"] = positive_rate
+        
         
         
