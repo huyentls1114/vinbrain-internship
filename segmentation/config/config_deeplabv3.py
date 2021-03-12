@@ -92,14 +92,14 @@ from loss.loss_psp import BCEWithLogits_Compose
 loss_function = {
     "class": BCEWithLogits_Compose,
     "loss_args":{
-        "aux_weight": 0.4,
+        # "aux_weight": 0.4,
     }
 }
 
 
 #optimizer
 from torch.optim import SGD
-lr = 1e-3
+lr = 1e-1
 optimizer = {
     "class":SGD,
     "optimizer_args":{
