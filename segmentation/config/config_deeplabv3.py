@@ -88,7 +88,7 @@ metric = {
     }
 }
 
-# from loss.loss_psp import BCEWithLogits_Compose
+from loss.loss_psp import BCEWithLogits_Compose
 loss_function = {
     "class": BCEWithLogits_Compose,
     "loss_args":{
