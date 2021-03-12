@@ -18,13 +18,12 @@ loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
 num_classes = 1
-from model.deeplabv3 import Deeplabv3
+from modeling.deeplab import DeepLab
 net = {
-    "class":Deeplabv3,
+    "class":DeepLab,
     "net_args":{
-        "repo_or_dir":"pytorch/vision:v0.6.0",
-        "model": "deeplabv3_resnet101",
-        "pretrained": True
+        "backbone":"resnet",
+        "num_classes": num_classes,
     }
 }
 
