@@ -88,11 +88,11 @@ metric = {
     }
 }
 
-from loss.loss_psp import BCEWithLogits_Compose
+# from loss.loss_psp import BCEWithLogits_Compose
 loss_function = {
-    "class": BCEWithLogits_Compose,
+    "class": nn.BCEWithLogitsLoss,
     "loss_args":{
-        "aux_weight": 0.4,
+        # "aux_weight": 0.4,
     }
 }
 
