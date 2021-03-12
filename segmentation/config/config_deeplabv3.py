@@ -13,7 +13,7 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 257
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Deeplab_BCE_rate0.8_augment_RLOP1e-3"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Deeplab_BCE_rate0.8_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
 
@@ -99,7 +99,7 @@ loss_function = {
 
 #optimizer
 from torch.optim import SGD
-lr = 1e-4
+lr = 1e-2
 optimizer = {
     "class":SGD,
     "optimizer_args":{
