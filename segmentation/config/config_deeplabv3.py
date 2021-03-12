@@ -51,7 +51,7 @@ dataset = {
     "class": PneumothoraxDataset,
     "dataset_args":{
         "input_folder":"/content/data/Pneumothorax",
-        "small_test":True,
+        # "small_test":True,
         "augmentation": A.Compose([
             A.Resize(int(image_size/0.9), int(image_size/0.9)),
             RandomRotate((-30, 30), p = 0.5),
@@ -66,7 +66,7 @@ dataset = {
             RandomCrop(image_size, image_size, p = 0.5)
         ]),
         "update_ds": {
-            "weight_positive": 1
+            "weight_positive": 0.8
         }
     }
 }
@@ -115,8 +115,8 @@ lr_scheduler = {
     "step_type":"epoch",
     "schedule_args":{
         "mode":"min",
-        "factor":0.3,
-        "patience":8,
+        "factor":0.1,
+        "patience":20,
         "threshold":1e-2,
         "min_lr":1e-6
     }
