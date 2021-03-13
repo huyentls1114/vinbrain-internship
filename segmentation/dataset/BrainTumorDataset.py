@@ -77,14 +77,14 @@ class BrainTumorDataset(Dataset):
 
     def show_img(self, list_imgs, list_masks, batch_size):
         list_combine = []
-        fig = plt.figure(figsize=(batch_size, 3), dpi = 256)
+        fig = plt.figure(figsize=(batch_size, 3), dpi = 512)
         for i in range(batch_size):
-            img = conver_numpy_image(list_imgs[i])
+            img = conver_numpy_image(list_imgs[i], normalize = True)
             mask = conver_numpy_image(list_masks[i])
             ct = contour(img, mask)
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine))
+        plt.imshow(np.vstack(list_combine)[:,:,0])
         plt.axis('off')
         plt.show()
 
