@@ -33,7 +33,7 @@ class PneumothoraxDataset(Dataset):
             if dataset_args["small_test"]:
                 self.df_img_all = self.df_img_all.iloc[0:int(len(self.df_img_all)*0.03)]
         if mode == "train":
-            if dataset_args["update_ds"]["weight_positive"]) is not None:
+            if dataset_args["update_ds"] is not None:
                 self.df_img = self.downsample_data(self.df_img_all, dataset_args["update_ds"]["weight_positive"])
             self.df_img = self.df_img.sample(frac=1)
         else:
