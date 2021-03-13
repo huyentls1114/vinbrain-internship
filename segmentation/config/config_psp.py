@@ -16,6 +16,7 @@ image_size = 257
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/PSP_BCE_rate0.8_augment_RLOP1e-3"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_psp.py"
+save_checkpoint_type = "best_only"
 
 num_classes = 1
 from model.pspnet import PSPNet

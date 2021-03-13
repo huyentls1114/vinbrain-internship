@@ -81,6 +81,12 @@ class Trainer:
                                     self.data, 
                                     img_size = self.image_size)
         self.transform_test = configs.transform_test
+
+        #save checkpoin type
+        if hasattr(configs, "save_checkpoint_type"):
+            self.save_checkpoint_type = configs.save_checkpoint_type
+        else:
+            self.save_checkpoint_type = "best_only"
         
     def initial_lr_scheduler(self, lr_scheduler):
         if lr_scheduler is not None:
@@ -113,7 +119,12 @@ class Trainer:
             self.current_epoch = epoch
             self.epoch_count += 1
             self.train_one_epoch()
-            self.save_checkpoint()                
+            if self.save_checkpoint_type == "best_only":
+                self.save_checkpoint(filename="last_epoch")
+            elif self.save_checkpoint_type == "save_per_image":
+                self.save_checkpoint(filename="checkpoint_"+str(epoch))
+            else:
+                raise TypeError("save checkpoint type error")      
 
     def train_one_epoch(self):
         train_loss = 0
@@ -149,6 +160,7 @@ class Trainer:
         if val_acc_avg > self.best_val_metric:
             self.best_val_metric = val_acc_avg
             self.best_epoch = self.current_epoch
+            self.save_checkpoint(filename="best_epoch")
         if (self.lr_scheduler is not None) and (self.lr_schedule_step_type == "epoch"):
             if (self.lr_scheduler_metric is not None):
                 self.schedule_lr(metric_value = eval(self.lr_scheduler_metric))
