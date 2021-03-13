@@ -47,6 +47,11 @@ class SegmentationData:
         return dataset_dict[mode].load_sample(self.batch_size)
 
     def caculate_num_per_labels(self, mode = "train"):
+        loader_dict = {
+            "train": self.train_loader,
+            "val": self.val_loader,
+            "test":self.test_loader
+        }
         list_idx = list(self.loader_dict[mode].sampler)
         dataset = self.loader_dict[mode].dataset
 
