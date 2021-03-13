@@ -55,15 +55,21 @@ class SegmentationData:
         list_idx = list(loader_dict[mode].sampler)
         dataset = loader_dict[mode].dataset
 
-        postive = 0
-        negative = 0
+        label_img = [0, 0]
+        label_pixel = [0, 0]
         for index in list_idx:
             img, target = dataset[index]
+            w, h = img.shape[-2, -1]
             # import pdb; pdb.set_trace()
-            if torch.sum(target.long()) == 0:
-                postive +=1
+            postive_pixel =  torch.sum(target.long())
+            negative_pixel = w * h - postive_pixel
+            label_pixel[0]+= negative_pixel
+            label_pixel[1]+= postive_pixel
+            if postive_pixel == 0:
+                label_img[0] +=1
             else:
-                negative +=1
-        return postive, negative
+                label_img[1] +=1
+            
+        return label_img, label_pixel
 
         
