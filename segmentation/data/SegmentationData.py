@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-import numpy as np
+import torch
 
 class SegmentationData:
     def __init__(self, configs):
