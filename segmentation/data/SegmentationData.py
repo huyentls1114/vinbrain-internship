@@ -37,7 +37,7 @@ class SegmentationData:
             "val": self.val_dataset,
             "test":self.test_dataset
         }
-        dataset_dict[mode].show_sample(self.batch_size)
+        dataset_dict[mode].show_sample(self.batch_size, dpi=512)
     def load_batch(self, mode = "train"):
         dataset_dict = {
             "train": self.train_dataset,
