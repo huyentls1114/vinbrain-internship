@@ -149,11 +149,10 @@ class LungDataset(Dataset):
             img = self.de_normalize(list_imgs[i])
             img = conver_numpy_image(list_imgs[i])
             mask = conver_numpy_image(list_masks[i])
-            
             # img = int((img +1)*255)
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
-               mask = np.concatenate([mask]*3, axis = 2)*255
+               mask = np.concatenate([mask]*3, axis = 2)
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
         plt.imshow(np.vstack(list_combine))
