@@ -322,11 +322,9 @@ class Trainer:
         else:
             self.lr_scheduler.step()
 
-    def update(self, best_epoch = None, num_epochs = None, positive_rate = None, lr = None, lr_scheduler = None):
-        if best_epoch is not None:
-            # best_epoch = self.num_epochs - 1
-            self.load_checkpoint("checkpoint_%d"%(best_epoch))
-        
+    def update(self, checkpoint_file = None, num_epochs = None, positive_rate = None, lr = None, lr_scheduler = None):
+        if checkpoint_file is not None:
+            self.load_checkpoint(checkpoint_file)
         if lr is not None:
             for i in range(len(self.optimizer.param_groups)):
                 self.optimizer.param_groups[i]['lr'] = lr
