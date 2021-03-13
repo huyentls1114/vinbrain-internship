@@ -115,7 +115,7 @@ class LungDataset(Dataset):
         return list_img_name
 
     
-    def show_sample(self, batch_size = 4, dpi=512):
+    def show_sample(self, batch_size = 4):
         list_imgs = []
         list_masks = []
 
@@ -130,7 +130,7 @@ class LungDataset(Dataset):
             #     image = image[:,:,0]
             list_imgs.append(image)
             list_masks.append(mask)
-        self.show_img(list_imgs, list_masks, batch_size, dpi=512)
+        self.show_img(list_imgs, list_masks, batch_size)
     
     def de_normalize(self, tensor):
         import torchvision.transforms as transforms
@@ -141,11 +141,10 @@ class LungDataset(Dataset):
             std= [1/s for s in std]
             )
         return inv_normalize(tensor)
-    def show_img(self, list_imgs, list_masks, batch_size, dpi):
+    def show_img(self, list_imgs, list_masks, batch_size):
         list_combine = []
-        fig = plt.figure(figsize=(batch_size, 3), dpi = dpi)
+        fig = plt.figure(dpi = 512)
         for i in range(batch_size):
-            
             img = self.de_normalize(list_imgs[i])
             img = conver_numpy_image(img).astype(np.uint8)
             mask = conver_numpy_image(list_masks[i]).astype(np.uint8)

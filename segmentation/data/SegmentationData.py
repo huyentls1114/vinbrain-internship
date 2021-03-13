@@ -31,13 +31,13 @@ class SegmentationData:
                                 batch_size= self.batch_size,
                                 drop_last=True)
 
-    def show_batch(self, mode = "train", dpi=512):
+    def show_batch(self, mode = "train"):
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.val_dataset,
             "test":self.test_dataset
         }
-        dataset_dict[mode].show_sample(self.batch_size, dpi=512)
+        dataset_dict[mode].show_sample(self.batch_size)
     def load_batch(self, mode = "train"):
         dataset_dict = {
             "train": self.train_dataset,
@@ -59,7 +59,7 @@ class SegmentationData:
         label_pixel = [0, 0]
         for index in list_idx:
             img, target = dataset[index]
-            w, h = img.shape[-2:]
+            w, h = img.shape[-2:-1]
             # import pdb; pdb.set_trace()
             postive_pixel =  torch.sum(target.long())
             negative_pixel = w * h - postive_pixel
