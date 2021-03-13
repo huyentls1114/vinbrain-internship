@@ -141,9 +141,9 @@ class LungDataset(Dataset):
             std= [1/s for s in std]
             )
         return inv_normalize(tensor)
-    def show_img(self, list_imgs, list_masks, batch_size):
+    def show_img(self, list_imgs, list_masks, batch_size, dpi):
         list_combine = []
-        fig = plt.figure(figsize=(batch_size, 3), dpi = 1024)
+        fig = plt.figure(figsize=(batch_size, 3),dpi = 512)
         for i in range(batch_size):
             
             img = self.de_normalize(list_imgs[i])
