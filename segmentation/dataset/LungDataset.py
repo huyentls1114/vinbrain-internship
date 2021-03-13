@@ -147,9 +147,9 @@ class LungDataset(Dataset):
         for i in range(batch_size):
             
             img = self.de_normalize(list_imgs[i])
-            img = conver_numpy_image(list_imgs[i])
+            img = conver_numpy_image(img)
             mask = conver_numpy_image(list_masks[i])
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             # img = int((img +1)*255)
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
