@@ -110,18 +110,30 @@ class PneumothoraxDataset(Dataset):
         self.show_img(list_imgs, list_masks, batch_size)
     
 
+    def de_normalize(self, tensor):
+        import torchvision.transforms as transforms
+        mean = (0.540,0.540,0.540)
+        std = (0.264,0.264,0.264)
+        inv_normalize = transforms.Normalize(
+            mean= [-m/s for m, s in zip(mean, std)],
+            std= [1/s for s in std]
+            )
+        return inv_normalize(tensor)
     def show_img(self, list_imgs, list_masks, batch_size):
         list_combine = []
-        fig = plt.figure(figsize=(batch_size, 3), dpi = 512)
+        fig = plt.figure(dpi = 512)
         for i in range(batch_size):
-            img = conver_numpy_image(list_imgs[i])
-            mask = conver_numpy_image(list_masks[i])
+            img = self.de_normalize(list_imgs[i])
+            img = conver_numpy_image(img).astype(np.uint8)
+            mask = conver_numpy_image(list_masks[i]).astype(np.uint8)
+            # import pdb; pdb.set_trace()
+            # img = int((img +1)*255)
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
                mask = np.concatenate([mask]*3, axis = 2)
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine)[:,:,0]/255.0, cmap = "gray")
+        plt.imshow(np.vstack(list_combine))
         plt.axis('off')
         plt.show()
 
