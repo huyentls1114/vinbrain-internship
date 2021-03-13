@@ -126,8 +126,8 @@ class LungDataset(Dataset):
 
         for i in range(batch_size):
             image, mask = self.__getitem__(list_idx[i])
-            if image.shape == 3:
-                image = image[:,:,0]
+            # if image.shape == 3:
+            #     image = image[:,:,0]
             list_imgs.append(image)
             list_masks.append(mask)
         self.show_img(list_imgs, list_masks, batch_size)
