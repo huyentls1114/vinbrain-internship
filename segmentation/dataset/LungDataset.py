@@ -143,6 +143,6 @@ class LungDataset(Dataset):
                mask = np.concatenate([mask]*3, axis = 2)
             combine = np.hstack([img, mask, ct])
             list_combine.append(combine)
-        plt.imshow(np.vstack(list_combine))
+        plt.imshow(np.vstack(list_combine)[:,:,0]/255.0, cmap = "gray")
         plt.axis('off')
         plt.show()
