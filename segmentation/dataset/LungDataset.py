@@ -134,7 +134,8 @@ class LungDataset(Dataset):
     
     def de_normalize(self, tensor):
         import torchvision.transforms as transforms
-        mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)
+        mean = (0.540,0.540,0.540)
+        std = (0.264,0.264,0.264)
         inv_normalize = transforms.Normalize(
             mean= [-m/s for m, s in zip(mean, std)],
             std= [1/s for s in std]
