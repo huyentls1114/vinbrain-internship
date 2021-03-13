@@ -31,7 +31,7 @@ class SegmentationData:
                                 batch_size= self.batch_size,
                                 drop_last=True)
 
-    def show_batch(self, mode = "train"):
+    def show_batch(self, mode = "train", dpi=512):
         dataset_dict = {
             "train": self.train_dataset,
             "val": self.val_dataset,
