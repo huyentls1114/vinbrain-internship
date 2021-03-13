@@ -59,8 +59,8 @@ class SegmentationData:
         negative = 0
         for index in list_idx:
             img, target = dataset[index]
-            import pdb; pdb.set_trace()
-            if np.sum(target) == 0:
+            # import pdb; pdb.set_trace()
+            if torch.sum(target.long()) == 0:
                 postive +=1
             else:
                 negative +=1
