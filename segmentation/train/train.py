@@ -292,12 +292,12 @@ class Trainer:
             try:
                 if "lr_scheduler_statedict" in state_dict.keys():
                     self.lr_scheduler = state_dict["lr_scheduler"]
+                    self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
                 else:
                     self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
             except:
                 self.lr_scheduler = state_dict["lr_scheduler"]
             if self.lr_scheduler is not None:
-                self.lr_scheduler.load_state_dict(state_dict["lr_scheduler_statedict"])
                 self.lr_scheduler_metric = state_dict["lr_scheduler_metric"]
                 self.lr_schedule_step_type = state_dict["lr_scheduler_step_type"]
             else:
