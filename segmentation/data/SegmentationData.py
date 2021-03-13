@@ -59,7 +59,7 @@ class SegmentationData:
         label_pixel = [0, 0]
         for index in list_idx:
             img, target = dataset[index]
-            w, h = img.shape[-2, -1]
+            w, h = img.shape[-2:]
             # import pdb; pdb.set_trace()
             postive_pixel =  torch.sum(target.long())
             negative_pixel = w * h - postive_pixel
