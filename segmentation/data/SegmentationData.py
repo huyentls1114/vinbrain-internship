@@ -1,4 +1,5 @@
 from torch.utils.data import DataLoader
+import numpy as np
 
 class SegmentationData:
     def __init__(self, configs):
@@ -45,6 +46,18 @@ class SegmentationData:
         }
         return dataset_dict[mode].load_sample(self.batch_size)
 
+    def caculate_num_per_labels(self, mode = "train"):
+        list_idx = list(self.loader_dict[mode].sampler)
+        dataset = self.loader_dict[mode].dataset
 
+        postive = 0
+        negative = 0
+        for index in list_idx:
+            img, target = dataset[index]
+            if np.sum(target) == 0:
+                postive +=1
+            else:
+                negative +=1
+        return postive, negative
 
         
