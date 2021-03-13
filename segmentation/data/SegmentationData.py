@@ -52,8 +52,8 @@ class SegmentationData:
             "val": self.val_loader,
             "test":self.test_loader
         }
-        list_idx = list(self.loader_dict[mode].sampler)
-        dataset = self.loader_dict[mode].dataset
+        list_idx = list(loader_dict[mode].sampler)
+        dataset = loader_dict[mode].dataset
 
         postive = 0
         negative = 0
