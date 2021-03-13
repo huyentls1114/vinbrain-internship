@@ -145,10 +145,11 @@ class LungDataset(Dataset):
         list_combine = []
         fig = plt.figure(figsize=(batch_size, 3), dpi = 512)
         for i in range(batch_size):
-            # import pdb; pdb.set_trace()
+            
             img = self.de_normalize(list_imgs[i])
             img = conver_numpy_image(list_imgs[i])
             mask = conver_numpy_image(list_masks[i])
+            import pdb; pdb.set_trace()
             # img = int((img +1)*255)
             ct = contour(img, mask)
             if img.shape[2]!=mask.shape[2]:
