@@ -112,8 +112,8 @@ class PneumothoraxDataset(Dataset):
 
     def de_normalize(self, tensor):
         import torchvision.transforms as transforms
-        mean = (0.540,0.540,0.540)
-        std = (0.264,0.264,0.264)
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
         inv_normalize = transforms.Normalize(
             mean= [-m/s for m, s in zip(mean, std)],
             std= [1/s for s in std]
@@ -123,8 +123,8 @@ class PneumothoraxDataset(Dataset):
         list_combine = []
         fig = plt.figure(dpi = 512)
         for i in range(batch_size):
-            # img = self.de_normalize(list_imgs[i])
-            img = list_imgs[i]
+            img = self.de_normalize(list_imgs[i])
+            # img = list_imgs[i]
             img = conver_numpy_image(img).astype(np.uint8)
             mask = conver_numpy_image(list_masks[i]).astype(np.uint8)
             # import pdb; pdb.set_trace()
