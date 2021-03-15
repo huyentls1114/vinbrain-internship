@@ -123,7 +123,7 @@ class PneumothoraxDataset(Dataset):
         list_combine = []
         fig = plt.figure(dpi = 512)
         for i in range(batch_size):
-            img = self.de_normalize(list_imgs[i])
+            # img = self.de_normalize(list_imgs[i])
             img = conver_numpy_image(img).astype(np.uint8)
             mask = conver_numpy_image(list_masks[i]).astype(np.uint8)
             # import pdb; pdb.set_trace()
