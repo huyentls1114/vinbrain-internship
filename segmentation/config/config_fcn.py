@@ -50,7 +50,7 @@ dataset = {
     "class": PneumothoraxDataset,
     "dataset_args":{
         "input_folder":"/content/data/Pneumothorax",
-        # "small_test":True,
+        "small_test":True,
         "augmentation": A.Compose([
             A.Resize(int(image_size/0.9), int(image_size/0.9)),
             RandomRotate((-30, 30), p = 0.5),
@@ -98,7 +98,7 @@ loss_function = {
 
 #optimizer
 from torch.optim import SGD
-lr = 1e-1
+lr = 1e-2
 optimizer = {
     "class":SGD,
     "optimizer_args":{
