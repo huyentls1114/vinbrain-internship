@@ -19,11 +19,12 @@ config_file_path = "/content/vinbrain-internship/segmentation/config/config_fcn.
 # save_checkpoint_type = "save_per_image"
 
 num_classes = 1
-from model.fcn32 import FCN32s
+from model.fcn import FCN
+# from torchvision.models.segmentation.fcn import FCNHead
 net = {
-    "class":FCN32s,
+    "class":FCN,
     "net_args":{
-        "n_class":1,
+        "num_classes":1,
     }
 }
 
