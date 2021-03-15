@@ -16,7 +16,7 @@ image_size = 256
 output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/FCN_BCE_rate0.8_augment_RLOP1e-2"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_fcn.py"
-# save_checkpoint_type = "save_per_image"
+save_checkpoint_type = "save_per_image"
 
 num_classes = 1
 from model.fcn import FCN
@@ -66,7 +66,7 @@ dataset = {
             RandomCrop(image_size, image_size, p = 0.5)
         ]),
         "update_ds": {
-            "weight_positive": 1
+            "weight_positive": 0.8
         }
     }
 }
