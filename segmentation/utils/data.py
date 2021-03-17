@@ -42,10 +42,11 @@ def center_crop(image):
         w_1 = int(w_origin//2 - h_origin//2)
         w_2 = int(w_origin//2 + h_origin//2)
         return image[:, w_1: w_2] 
-    else:
+    elif w_origin < h_origin:
         h_1 = int(h_origin//2 - w_origin//2)
         h_2 = int(h_origin//2 + w_origin//2)
         return image[h_1: h_2, :] 
-
+    else:
+        return image
 
     
