@@ -97,12 +97,17 @@ metric = {
 }
 
 # from loss.loss import B
+from won.loss import ComboLoss
 loss_function = {
-    "class": nn.BCEWithLogitsLoss,
+    "class":ComboLoss,
     "loss_args":{
+        "weights": {
+            "bce":3,
+            "dice":1,
+            "focal":4
+        }
     }
 }
-
 
 #optimizer
 lr = 1e-3
