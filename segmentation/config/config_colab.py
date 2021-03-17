@@ -38,12 +38,12 @@ net = {
 
 transform_train = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean = (0.485, 0.456, 0.406), std = (0.229, 0.224, 0.225)),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize((image_size, image_size))
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize(mean = (0.485, 0.456, 0.406), std = (0.229, 0.224, 0.225)),
+    transforms.Normalize(mean = (0.540,0.540,0.540), std = (0.264,0.264,0.264)),
     transforms.Resize((image_size, image_size))
 ])
 transform_label = transforms.Compose([
