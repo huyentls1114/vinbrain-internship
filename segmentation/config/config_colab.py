@@ -72,9 +72,9 @@ dataset = {
             RandomBrightnessContrast(p = 0.1),
             RandomCrop(image_size, image_size, p = 0.5)
         ]),
-        "update_ds": {
-            "weight_positive": 0.3
-        }
+        # "update_ds": {
+        #     "weight_positive": 0.3
+        # }
     }
 }
 
