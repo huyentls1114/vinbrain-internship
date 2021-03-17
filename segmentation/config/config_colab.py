@@ -83,7 +83,7 @@ dataset = {
 device = "gpu"
 gpu_id = 0
 
-batch_size = 16
+batch_size = 32
 num_epochs = 20
 
 # from pattern_model import 
@@ -105,7 +105,7 @@ loss_function = {
 
 
 #optimizer
-lr = 1e-4
+lr = 1e-3
 optimizer = {
     "class":Adam,
     "optimizer_args":{
@@ -120,7 +120,7 @@ lr_scheduler = {
     "schedule_args":{
         "mode":"min",
         "factor":0.3,
-        "patience":8,
+        "patience":4,
         "threshold":1e-2,
         "min_lr":1e-6
     }
