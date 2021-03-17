@@ -15,17 +15,17 @@ import segmentation_models_pytorch as smp
 
 #data config
 image_size = 256
-output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Unet_Resnet18_ComboLoss_rate0.8_augment_RLOP1e-4"
+output_folder = "/content/drive/MyDrive/vinbrain_internship/model_Pneumothorax/Unet_Resnet101_ComboLoss_rate0.8_augment_RLOP1e-4"
 loss_file = "loss_file.txt"
 config_file_path = "/content/vinbrain-internship/segmentation/config/config_colab.py"
 
 from model.unet import Unet
-from model.backbone import BackboneResnet18VGG
+from model.backbone import BackboneResnet101VGG
 num_classes = 1
 net = {
     "class":Unet,
     "net_args":{
-        "backbone_class": BackboneResnet18VGG,
+        "backbone_class": BackboneResnet101VGG,
         "encoder_args":{
             "pretrained":True,           
         },
